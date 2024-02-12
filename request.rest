@@ -1,0 +1,60 @@
+
+GET http://localhost:5000/peminjam
+
+###
+GET http://localhost:5000/peminjam/3
+
+###
+POST http://localhost:5000/peminjam
+Content-Type: application/json
+
+{
+	"id_barang": "A001",
+    "nama_dosen": "John Doe",
+    "nama_matakuliah": "Mathematics",
+    "prasat": "Some prasat",
+    "jam_praktek": "11:14",
+	"tanggal_praktek": "2/12/2024",
+    "nama_barang": "Book",
+    "keterangan": "Some description"
+}
+
+###
+
+PATCH  http://localhost:5000/peminjam/1
+Content-Type: application/json
+
+{
+	"id_barang": "A001",
+    "nama_dosen": "3 Way stop cock",
+    "nama_matakuliah": "Mathematics",
+    "prasat": "Some prasat",
+    "jam_praktek": "11:14",
+	"tanggal_praktek": "2/12/2024",
+    "nama_barang": "Book",
+    "keterangan": "Some description"
+}
+
+###
+DELETE  http://localhost:5000/peminjam/2
+
+
+
+###
+GET  http://localhost:5000/users
+
+###
+GET http://localhost:5000/barang
+
+###
+POST http://localhost:5000/barang
+Content-Type: application/json
+
+{
+	"id_barang": "A001",
+    "nama_barang": "3 Way stop cock",
+	"total_stock":10,
+	"jenis_barang": "-",
+	"nama_dosen": "dewi"
+}
+
