@@ -36,7 +36,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE  http://localhost:5000/peminjam/2
+DELETE  http://localhost:5000/peminjam/3
 
 
 
@@ -58,3 +58,23 @@ Content-Type: application/json
 	"nama_dosen": "dewi"
 }
 
+###
+
+GET http://localhost:5000/barang/A001
+
+
+###
+
+PATCH  http://localhost:5000/barang/A001
+Content-Type: application/json
+
+{
+	"id_barang": "A001",
+    "nama_barang": "3 Way stop cock",
+	"total_stock":10,
+	"jenis_barang": "-",
+	"nama_dosen": "Tia"
+}
+
+###
+DELETE  http://localhost:5000/peminjam/A001

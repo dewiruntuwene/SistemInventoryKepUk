@@ -21,6 +21,7 @@ model dataPeminjam {
 
   barang barang  @relation(fields: [id_barang], references: [id_barang])
   barangKeluar barangKeluar[]
+  History History[]
 }
 
 model Users {
@@ -34,7 +35,7 @@ model Users {
 
 model barang {
   id_barang     String    @id 
-  nama_barang   String    @unique @db.VarChar(50)
+  nama_barang   String    @db.VarChar(50)
   total_stock   Int       
   jenis_barang  String    @db.VarChar(50)
 
@@ -47,9 +48,8 @@ model barangMasuk {
   id_barang     String
   nama_barang   String    @unique @db.VarChar(50)
   tanggal_masuk DateTime? @default(now()) @db.Timestamptz(6)
-  satuan        String    @db.VarChar(50)
-  gudang        String    @db.VarChar(50)
-  total_stock   Int       
+  total_stock   Int 
+  jenis_barang  String    @db.VarChar(50)  
 
   barang barang @relation(fields: [id_barang], references: [id_barang])
 }
@@ -58,17 +58,17 @@ model barangKeluar {
   id_barang_keluar  Int @id @default(autoincrement())
   id_peminjam   Int
   nama_barang   String    @unique @db.VarChar(50)
-  tanggal_masuk DateTime? @default(now()) @db.Timestamptz(6)
-  satuan        String    @db.VarChar(50)
-  gudang        String    @db.VarChar(50)
-  total_stock   Decimal?  @db.Decimal(12, 0)
+  tanggal_keluar DateTime? @default(now()) @db.Timestamptz(6)
+  total_stock   Int
+  jenis_barang  String    @db.VarChar(50) 
 
   dataPeminjam dataPeminjam  @relation(fields: [id_peminjam], references: [id_peminjam])
 }
 
 model History {
   id_history    Int       @id @default(autoincrement())
-  id_barang     String     
+  id_barang     String  
+  id_peminjam   Int   
   nama_barang   String    @unique @db.VarChar(50)
   stock_awal    Int
   stock_sisa    Int
@@ -83,6 +83,8 @@ model History {
   biomedik      Int
   kdp           Int
   jumlah        Int
+  
+  dataPeminjam dataPeminjam  @relation(fields: [id_peminjam], references: [id_peminjam])
 }
 
 

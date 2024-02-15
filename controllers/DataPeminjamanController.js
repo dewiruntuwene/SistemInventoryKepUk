@@ -40,6 +40,24 @@ export const createDataPeminjam = async(req, res) =>{
                 keterangan: keterangan 
             }
         });
+        await prisma.barang.update({
+            where: { id_barang: id_barang },
+            data: {
+                total_stock: {
+                    decrement: 1 // Kurangi stok barang sebanyak 1
+                }
+            }
+        });
+
+        await prisma.barang.update({
+            where: { id_barang: id_barang },
+            data: {
+                total_stock: {
+                    decrement: 1 // Kurangi stok barang sebanyak 1
+                }
+            }
+        });
+
         res.status(201).json({msg: "Data Created"});
     } catch (error) {
         console.log(error.message);

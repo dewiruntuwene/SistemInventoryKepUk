@@ -27,7 +27,7 @@ export const getBarangById = async(req, res) =>{
 export const createBarang = async(req, res) =>{
     const {id_barang, nama_barang, total_stock, jenis_barang} = req.body;
     try {
-        const dataPeminjam = await prisma.barang.create({
+        const barang = await prisma.barang.create({
             data: {
                 id_barang: id_barang, 
                 nama_barang:nama_barang, 
@@ -42,20 +42,16 @@ export const createBarang = async(req, res) =>{
 }
 
 export const updateBarang = async(req, res) =>{
-    const {id_barang, nama_barang, total_stock, jenis_barang} = req.body;
+    const {nama_barang, total_stock, jenis_barang} = req.body;
     try {
         await prisma.barang.update(req.body,{
-            where:{
-                id_barang: req.params.id_barang
-            }
-        });
-
-        const dataPeminjam = await prisma.barang.create({
             data: {
-                id_barang: id_barang, 
                 nama_barang:nama_barang, 
                 total_stock:total_stock,
                 jenis_barang:jenis_barang
+            },
+            where:{
+                id_barang: req.params.id_barang
             }
         });
 
@@ -67,7 +63,7 @@ export const updateBarang = async(req, res) =>{
 
 export const deleteBarang = async(req, res) =>{
     try {
-        await prisma.barang.destroy({
+        await prisma.barang.delete({
             where:{
                 id_barang: req.params.id_barang
             }

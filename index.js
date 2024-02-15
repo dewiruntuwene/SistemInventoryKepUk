@@ -5,6 +5,9 @@ import dotenv from "dotenv";
 import DataPeminjamanRoute from "./routes/DataPeminjamanRoute.js";
 import BarangRoute from "./routes/BarangRoute.js";
 import UserRoute from "./routes/UserRoute.js";
+import BarangMasukRoute from "./routes/BarangMasukRoute.js";
+import BarangKeluarRoute from "./routes/BarangKeluarRoute.js";
+
 
 dotenv.config();
 const app = express();
@@ -13,6 +16,9 @@ app.use(express.json());
 app.use(DataPeminjamanRoute);
 app.use(BarangRoute);
 app.use(UserRoute);
+app.use(BarangMasukRoute);
+app.use(BarangKeluarRoute);
+
 
 app.use((req, res, next) => {
     req.refresh_token = req.body.refreshToken; // Adjust based on how you send the refresh token
