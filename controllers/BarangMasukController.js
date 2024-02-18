@@ -25,28 +25,29 @@ export const getBarangMasukById = async(req, res) =>{
 }
 
 export const createBarangMasuk = async(req, res) =>{
-    const {id_barangMasuk, nama_barang, tanggal_masuk, total_stock, jenis_barang} = req.body;
+    const {id_barangMasuk, id_barang, nama_barang, tanggal_masuk, total_stock, jenis_barang} = req.body;
     try {
-        const barangMasuk = await prisma.barangMasuk.create({
+        const newBarangMasuk = await prisma.barangMasuk.create({
             data: {
                 id_barangMasuk: id_barangMasuk,
+                id_barang,
                 nama_barang: nama_barang,
                 tanggal_masuk: tanggal_masuk,
                 total_stock: total_stock,
-                jenis_barang
+                jenis_barang:jenis_barang
             }
         });
 
         // Tambahkan total stock barang
         await prisma.barang.update({
-            where: { id_barang: id_barang },
+            where: { id_barang },
             data: {
                 total_stock: {
                     increment: total_stock // Tambahkan stok barang sesuai jumlah masuk
-                }
-            }
+                },
+            },
         });
-        res.status(201).json({msg: "Data Created"});
+        res.status(201).json({msg: "Data Created", data: newBarangMasuk});
     } catch (error) {
         console.log(error.message);
     }

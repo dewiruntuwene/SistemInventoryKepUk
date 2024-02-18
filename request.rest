@@ -9,14 +9,19 @@ POST http://localhost:5000/peminjam
 Content-Type: application/json
 
 {
-	"id_barang": "A001",
-    "nama_dosen": "John Doe",
+    "nama_dosen": "Dewi",
     "nama_matakuliah": "Mathematics",
     "prasat": "Some prasat",
     "jam_praktek": "11:14",
-	"tanggal_praktek": "2/12/2024",
-    "nama_barang": "Book",
-    "keterangan": "Some description"
+	"tanggal_praktek": "2024-12-02",
+    "tanggal_pengambilang": "",
+    "nama_barang": "Alkohol 70% 100 ml",
+    "keterangan": "Some description",
+    "barang": {
+        "connect":{
+            "id_barang":"A002"
+        }
+    }
 }
 
 ###
@@ -25,23 +30,26 @@ PATCH  http://localhost:5000/peminjam/1
 Content-Type: application/json
 
 {
-	"id_barang": "A001",
-    "nama_dosen": "3 Way stop cock",
+    "id_peminjam": 1,
+    "id_barang": "A001",
+    "id_barang_keluar": 1,
+    "nama_dosen": "John Doe",
     "nama_matakuliah": "Mathematics",
     "prasat": "Some prasat",
     "jam_praktek": "11:14",
-	"tanggal_praktek": "2/12/2024",
-    "nama_barang": "Book",
+    "tanggal_praktek": "2024-12-02",
+    "tanggal_pengambilan": "2024-02-18T10:54:11.032Z",
+    "nama_barang": "3 Way Stop Coak",
     "keterangan": "Some description"
 }
 
 ###
-DELETE  http://localhost:5000/peminjam/3
+DELETE  http://localhost:5000/peminjam/1
 
 
 
 ###
-GET  http://localhost:5000/users
+GET  http://localhost:5000/register
 
 ###
 GET http://localhost:5000/barang
@@ -51,11 +59,10 @@ POST http://localhost:5000/barang
 Content-Type: application/json
 
 {
-	"id_barang": "A001",
-    "nama_barang": "3 Way stop cock",
+	"id_barang": "A002",
+    "nama_barang": "Alkohol 70% 100 ml",
 	"total_stock":10,
-	"jenis_barang": "-",
-	"nama_dosen": "dewi"
+	"jenis_barang": "-"
 }
 
 ###
@@ -78,3 +85,40 @@ Content-Type: application/json
 
 ###
 DELETE  http://localhost:5000/peminjam/A001
+
+###
+GET http://localhost:5000/barangMasuk
+
+
+###
+POST http://localhost:5000/barangMasuk
+Content-Type: application/json
+
+{
+    "nama_barang": "3 Way stop cock",
+    "id_barang": "A001",
+	"total_stock": 10,
+    "jenis_barang": "habis pakai"
+}
+
+###
+
+GET http://localhost:5000/barangKeluar
+
+
+###
+POST http://localhost:5000/barangKeluar
+Content-Type: application/json
+
+{
+    "nama_barang": "3 Way stop cock",
+    "id_barang": "A001",
+	"total_stock": 3,
+    "jenis_barang": "habis pakai"
+}
+
+###
+DELETE  http://localhost:5000/barangKeluar/10
+
+###
+GET http://localhost:5000/dashboardNotif

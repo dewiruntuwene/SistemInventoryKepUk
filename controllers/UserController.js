@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const prisma = new PrismaClient();
+
 export const getUsers = async(req,res)=>{
     try {
         const users = await prisma.Users.findMany({
@@ -26,7 +28,7 @@ export const Register = async (req, res) => {
   }
 
   try {
-      const existingUser = await prisma.Users.findOne({ email });
+      const existingUser = await prisma.users.findOne({ email });
       if (existingUser) {
           return res.status(400).json({ msg: 'Email has already been register' });
       }
@@ -34,7 +36,7 @@ export const Register = async (req, res) => {
       const salt = await bcrypt.genSalt();
       const hashPassword = await bcrypt.hash(password, salt);
 
-      await prisma.Users.create({
+      await prisma.users.create({
           username: username,
           email: email,
           password: hashPassword,
@@ -50,7 +52,7 @@ export const Register = async (req, res) => {
 
 export const Login = async(req,res)=>{
   try {
-      const user = await prisma.Users.findOne({
+      const user = await prisma.users.findOne({
           where:{
               email: req.body.email
           }
@@ -101,7 +103,7 @@ export const Logout = async (req, res) => {
           return res.sendStatus(204); // No refresh token provided, return success (204 No Content)
         }
     
-        const user = await prisma.Users.findOne({
+        const user = await prisma.users.findOne({
           where: {
             refresh_token: refreshToken
           }   

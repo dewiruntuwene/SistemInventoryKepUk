@@ -9,7 +9,7 @@ datasource db {
 
 model dataPeminjam {
   id_peminjam     Int       @id @default(autoincrement())
-  id_barang       String    
+  id_barang       String
   nama_dosen      String    @db.VarChar(50)
   nama_matakuliah String    @db.VarChar(50)
   prasat          String    @db.VarChar(50)
@@ -19,7 +19,7 @@ model dataPeminjam {
   nama_barang     String    @db.VarChar(50) 
   keterangan      String    @db.VarChar(50)
 
-  barang barang  @relation(fields: [id_barang], references: [id_barang])
+  barang barang @relation(fields: [id_barang], references: [id_barang])
   barangKeluar barangKeluar[]
   History History[]
 }
@@ -39,15 +39,16 @@ model barang {
   total_stock   Int       
   jenis_barang  String    @db.VarChar(50)
 
-  barangMasuk barangMasuk[]
   dataPeminjam dataPeminjam[]
+  barangMasuk barangMasuk[]
+  barangKeluar barangKeluar[]
 }
 
 model barangMasuk {
   id_barang_masuk  Int    @id @default(autoincrement()) 
   id_barang     String
-  nama_barang   String    @unique @db.VarChar(50)
-  tanggal_masuk DateTime? @default(now()) @db.Timestamptz(6)
+  nama_barang   String    @db.VarChar(50)
+  tanggal_masuk DateTime? @default(now()) @db.Timestamp(6)
   total_stock   Int 
   jenis_barang  String    @db.VarChar(50)  
 
@@ -56,20 +57,21 @@ model barangMasuk {
 
 model barangKeluar {
   id_barang_keluar  Int @id @default(autoincrement())
-  id_peminjam   Int
-  nama_barang   String    @unique @db.VarChar(50)
-  tanggal_keluar DateTime? @default(now()) @db.Timestamptz(6)
+  id_barang     String
+  nama_barang   String     @db.VarChar(50)
+  tanggal_keluar DateTime? @default(now()) @db.Timestamp(6)
   total_stock   Int
   jenis_barang  String    @db.VarChar(50) 
 
-  dataPeminjam dataPeminjam  @relation(fields: [id_peminjam], references: [id_peminjam])
+  barang barang  @relation(fields: [id_barang], references: [id_barang])
+  dataPeminjam dataPeminjam[]
 }
 
 model History {
   id_history    Int       @id @default(autoincrement())
   id_barang     String  
   id_peminjam   Int   
-  nama_barang   String    @unique @db.VarChar(50)
+  nama_barang   String    @db.VarChar(50)
   stock_awal    Int
   stock_sisa    Int
   hematologi    Int

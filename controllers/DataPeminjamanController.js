@@ -25,40 +25,57 @@ export const getDataPeminjamById = async(req, res) =>{
 }
 
 export const createDataPeminjam = async(req, res) =>{
-    const {id_peminjam, id_barang, nama_dosen, nama_matakuliah, prasat,jam_praktek,tanggal_praktek, nama_barang, keterangan} = req.body;
+    const {id_peminjam, id_barang, id_barang_keluar, nama_dosen, nama_matakuliah, prasat,jam_praktek,tanggal_praktek, tanggal_pengambilan, nama_barang, keterangan, tanggal_keluar, jenis_barang} = req.body;
     try {
-        const dataPeminjam = await prisma.dataPeminjam.create({
+        // Cari barang berdasarkan id_barang yang disediakan
+        const { id_barang } = req.body.barang.connect;
+        const existingBarang = await prisma.barang.findUnique({ where: { id_barang } });
+
+        // Periksa apakah barang ada
+        if (!existingBarang) {
+            return res.status(400).json({ error: "Barang tidak ditemukan." });
+        }
+
+        const newDataPeminjam = await prisma.dataPeminjam.create({
             data: {
-                id_peminjam: id_peminjam,
+                id_peminjam,
+                nama_dosen, 
+                nama_matakuliah, 
+                prasat,
+                jam_praktek,
+                tanggal_praktek, 
+                tanggal_pengambilan,
+                nama_barang, 
+                keterangan,
+                barang: { connect: { id_barang } }
+            },
+        });
+
+        // Create barangKeluar entry for the borrowed item
+        const newBarangKeluar = await prisma.barangKeluar.create({
+            data: {
+                id_barang_keluar,
                 id_barang,
-                nama_dosen: nama_dosen, 
-                nama_matakuliah: nama_matakuliah, 
-                prasat: prasat,
-                jam_praktek: jam_praktek,
-                tanggal_praktek: tanggal_praktek, 
-                nama_barang: nama_barang, 
-                keterangan: keterangan 
-            }
-        });
-        await prisma.barang.update({
-            where: { id_barang: id_barang },
-            data: {
-                total_stock: {
-                    decrement: 1 // Kurangi stok barang sebanyak 1
-                }
+                nama_barang,
+                tanggal_keluar,
+                total_stock: 1, // Assuming one item is being borrowed
+                jenis_barang: "-" // You may need to adjust this according to your data model
             }
         });
 
         await prisma.barang.update({
-            where: { id_barang: id_barang },
+            where: { id_barang },
             data: {
                 total_stock: {
                     decrement: 1 // Kurangi stok barang sebanyak 1
-                }
-            }
+                },
+            },
         });
 
-        res.status(201).json({msg: "Data Created"});
+        
+
+       
+        res.status(201).json({msg: "Data Created", data: newDataPeminjam});
     } catch (error) {
         console.log(error.message);
     }

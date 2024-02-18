@@ -7,6 +7,7 @@ import BarangRoute from "./routes/BarangRoute.js";
 import UserRoute from "./routes/UserRoute.js";
 import BarangMasukRoute from "./routes/BarangMasukRoute.js";
 import BarangKeluarRoute from "./routes/BarangKeluarRoute.js";
+import DashboardRoute from "./routes/DashboardRoute.js";
 
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(BarangRoute);
 app.use(UserRoute);
 app.use(BarangMasukRoute);
 app.use(BarangKeluarRoute);
+app.use(DashboardRoute);
 
 
 app.use((req, res, next) => {
