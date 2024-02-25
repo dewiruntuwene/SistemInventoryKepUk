@@ -8,11 +8,13 @@ import UserRoute from "./routes/UserRoute.js";
 import BarangMasukRoute from "./routes/BarangMasukRoute.js";
 import BarangKeluarRoute from "./routes/BarangKeluarRoute.js";
 import DashboardRoute from "./routes/DashboardRoute.js";
+import HistoryRoute from "./routes/HistoryRoute.js";
+import DataPeminjamBarangRoute from "./routes/DataPeminjamBarangRoute.js";
 
 
 dotenv.config();
 const app = express();
-app.use(cors());
+app.use(cors({origin:'*'}));
 app.use(express.json());
 app.use(DataPeminjamanRoute);
 app.use(BarangRoute);
@@ -20,6 +22,8 @@ app.use(UserRoute);
 app.use(BarangMasukRoute);
 app.use(BarangKeluarRoute);
 app.use(DashboardRoute);
+app.use(HistoryRoute);
+app.use(DataPeminjamBarangRoute);
 
 
 app.use((req, res, next) => {
@@ -27,4 +31,7 @@ app.use((req, res, next) => {
     next();
   });
 
-app.listen(5000, ()=> console.log('Server up and running'));
+export const JWT_SECRET = process.env.JWT_SECRET
+export const PORT = process.env.PORT
+
+app.listen(PORT, ()=> console.log('Server up and running'));

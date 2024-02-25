@@ -75,10 +75,12 @@ export const updateBarangMasuk = async(req, res) =>{
 
 export const deleteBarangMasuk = async(req, res) =>{
     try {
-        await prisma.barangMasuk.destroy({
-            where:{
-                id_barangMasuk: req.params.id_barangMasuk
-            }
+        const idBarangMasuk = parseInt(req.params.id_barang_masuk);
+        // Hapus data peminjam berdasarkan id_peminjam
+        await prisma.barangMasuk.delete({
+        where: {
+            id_barang_masuk: idBarangMasuk
+        }
         });
         res.status(200).json({msg: "Data Deleted"});
     } catch (error) {

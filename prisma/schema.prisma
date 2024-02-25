@@ -7,48 +7,66 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model dataPeminjam {
-  id_peminjam     Int       @id @default(autoincrement())
-  id_barang       String
-  nama_dosen      String    @db.VarChar(50)
-  nama_matakuliah String    @db.VarChar(50)
-  prasat          String    @db.VarChar(50)
-  jam_praktek     String    @db.VarChar(10)
-  tanggal_praktek String?   @db.VarChar(20)
-  tanggal_pengambilan DateTime @db.Timestamp(6) @default(now()) 
-  nama_barang     String    @db.VarChar(50) 
-  keterangan      String    @db.VarChar(50)
 
-  barang barang @relation(fields: [id_barang], references: [id_barang])
-  barangKeluar barangKeluar[]
-  History History[]
-}
 
-model Users {
-  user_id    Int       @id @default(autoincrement())
-  username   String    @unique @db.VarChar(50)
-  password   String    @db.VarChar(50)
-  email      String    @unique @db.VarChar(255)
-  created_on DateTime  @db.Timestamp(6)
-  last_login DateTime? @db.Timestamp(6)
-}
 
 model barang {
   id_barang     String    @id 
   nama_barang   String    @db.VarChar(50)
   total_stock   Int       
   jenis_barang  String    @db.VarChar(50)
+  gambar_barang String?    @unique
 
-  dataPeminjam dataPeminjam[]
+  peminjamanBarang peminjamanBarang[]
   barangMasuk barangMasuk[]
   barangKeluar barangKeluar[]
 }
+
+model dataPeminjam {
+  id_peminjam     Int       @id @default(autoincrement())
+  nama_dosen      String    @db.VarChar(50)
+  nama_matakuliah String    @db.VarChar(50)
+  prasat          String    @db.VarChar(50)
+  jam_praktek     String    @db.VarChar(10)
+  tanggal_praktek String?   @db.VarChar(20)
+  tanggal_pengambilan DateTime @default(now()) 
+
+  peminjamanBarang peminjamanBarang[]
+  History History[]
+}
+
+// Tabel perantara untuk hubungan banyak-ke-banyak antara Barang dan DataPeminjam
+model peminjamanBarang {
+  id_peminjamanBarang  Int      @id @default(autoincrement())
+  jumlah_barang        Int
+  peminjam             dataPeminjam @relation(fields: [idPeminjam], references: [id_peminjam])
+  barang               barang    @relation(fields: [idBarang], references: [id_barang])
+  idPeminjam          Int
+  idBarang            String
+}
+model users {
+  user_id    Int       @id @default(autoincrement())
+  username   String    @db.VarChar(50)
+  password   String    @db.VarChar(255)
+  email      String    @unique @db.VarChar(50)
+  role       Role      @default(USER)
+  created_on DateTime  @default(now())
+  last_login DateTime? @default(now())
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+
+
 
 model barangMasuk {
   id_barang_masuk  Int    @id @default(autoincrement()) 
   id_barang     String
   nama_barang   String    @db.VarChar(50)
-  tanggal_masuk DateTime? @default(now()) @db.Timestamp(6)
+  tanggal_masuk DateTime? @default(now()) 
   total_stock   Int 
   jenis_barang  String    @db.VarChar(50)  
 
@@ -59,12 +77,11 @@ model barangKeluar {
   id_barang_keluar  Int @id @default(autoincrement())
   id_barang     String
   nama_barang   String     @db.VarChar(50)
-  tanggal_keluar DateTime? @default(now()) @db.Timestamp(6)
+  tanggal_keluar DateTime? @default(now()) 
   total_stock   Int
   jenis_barang  String    @db.VarChar(50) 
 
   barang barang  @relation(fields: [id_barang], references: [id_barang])
-  dataPeminjam dataPeminjam[]
 }
 
 model History {
@@ -72,8 +89,6 @@ model History {
   id_barang     String  
   id_peminjam   Int   
   nama_barang   String    @db.VarChar(50)
-  stock_awal    Int
-  stock_sisa    Int
   hematologi    Int
   kardio        Int
   respiratory   Int

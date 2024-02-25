@@ -10,6 +10,6 @@ router.get('/peminjam',getDataPeminjam);
 router.get('/peminjam/:id_peminjam',getDataPeminjamById);
 router.post('/peminjam',createDataPeminjam);
 router.patch('/peminjam/:id_peminjam',updateDataPeminjam);
-router.delete('/perminjam/:id_peminjam',deleteDataPeminjam);
+router.delete('/peminjam/:id_peminjam',deleteDataPeminjam);
 
 export default router;

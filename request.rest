@@ -2,7 +2,7 @@
 GET http://localhost:5000/peminjam
 
 ###
-GET http://localhost:5000/peminjam/3
+GET http://localhost:5000/peminjam/8
 
 ###
 POST http://localhost:5000/peminjam
@@ -10,46 +10,39 @@ Content-Type: application/json
 
 {
     "nama_dosen": "Dewi",
-    "nama_matakuliah": "Mathematics",
+    "nama_matakuliah": "ipa",
+    "prasat": "Some prasat",
+    "jam_praktek": "11:14",
+	"tanggal_praktek": "2024-12-02",
+    "tanggal_pengambilang": ""
+}
+
+###
+
+PATCH  http://localhost:5000/peminjam/25
+Content-Type: application/json
+
+{
+    "nama_dosen": "Feren",
+    "nama_matakuliah": "Kardio",
     "prasat": "Some prasat",
     "jam_praktek": "11:14",
 	"tanggal_praktek": "2024-12-02",
     "tanggal_pengambilang": "",
-    "nama_barang": "Alkohol 70% 100 ml",
+    "nama_barang": "Alkohol 70% 100ml",
     "keterangan": "Some description",
     "barang": {
         "connect":{
-            "id_barang":"A002"
+            "id_barang":"A001"
         }
     }
 }
 
 ###
-
-PATCH  http://localhost:5000/peminjam/1
-Content-Type: application/json
-
-{
-    "id_peminjam": 1,
-    "id_barang": "A001",
-    "id_barang_keluar": 1,
-    "nama_dosen": "John Doe",
-    "nama_matakuliah": "Mathematics",
-    "prasat": "Some prasat",
-    "jam_praktek": "11:14",
-    "tanggal_praktek": "2024-12-02",
-    "tanggal_pengambilan": "2024-02-18T10:54:11.032Z",
-    "nama_barang": "3 Way Stop Coak",
-    "keterangan": "Some description"
-}
-
-###
-DELETE  http://localhost:5000/peminjam/1
+DELETE  http://localhost:5000/peminjam/26
 
 
 
-###
-GET  http://localhost:5000/register
 
 ###
 GET http://localhost:5000/barang
@@ -59,10 +52,11 @@ POST http://localhost:5000/barang
 Content-Type: application/json
 
 {
-	"id_barang": "A002",
-    "nama_barang": "Alkohol 70% 100 ml",
+	"id_barang": "A004",
+    "nama_barang": "Apron",
 	"total_stock":10,
-	"jenis_barang": "-"
+	"jenis_barang": "-",
+    "gambar": "../image/image1.png"
 }
 
 ###
@@ -84,7 +78,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE  http://localhost:5000/peminjam/A001
+DELETE  http://localhost:5000/peminjam
 
 ###
 GET http://localhost:5000/barangMasuk
@@ -97,9 +91,24 @@ Content-Type: application/json
 {
     "nama_barang": "3 Way stop cock",
     "id_barang": "A001",
-	"total_stock": 10,
+	"total_stock": 20,
     "jenis_barang": "habis pakai"
 }
+
+###
+DELETE  http://localhost:5000/barangMasuk/5
+
+###
+PATCH   http://localhost:5000/barangMasuk/6
+Content-Type: application/json
+
+{
+    "nama_barang": "3 Way stop cock",
+    "id_barang": "A001",
+	"total_stock": 20,
+    "jenis_barang": "habis pakai"
+}
+
 
 ###
 
@@ -118,7 +127,39 @@ Content-Type: application/json
 }
 
 ###
-DELETE  http://localhost:5000/barangKeluar/10
+DELETE  http://localhost:5000/barangKeluar/9
 
 ###
 GET http://localhost:5000/dashboardNotif
+
+
+###
+GET http://localhost:5000/users
+
+###
+POST   http://localhost:5000/register
+Content-Type: application/json
+
+{
+    "username": "dewifr",
+    "email": "dewir111@gmail.com",
+    "password": "12345678"
+}
+
+###
+GET http://localhost:5000/login
+###
+POST   http://localhost:5000/login
+Content-Type: application/json
+
+{
+    "username": "dewifr",
+    "email": "dewir111@gmail.com",
+    "password": "12345678"
+}
+
+###
+PATCH  http://localhost:5000/history
+
+###
+GET http://localhost:5000/peminjamBarang

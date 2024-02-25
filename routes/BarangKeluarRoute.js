@@ -7,9 +7,9 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 router.get('/barangKeluar',getBarangKeluar);
-router.get('/barangKeluar/:id_barangKeluar',getBarangKeluarById);
+router.get('/barangKeluar/:id_barang_keluar',getBarangKeluarById);
 router.post('/barangKeluar',createBarangKeluar);
-router.patch('/barangKeluar/:id_barangKeluar',updateBarangKeluar);
-router.delete('/barangKeluar/:id_barangKeluar',deleteBarangKeluar);
+router.patch('/barangKeluar/:id_barang_keluar',updateBarangKeluar);
+router.delete('/barangKeluar/:id_barang_keluar',deleteBarangKeluar);
 
 export default router;

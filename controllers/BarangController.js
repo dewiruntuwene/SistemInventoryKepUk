@@ -25,14 +25,15 @@ export const getBarangById = async(req, res) =>{
 }
 
 export const createBarang = async(req, res) =>{
-    const {id_barang, nama_barang, total_stock, jenis_barang} = req.body;
+    const {id_barang, nama_barang, total_stock, jenis_barang, gambar_barang} = req.body;
     try {
         const barang = await prisma.barang.create({
             data: {
                 id_barang: id_barang, 
                 nama_barang:nama_barang, 
                 total_stock:total_stock,
-                jenis_barang:jenis_barang
+                jenis_barang:jenis_barang,
+                gambar_barang
             }
         });
         res.status(201).json({msg: "Data Created"});
@@ -63,10 +64,13 @@ export const updateBarang = async(req, res) =>{
 
 export const deleteBarang = async(req, res) =>{
     try {
-        await prisma.barang.delete({
-            where:{
-                id_barang: req.params.id_barang
-            }
+        const idBarang = parseInt(req.params.id_peminjam);
+    
+        // Hapus data peminjam berdasarkan id_peminjam
+        await prisma.dataPeminjam.delete({
+        where: {
+            id_barang: idBarang
+        }
         });
         res.status(200).json({msg: "Data Deleted"});
     } catch (error) {
