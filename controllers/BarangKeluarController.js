@@ -27,7 +27,7 @@ export const getBarangKeluarById = async(req, res) =>{
 export const createBarangKeluar = async(req, res) =>{
     const {id_barang_keluar, id_barang, nama_barang, total_stock, jenis_barang, tanggal_keluar} = req.body;
     try {
-        const newBarangKeluar = await prisma.barangKeluar.create({
+        const newBarangKeluar = await prisma.BarangKeluar.create({
             data: {
                 id_barang_keluar: id_barang_keluar,
                 id_barang,
