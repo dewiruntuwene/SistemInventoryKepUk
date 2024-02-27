@@ -10,40 +10,43 @@ datasource db {
 
 
 
-model barang {
+
+
+model Barang {
   id_barang     String    @id 
   nama_barang   String    @db.VarChar(50)
   total_stock   Int       
   jenis_barang  String    @db.VarChar(50)
-  gambar_barang String?    @unique
+  gambar_barang String?    
 
-  peminjamanBarang peminjamanBarang[]
-  barangMasuk barangMasuk[]
-  barangKeluar barangKeluar[]
+  
+  BarangMasuk BarangMasuk[]
+  BarangKeluar BarangKeluar[]
 }
 
-model dataPeminjam {
+model Keranjang {
+  id_keranjang     Int      @id @default(autoincrement())
+  jumlah_pemesanan Int
+
+  barangKeluar     BarangKeluar[]
+  peminjam Peminjam[]
+}
+
+model Peminjam {
   id_peminjam     Int       @id @default(autoincrement())
-  nama_dosen      String    @db.VarChar(50)
+  nama_dosen    String      @db.VarChar(50)
   nama_matakuliah String    @db.VarChar(50)
   prasat          String    @db.VarChar(50)
   jam_praktek     String    @db.VarChar(10)
   tanggal_praktek String?   @db.VarChar(20)
   tanggal_pengambilan DateTime @default(now()) 
 
-  peminjamanBarang peminjamanBarang[]
-  History History[]
+  keranjangs  Keranjang[]
+  history History[]
 }
 
 // Tabel perantara untuk hubungan banyak-ke-banyak antara Barang dan DataPeminjam
-model peminjamanBarang {
-  id_peminjamanBarang  Int      @id @default(autoincrement())
-  jumlah_barang        Int
-  peminjam             dataPeminjam @relation(fields: [idPeminjam], references: [id_peminjam])
-  barang               barang    @relation(fields: [idBarang], references: [id_barang])
-  idPeminjam          Int
-  idBarang            String
-}
+
 model users {
   user_id    Int       @id @default(autoincrement())
   username   String    @db.VarChar(50)
@@ -60,34 +63,34 @@ enum Role {
 }
 
 
-
-
-model barangMasuk {
+model BarangMasuk {
   id_barang_masuk  Int    @id @default(autoincrement()) 
   id_barang     String
   nama_barang   String    @db.VarChar(50)
   tanggal_masuk DateTime? @default(now()) 
   total_stock   Int 
-  jenis_barang  String    @db.VarChar(50)  
+  jenis_barang  String    @db.VarChar(50)
+  gambar_barang String?    
 
-  barang barang @relation(fields: [id_barang], references: [id_barang])
+  Barang Barang @relation(fields: [id_barang], references: [id_barang])
 }
 
-model barangKeluar {
+model BarangKeluar {
   id_barang_keluar  Int @id @default(autoincrement())
   id_barang     String
   nama_barang   String     @db.VarChar(50)
   tanggal_keluar DateTime? @default(now()) 
   total_stock   Int
   jenis_barang  String    @db.VarChar(50) 
+  gambar_barang String?  
 
-  barang barang  @relation(fields: [id_barang], references: [id_barang])
+  keranjangs  Keranjang[]
+  barang Barang[]
 }
 
 model History {
   id_history    Int       @id @default(autoincrement())
   id_barang     String  
-  id_peminjam   Int   
   nama_barang   String    @db.VarChar(50)
   hematologi    Int
   kardio        Int
@@ -101,7 +104,7 @@ model History {
   kdp           Int
   jumlah        Int
   
-  dataPeminjam dataPeminjam  @relation(fields: [id_peminjam], references: [id_peminjam])
+  peminjam Peminjam[]
 }
 
 
