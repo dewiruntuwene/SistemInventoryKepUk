@@ -56,7 +56,7 @@ export const createBarangMasuk = async(req, res) =>{
 export const updateBarangMasuk = async(req, res) =>{
     const {nama_barang, total_stock, jenis_barang} = req.body;
     try {
-        await prisma.barangMasuk.update(req.body,{
+        await prisma.BarangMasuk.update(req.body,{
             where:{
                 id_barangMasuk: req.params.id_barangMasuk
             },
