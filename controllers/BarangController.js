@@ -27,7 +27,7 @@ export const getBarangById = async(req, res) =>{
 export const createBarang = async(req, res) =>{
     const {id_barang, nama_barang, total_stock, jenis_barang, gambar_barang} = req.body;
     try {
-        const barang = await prisma.barang.create({
+        const barang = await prisma.Barang.create({
             data: {
                 id_barang: id_barang, 
                 nama_barang:nama_barang, 
@@ -45,7 +45,7 @@ export const createBarang = async(req, res) =>{
 export const updateBarang = async(req, res) =>{
     const {nama_barang, total_stock, jenis_barang} = req.body;
     try {
-        await prisma.barang.update(req.body,{
+        await prisma.Barang.update(req.body,{
             data: {
                 nama_barang:nama_barang, 
                 total_stock:total_stock,
