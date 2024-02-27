@@ -78,6 +78,9 @@ Content-Type: application/json
 }
 
 ###
+DELETE  http://localhost:5000/barang
+
+###
 DELETE  http://localhost:5000/peminjam
 
 ###
@@ -162,4 +165,42 @@ Content-Type: application/json
 PATCH  http://localhost:5000/history
 
 ###
-GET http://localhost:5000/peminjamBarang
+GET   http://localhost:5000/peminjamBarang
+
+###
+POST   http://localhost:5000/peminjamBarang
+Content-Type: application/json
+
+{
+  "nama_dosen": "Dewi",
+  "nama_matakuliah": "Kardio",
+  "prasat": "some prasat",
+  "jam_praktek": "12:00",
+  "tanggal_praktek": "26-2-2024",
+  "keranjangs": [
+    {
+      "jumlah_pemesanan": 1,
+      "barangKeluar": {
+        "id_barang": "A001",
+        "nama_barang": "Glove",
+        "total_stock": 10,
+        "jenis_barang": "habis pakai",
+        "gambar_barang": "../image/image1.png"
+      }
+    },
+    {
+      "jumlah_pemesanan": 1,
+      "barangKeluar": {
+        "id_barang": "A002",
+        "nama_barang": "Mask",
+        "total_stock": 20,
+        "jenis_barang": "habis pakai",
+        "gambar_barang": "../image/image2.png"
+      }
+    },
+  ]
+}
+
+###
+DELETE http://localhost:5000/peminjamBarang
+
