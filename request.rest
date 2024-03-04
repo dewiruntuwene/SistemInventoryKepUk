@@ -52,11 +52,11 @@ POST http://localhost:5000/barang
 Content-Type: application/json
 
 {
-	"id_barang": "A004",
+	"id_barang": "A030",
     "nama_barang": "Apron",
 	"total_stock":10,
 	"jenis_barang": "-",
-    "gambar": "../image/image1.png"
+    "gambar_barang": ""
 }
 
 ###
@@ -70,7 +70,7 @@ PATCH  http://localhost:5000/barang/A001
 Content-Type: application/json
 
 {
-	"id_barang": "A001",
+	"id_barang": "A00",
     "nama_barang": "3 Way stop cock",
 	"total_stock":10,
 	"jenis_barang": "-",
@@ -93,13 +93,14 @@ Content-Type: application/json
 
 {
     "nama_barang": "3 Way stop cock",
-    "id_barang": "A001",
+    "id_barang": "A002",
 	"total_stock": 20,
-    "jenis_barang": "habis pakai"
+    "jenis_barang": "habis pakai",
+    "tanggal_masuk": "2024-03-01"
 }
 
 ###
-DELETE  http://localhost:5000/barangMasuk/5
+DELETE  http://localhost:5000/barangMasuk/9
 
 ###
 PATCH   http://localhost:5000/barangMasuk/6
@@ -163,6 +164,9 @@ Content-Type: application/json
 
 ###
 PATCH  http://localhost:5000/history
+
+###
+GET  http://localhost:5000/history
 
 ###
 GET   http://localhost:5000/peminjamBarang

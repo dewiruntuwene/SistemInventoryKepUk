@@ -10,10 +10,16 @@ import BarangKeluarRoute from "./routes/BarangKeluarRoute.js";
 import DashboardRoute from "./routes/DashboardRoute.js";
 import HistoryRoute from "./routes/HistoryRoute.js";
 import DataPeminjamBarangRoute from "./routes/DataPeminjamBarangRoute.js";
-
+import fs from 'fs/promises'; 
+import path from "path";
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 dotenv.config();
 const app = express();
+// Mendapatkan direktori kerja saat ini
+const __filename = fileURLToPath(import.meta.url);
+app.use('/statics', express.static('uploads'));
 app.use(cors({origin:'*'}));
 app.use(express.json());
 app.use(DataPeminjamanRoute);
@@ -31,7 +37,12 @@ app.use((req, res, next) => {
     next();
   });
 
+
 export const JWT_SECRET = process.env.JWT_SECRET
 export const PORT = process.env.PORT
+
+
+
+
 
 app.listen(PORT, ()=> console.log('Server up and running'));

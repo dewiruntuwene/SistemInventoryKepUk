@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const router = express.Router();
 
-router.patch('/history',updateHistory);
+router.get('/history',updateHistory);
 
 
 export default router;

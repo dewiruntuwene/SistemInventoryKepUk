@@ -33,13 +33,13 @@ export const createBarangMasuk = async(req, res) =>{
                 id_barang,
                 nama_barang: nama_barang,
                 tanggal_masuk: tanggal_masuk,
-                total_stock: total_stock,
+                total_stock: parseInt(total_stock),
                 jenis_barang:jenis_barang
             }
         });
 
         // Tambahkan total stock barang
-        await prisma.barang.update({
+        await prisma.Barang.update({
             where: { id_barang },
             data: {
                 total_stock: {
@@ -62,7 +62,7 @@ export const updateBarangMasuk = async(req, res) =>{
             },
             data: {
                 nama_barang:nama_barang, 
-                total_stock:total_stock,
+                total_stock:parseInt(total_stock),
                 jenis_barang:jenis_barang
             }
         });

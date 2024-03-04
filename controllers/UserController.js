@@ -7,7 +7,12 @@ const prisma = new PrismaClient();
 export const getUsers = async(req,res)=>{
   try {
       const Users = await prisma.users.findMany({
-          attributes :['user_id','username','password','email']
+        select: {
+          user_id: true,
+          username: true,
+          password: true,
+          email: true
+        }
       });
       res.json(Users);
   } catch (error) {

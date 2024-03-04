@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["groupBy"]
 }
 
 datasource db {
@@ -7,22 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
-
-
-
-model Barang {
-  id_barang     String    @id 
-  nama_barang   String    @db.VarChar(50)
-  total_stock   Int       
-  jenis_barang  String    @db.VarChar(50)
-  gambar_barang String?    
-
-  
-  BarangMasuk BarangMasuk[]
-  BarangKeluar BarangKeluar[]
-}
 
 model Keranjang {
   id_keranjang     Int      @id @default(autoincrement())
@@ -32,6 +17,17 @@ model Keranjang {
   peminjam Peminjam[]
 }
 
+model Barang {
+  id_barang     String    @id 
+  nama_barang   String    @db.VarChar(50)
+  total_stock   Int       
+  jenis_barang  String    @db.VarChar(50)
+  gambar_barang String?    
+  
+  history History[]
+  BarangMasuk BarangMasuk[]
+  BarangKeluar BarangKeluar[]
+}
 model Peminjam {
   id_peminjam     Int       @id @default(autoincrement())
   nama_dosen    String      @db.VarChar(50)
@@ -41,8 +37,37 @@ model Peminjam {
   tanggal_praktek String?   @db.VarChar(20)
   tanggal_pengambilan DateTime @default(now()) 
 
+  matakuliah Matakuliah[]
   keranjangs  Keranjang[]
   history History[]
+}
+
+model Matakuliah {
+  id_matakuliah Int       @id @default(autoincrement())
+  hematologi    Int
+  kardio        Int
+  respiratory   Int
+  integumen     Int
+  muskulo       Int
+  persepsi      Int
+  kritis        Int
+  paliatif      Int
+  biomedik      Int
+  kdp           Int
+
+  peminjam Peminjam[]
+  history History[]
+}
+
+model History {
+  id_history    Int       @id @default(autoincrement())
+  id_barang     String  
+  nama_barang   String    @db.VarChar(50)
+  jumlah        Int
+  
+  barang Barang[]
+  matakuliah Matakuliah[]
+  peminjam Peminjam[]
 }
 
 // Tabel perantara untuk hubungan banyak-ke-banyak antara Barang dan DataPeminjam
@@ -67,7 +92,7 @@ model BarangMasuk {
   id_barang_masuk  Int    @id @default(autoincrement()) 
   id_barang     String
   nama_barang   String    @db.VarChar(50)
-  tanggal_masuk DateTime? @default(now()) 
+  tanggal_masuk String 
   total_stock   Int 
   jenis_barang  String    @db.VarChar(50)
   gambar_barang String?    
@@ -88,24 +113,7 @@ model BarangKeluar {
   barang Barang[]
 }
 
-model History {
-  id_history    Int       @id @default(autoincrement())
-  id_barang     String  
-  nama_barang   String    @db.VarChar(50)
-  hematologi    Int
-  kardio        Int
-  respiratory   Int
-  integumen     Int
-  muskulo       Int
-  persepsi      Int
-  kritis        Int
-  paliatif      Int
-  biomedik      Int
-  kdp           Int
-  jumlah        Int
-  
-  peminjam Peminjam[]
-}
+
 
 
 
