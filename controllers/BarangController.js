@@ -2,10 +2,11 @@ import { PrismaClient } from "@prisma/client";
 import multer from "multer";
 import path from "path";
 import fs from 'fs/promises'; 
-import { MIMEType } from "util";
+
 
 export const GAMBAR_URL = process.env.GAMBAR_URL
 const __dirname = path.resolve();
+
 const prisma = new PrismaClient();
 
 export const getBarang = async(req, res) =>{
@@ -36,11 +37,11 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/'); // Menyimpan file di folder 'uploads'
     },
-    filename: function (req, file, cb) {
-        const name = file.originalname.split('').join(__);
-        const extension = MIMEType[file.mimetype];
-        cb(null, name + Date.now() + '.' +extension); // Nama file disimpan sesuai dengan nama aslinya
-    }
+    // filename: function (req, file, cb) {
+    //     const name = file.originalname.split('')[0];
+    //     const ext = file.originalname.split('.')[1];
+    //     cb(null, name + '_' + Date.now() + '.' + ext ); // Nama file disimpan sesuai dengan nama aslinya
+    // }
 });
 
 // Filter untuk memeriksa tipe file yang diizinkan (opsional)
@@ -53,31 +54,21 @@ const storage = multer.diskStorage({
 // };
 
 // Inisialisasi multer dengan konfigurasi yang telah ditentukan
-const upload = multer({ storage: storage});
-
 // Fungsi untuk menangani permintaan pembuatan barang dengan kemampuan unggah gambar
 export const createBarang = async (req, res) => {
+    const { id_barang, nama_barang, total_stock, jenis_barang, harga_barang } = req.body;
+    const gambar_barang = GAMBAR_URL; // Path file gambar yang diunggah
     try {
-        upload.single('gambar_barang')(req, res, async function (err) {
-            if (err instanceof multer.MulterError) {
-                // A error occurred when uploading
-                return res.status(500).json({ error: err.message });
-            } else if (err) {
-                // An error occurred with unknown cause
-                return res.status(500).json({ error: err.message });
-            }
-
-            // Multer has successfully uploaded the file
-            const { id_barang, nama_barang, total_stock, jenis_barang } = req.body;
-            const gambar_barang = GAMBAR_URL; // Path file gambar yang diunggah
             // Tambahkan data barang ke database
+            console.log(req.body)
             const barang = await prisma.Barang.create({
                 data: {
                     id_barang: id_barang,
                     nama_barang: nama_barang,
                     total_stock: parseInt(total_stock),
                     jenis_barang: jenis_barang,
-                    gambar_barang: req.file.filename
+                    harga_barang: parseInt(harga_barang),
+                    gambar_barang: req?.file?.filename
                 }
             });
 
@@ -86,20 +77,16 @@ export const createBarang = async (req, res) => {
                 nama_barang: barang.nama_barang,
                 total_stock: barang.total_stock,
                 jenis_barang: barang.jenis_barang,
+                harga_barang: barang.harga_barang,
                 // Menggunakan path absolut menjadi relatif agar dapat digunakan di frontend
                 gambar_barang: barang.gambar_barang.replace('uploads/', '') // Menghapus bagian 'public/' dari path
             };
-
-            
-
             res.status(201).json({ msg: "Data Created", responseData });
-        });
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
-
 
 
 export const updateBarang = async(req, res) =>{
@@ -124,13 +111,13 @@ export const updateBarang = async(req, res) =>{
 
 export const deleteBarang = async(req, res) =>{
     try {
-        const idBarang = parseInt(req.params.id_peminjam);
+        const idBarang = req.params.id_barang;
     
         // Hapus data peminjam berdasarkan id_peminjam
-        await prisma.dataPeminjam.delete({
-        where: {
-            id_barang: idBarang
-        }
+        await prisma.Barang.delete({
+            where: {
+                id_barang: idBarang
+            }
         });
         res.status(200).json({msg: "Data Deleted"});
     } catch (error) {
