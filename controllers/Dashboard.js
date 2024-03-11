@@ -10,7 +10,7 @@ export const dashboardNotif = async(req, res) => {
     const lowStockItems = await prisma.barang.findMany({
       where: {
         total_stock: {
-          lt: 10 // Ambang batas stok rendah
+          lt: 30 // Ambang batas stok rendah
         }
       },
       select: {
