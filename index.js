@@ -19,7 +19,7 @@ dotenv.config();
 const app = express();
 // Mendapatkan direktori kerja saat ini
 const __filename = fileURLToPath(import.meta.url);
-app.use('/statics', express.static('uploads'));
+app.use('/uploads', express.static('uploads'));
 app.use(cors({origin:'*'}));
 app.use(express.json());
 app.use(DataPeminjamanRoute);
@@ -30,6 +30,10 @@ app.use(BarangKeluarRoute);
 app.use(DashboardRoute);
 app.use(HistoryRoute);
 app.use(DataPeminjamBarangRoute);
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+  next();
+});
 
 
 app.use((req, res, next) => {
@@ -40,8 +44,6 @@ app.use((req, res, next) => {
 
 export const JWT_SECRET = process.env.JWT_SECRET
 export const PORT = process.env.PORT
-
-
 
 
 
