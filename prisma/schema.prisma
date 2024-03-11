@@ -11,17 +11,31 @@ datasource db {
 
 model Keranjang {
   id_keranjang     Int      @id @default(autoincrement())
-  jumlah_pemesanan Int
 
   barangKeluar     BarangKeluar[]
-  peminjam Peminjam[]
+  peminjam         Peminjam[]
 }
+
+model BarangKeluar {
+  id_barang_keluar  Int @id @default(autoincrement())
+  id_barang     String
+  nama_barang   String     @db.VarChar(50)
+  tanggal_keluar DateTime? @default(now()) 
+  total_stock   Int
+  jenis_barang  String    @db.VarChar(50) 
+  gambar_barang String?  
+
+  keranjangs  Keranjang[]
+  barang Barang[]
+}
+
 
 model Barang {
   id_barang     String    @id 
   nama_barang   String    @db.VarChar(50)
   total_stock   Int       
   jenis_barang  String    @db.VarChar(50)
+  harga_barang  Int
   gambar_barang String?    
   
   history History[]
@@ -96,22 +110,11 @@ model BarangMasuk {
   total_stock   Int 
   jenis_barang  String    @db.VarChar(50)
   gambar_barang String?    
+  harga_barang  Int
 
-  Barang Barang @relation(fields: [id_barang], references: [id_barang])
-}
-
-model BarangKeluar {
-  id_barang_keluar  Int @id @default(autoincrement())
-  id_barang     String
-  nama_barang   String     @db.VarChar(50)
-  tanggal_keluar DateTime? @default(now()) 
-  total_stock   Int
-  jenis_barang  String    @db.VarChar(50) 
-  gambar_barang String?  
-
-  keranjangs  Keranjang[]
   barang Barang[]
 }
+
 
 
 
