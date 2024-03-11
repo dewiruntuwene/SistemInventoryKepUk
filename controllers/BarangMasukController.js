@@ -25,16 +25,18 @@ export const getBarangMasukById = async(req, res) =>{
 }
 
 export const createBarangMasuk = async(req, res) =>{
-    const {id_barangMasuk, id_barang, nama_barang, tanggal_masuk, total_stock, jenis_barang} = req.body;
+    const {id_barang_masuk, id_barang, nama_barang, tanggal_masuk, total_stock, jenis_barang, gambar_barang} = req.body;
     try {
-        const newBarangMasuk = await prisma.barangMasuk.create({
+        const newBarangMasuk = await prisma.BarangMasuk.create({
             data: {
-                id_barangMasuk: id_barangMasuk,
+                id_barang_masuk,
                 id_barang,
                 nama_barang: nama_barang,
                 tanggal_masuk: tanggal_masuk,
                 total_stock: parseInt(total_stock),
-                jenis_barang:jenis_barang
+                jenis_barang:jenis_barang,
+                gambar_barang: gambar_barang,
+                harga_barang: parseInt(harga_barang)
             }
         });
 
@@ -43,7 +45,7 @@ export const createBarangMasuk = async(req, res) =>{
             where: { id_barang },
             data: {
                 total_stock: {
-                    increment: total_stock // Tambahkan stok barang sesuai jumlah masuk
+                    increment: parseInt(total_stock) // Tambahkan stok barang sesuai jumlah masuk
                 },
             },
         });
