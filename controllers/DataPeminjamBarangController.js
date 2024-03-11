@@ -48,6 +48,50 @@ export const createDataPeminjamBarang = async(req, res) =>{
 
 
 
+export const createKeranjang = async(req, res) =>{
+    const {jumlah_pemesanan, barangKeluar} = req.body;
+    try {
+        const newKeranjang = await prisma.Keranjang.create({
+            data: {
+                    barangKeluar: {
+                        create:{
+                            id_barang: barangKeluar.id_barang,
+                            nama_barang: barangKeluar.nama_barang,
+                            total_stock: barangKeluar.total_stock,
+                            jenis_barang: barangKeluar.jenis_barang,
+                            gambar_barang: barangKeluar.gambar_barang
+                        }
+                            
+                    },
+                    
+            },
+
+            include: {
+                barangKeluar: true
+            }
+        });
+       
+        res.status(201).json({msg: "Data Created", data: newKeranjang});
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+export const getKeranjang = async(req, res) =>{
+    try {
+        const allKeranjang = await prisma.Keranjang.findMany({
+            include: {
+                barangKeluar: true
+            }
+        });
+        res.json(allKeranjang);
+      } catch (error) {
+        console.error('Error fetching keranjang:', error);
+        res.status(500).json({ error: 'Error fetching keranjang' });
+      }
+}
+
+
 export const getDataPeminjamBarang = async(req, res) =>{
     try {
         const allPeminjam = await prisma.Peminjam.findMany({
