@@ -92,6 +92,23 @@ export const getKeranjang = async(req, res) =>{
 }
 
 
+export const deleteKeranjang = async(req, res) =>{
+    try {
+        const idKeranjang = req.params.id_keranjang;
+    
+        // Hapus data peminjam berdasarkan id_peminjam
+        await prisma.Keranjang.delete({
+            where: {
+                id_keranjang: parseInt(idKeranjang)
+            }
+        });
+        res.status(200).json({msg: "Data Deleted"});
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
 export const getDataPeminjamBarang = async(req, res) =>{
     try {
         const allPeminjam = await prisma.Peminjam.findMany({
