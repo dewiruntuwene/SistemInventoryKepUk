@@ -55,6 +55,60 @@ export const createBarangMasuk = async(req, res) =>{
     }
 }
 
+export const buatBarangMasuk = async(req, res) =>{
+    const { id_barang, nama_barang, total_stock, jenis_barang, gambar_barang, harga_barang, BarangMasuk } = req.body;
+
+    try {
+         // Validate the presence of id_barang
+        
+        // Create a new entry in the TransaksiBarang table and include the related Barang data
+        const newTransaction = await prisma.$transaction([
+            prisma.transaksiBarang.create({
+                data: {
+                    type: "BarangMasuk",
+                    barang: {
+                        connect: {
+                          id_barang:id_barang,
+                          
+                        },
+                      },
+                  },
+                  include: {
+                    barang: true, // Include the related Barang model
+                  },
+            })
+        ]);
+        // Tambahkan total stock barang
+        await prisma.Barang.update({
+            where: { id_barang },
+            data: {
+                total_stock: {
+                    increment: parseInt(total_stock) // Tambahkan stok barang sesuai jumlah masuk
+                },
+            },
+        });
+
+        res.status(201).json(newTransaction);
+    } catch (error) {
+        console.error('Error creating transaction:', error);
+        res.status(500).json({ error: 'Error creating transaction' });
+    }
+}
+
+export const ambilBarangMasuk = async(req, res) =>{
+
+    const response = await prisma.transaksiBarang.findMany({
+        where: {
+            type: "BarangMasuk",
+        },
+        include: {
+            barang: true,
+        },
+    });
+    res.status(200).json(response);
+
+}
+
 export const updateBarangMasuk = async(req, res) =>{
     const {nama_barang, total_stock, jenis_barang} = req.body;
     try {
