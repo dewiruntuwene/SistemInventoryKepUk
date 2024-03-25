@@ -113,12 +113,15 @@ export const deleteBarang = async(req, res) =>{
     try {
         const idBarang = req.params.id_barang;
     
-        // Hapus data peminjam berdasarkan id_peminjam
         await prisma.Barang.delete({
             where: {
                 id_barang: idBarang
             }
         });
+        if (!deletedBarang) {
+            return res.status(404).json({error: "Barang not found"});
+        }
+        
         res.status(200).json({msg: "Data Deleted"});
     } catch (error) {
         console.log(error.message);
