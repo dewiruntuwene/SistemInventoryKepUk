@@ -54,6 +54,62 @@ export const createBarangKeluar = async(req, res) =>{
     }
 }
 
+export const buatBarangKeluar = async(req, res) =>{
+    const { barangId,id_barang, nama_barang, total_stock, jenis_barang, gambar_barang, harga_barang, barang } = req.body;
+
+    try {
+         // Validate the presence of id_barang
+        
+        // Create a new entry in the TransaksiBarang table and include the related Barang data
+        const newTransaction = await prisma.$transaction([
+            prisma.transaksiBarang.create({
+                data: {
+                    type: "BarangKeluar",
+                    barang: {
+                        connect: {
+                          id_barang: id_barang,
+                          
+                        },
+                    },
+                },
+                include: {
+                    barang: true, // Include the related Barang model
+                },
+            })
+        ]);
+        await prisma.barang.update({
+            where: { id_barang: id_barang },
+            data: {
+                total_stock: {
+                    decrement: total_stock // Kurangi stok barang sesuai jumlah keluar
+                }
+            }
+        });
+
+        
+        res.status(201).json(newTransaction);
+    } catch (error) {
+        console.error('Error creating transaction:', error);
+        res.status(500).json({ error: 'Error creating transaction' });
+    }
+}
+
+export const ambilBarangKeluar = async(req, res) =>{
+
+        const response = await prisma.transaksiBarang.findMany({
+            where: {
+                type: "BarangKeluar",
+            },
+            include: {
+                barang: true,
+            },
+        });
+        res.status(200).json(response);
+    
+}
+
+
+
 export const updateBarangKeluar = async(req, res) =>{
     const {nama_barang, total_stock, jenis_barang} = req.body;
     try {
@@ -77,7 +133,6 @@ export const updateBarangKeluar = async(req, res) =>{
 export const deleteBarangKeluar = async(req, res) =>{
     try {
         const idBarangKeluar = parseInt(req.params.id_barang_keluar);
-        // Hapus data peminjam berdasarkan id_peminjam
         await prisma.barangKeluar.delete({
         where: {
             id_barang_keluar: idBarangKeluar
