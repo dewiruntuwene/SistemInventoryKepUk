@@ -11,24 +11,12 @@ datasource db {
 
 model Keranjang {
   id_keranjang     Int      @id @default(autoincrement())
-
-  barangKeluar     BarangKeluar[]
+  transaksiBarang  TransaksiBarang @relation(fields: [transaksiBarangId], references: [id_transaksi_barang])
+  transaksiBarangId Int
+  
+  // barangKeluar BarangKeluar[]
   peminjam         Peminjam[]
 }
-
-model BarangKeluar {
-  id_barang_keluar  Int @id @default(autoincrement())
-  id_barang     String
-  nama_barang   String     @db.VarChar(50)
-  tanggal_keluar DateTime? @default(now()) 
-  total_stock   Int
-  jenis_barang  String    @db.VarChar(50) 
-  gambar_barang String?  
-
-  keranjangs  Keranjang[]
-  barang Barang[]
-}
-
 
 model Barang {
   id_barang     String    @id 
@@ -39,9 +27,38 @@ model Barang {
   gambar_barang String?    
   
   history History[]
-  BarangMasuk BarangMasuk[]
-  BarangKeluar BarangKeluar[]
+  // BarangMasuk BarangMasuk[]
+  // barangKeluar BarangKeluar[]
+  transaksiBarang  TransaksiBarang[]
 }
+
+model TransaksiBarang {
+  id_transaksi_barang  Int @id @default(autoincrement())
+  barang              Barang @relation(fields: [barangId], references: [id_barang])
+  barangId            String 
+  keranjang           Keranjang[]
+  type                Type
+}
+
+enum Type {
+  BarangKeluar
+  BarangMasuk
+}
+
+// model BarangKeluar {
+//   id_barang_keluar  Int @id @default(autoincrement())
+//   id_barang     String
+//   nama_barang   String     @db.VarChar(50)
+//   tanggal_keluar DateTime? @default(now()) 
+//   total_stock   Int
+//   jenis_barang  String    @db.VarChar(50) 
+//   gambar_barang String?  
+
+//   keranjang Keranjang[]
+//   peminjam Peminjam[]
+//   barang Barang[]
+// }
+
 model Peminjam {
   id_peminjam     Int       @id @default(autoincrement())
   nama_dosen    String      @db.VarChar(50)
@@ -51,6 +68,7 @@ model Peminjam {
   tanggal_praktek String?   @db.VarChar(20)
   tanggal_pengambilan DateTime @default(now()) 
 
+  // barangKeluar BarangKeluar[]
   matakuliah Matakuliah[]
   keranjangs  Keranjang[]
   history History[]
@@ -102,18 +120,18 @@ enum Role {
 }
 
 
-model BarangMasuk {
-  id_barang_masuk  Int    @id @default(autoincrement()) 
-  id_barang     String
-  nama_barang   String    @db.VarChar(50)
-  tanggal_masuk String 
-  total_stock   Int 
-  jenis_barang  String    @db.VarChar(50)
-  gambar_barang String?    
-  harga_barang  Int
+// model BarangMasuk {
+//   id_barang_masuk  Int    @id @default(autoincrement()) 
+//   id_barang     String
+//   nama_barang   String    @db.VarChar(50)
+//   tanggal_masuk String 
+//   total_stock   Int 
+//   jenis_barang  String    @db.VarChar(50)
+//   gambar_barang String?    
+//   harga_barang  Int
 
-  barang Barang[]
-}
+//   barang Barang[]
+// }
 
 
 
