@@ -4,6 +4,7 @@ import { promises } from "fs";
 const prisma = new PrismaClient();
 
 
+
 export const createDataPeminjamBarang = async(req, res) =>{
 
     const { nama_dosen, nama_matakuliah, prasat, jam_praktek, tanggal_praktek, keranjangs } = req.body;
@@ -16,27 +17,32 @@ export const createDataPeminjamBarang = async(req, res) =>{
             jam_praktek,
             tanggal_praktek,
             keranjangs: {
-            create: keranjangs.map(keranjang => ({
-                barangKeluar: {
-                    create:{
-                        id_barang: keranjang.barangKeluar.id_barang,
-                        nama_barang: keranjang.barangKeluar.nama_barang,
-                        total_stock: keranjang.barangKeluar.total_stock,
-                        jenis_barang: keranjang.barangKeluar.jenis_barang,
-                        gambar_barang: keranjang.barangKeluar.gambar_barang
-                    }
+                create: keranjangs.map(keranjang => ({
+                    transaksiBarang: {
+                        create: {
+                            type: "BarangKeluar",
+                            barang: {
+                                connect: {
+                                    id_barang: keranjang.transaksiBarang.barang.id_barang,
+                                   
+                                },
+                            },
+                        },
+                    },
                     
-                },
                 }))
             
             }
         },
         include: {
             keranjangs: {
-            include: {
-                barangKeluar: true,
-                keranjangId : true
-            }
+                include: {
+                    transaksiBarang: {
+                        include: {
+                            barang: true
+                        }
+                    }
+                }
             }
         }
         });
@@ -46,6 +52,49 @@ export const createDataPeminjamBarang = async(req, res) =>{
         res.status(500).json({ error: 'Error creating peminjam' });
     }
 }
+
+// export const createDataPeminjamBarang = async(req, res) =>{
+
+//     const { nama_dosen, nama_matakuliah, prasat, jam_praktek, tanggal_praktek, keranjangs } = req.body;
+//     try {
+//         const newPeminjam = await prisma.Peminjam.create({
+//         data: {
+//             nama_dosen,
+//             nama_matakuliah,
+//             prasat,
+//             jam_praktek,
+//             tanggal_praktek,
+//             keranjangs: {
+//             create: keranjangs.map(keranjang => ({
+//                 barangKeluar: {
+//                     create:{
+//                         id_barang: keranjang.barangKeluar.id_barang,
+//                         nama_barang: keranjang.barangKeluar.nama_barang,
+//                         total_stock: keranjang.barangKeluar.total_stock,
+//                         jenis_barang: keranjang.barangKeluar.jenis_barang,
+//                         gambar_barang: keranjang.barangKeluar.gambar_barang
+//                     }
+                    
+//                 },
+//                 }))
+            
+//             }
+//         },
+//         include: {
+//             keranjangs: {
+//             include: {
+//                 barangKeluar: true,
+//                 keranjangId : true
+//             }
+//             }
+//         }
+//         });
+//         res.json(newPeminjam);
+//     } catch (error) {
+//         console.error('Error creating peminjam:', error);
+//         res.status(500).json({ error: 'Error creating peminjam' });
+//     }
+// }
 
 export const createKeranjang = async(req, res) =>{
     const {barang, transaksiBarang} = req.body;
@@ -163,12 +212,22 @@ export const deleteKeranjang = async(req, res) =>{
 
 
 export const getDataPeminjamBarang = async(req, res) =>{
+    const transaksiBarangKeluar = await prisma.transaksiBarang.findMany({
+        where: {
+            type: "BarangKeluar"
+        }
+    });
+    
     try {
         const allPeminjam = await prisma.Peminjam.findMany({
           include: {
             keranjangs: {
               include: {
-                barangKeluar: true
+                transaksiBarang: {
+                    include: {
+                        barang: true
+                    }
+                }
               }
             }
           }
