@@ -1,108 +1,11 @@
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["groupBy"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-
-model Keranjang {
-  id_keranjang     Int      @id @default(autoincrement())
-  transaksiBarang  TransaksiBarang @relation(fields: [transaksiBarangId], references: [id_transaksi_barang])
-  transaksiBarangId Int
-  
-  // barangKeluar BarangKeluar[]
-  peminjam         Peminjam[]
-}
-
-model Barang {
-  id_barang     String    @id 
-  nama_barang   String    @db.VarChar(50)
-  total_stock   Int       
-  jenis_barang  String    @db.VarChar(50)
-  harga_barang  Int
-  gambar_barang String?    
-  
-  history History[]
-  // BarangMasuk BarangMasuk[]
-  // barangKeluar BarangKeluar[]
-  transaksiBarang  TransaksiBarang[]
-}
-
-model TransaksiBarang {
-  id_transaksi_barang  Int @id @default(autoincrement())
-  barang              Barang @relation(fields: [barangId], references: [id_barang])
-  barangId            String 
-  keranjang           Keranjang[]
-  type                Type
-}
-
-enum Type {
-  BarangKeluar
-  BarangMasuk
-}
-
-// model BarangKeluar {
-//   id_barang_keluar  Int @id @default(autoincrement())
-//   id_barang     String
-//   nama_barang   String     @db.VarChar(50)
-//   tanggal_keluar DateTime? @default(now()) 
-//   total_stock   Int
-//   jenis_barang  String    @db.VarChar(50) 
-//   gambar_barang String?  
-
-//   keranjang Keranjang[]
-//   peminjam Peminjam[]
-//   barang Barang[]
-// }
-
-model Peminjam {
-  id_peminjam     Int       @id @default(autoincrement())
-  nama_dosen    String      @db.VarChar(50)
-  nama_matakuliah String    @db.VarChar(50)
-  prasat          String    @db.VarChar(50)
-  jam_praktek     String    @db.VarChar(10)
-  tanggal_praktek String?   @db.VarChar(20)
-  tanggal_pengambilan DateTime @default(now()) 
-
-  // barangKeluar BarangKeluar[]
-  matakuliah Matakuliah[]
-  keranjangs  Keranjang[]
-  history History[]
-}
-
-model Matakuliah {
-  id_matakuliah Int       @id @default(autoincrement())
-  hematologi    Int
-  kardio        Int
-  respiratory   Int
-  integumen     Int
-  muskulo       Int
-  persepsi      Int
-  kritis        Int
-  paliatif      Int
-  biomedik      Int
-  kdp           Int
-
-  peminjam Peminjam[]
-  history History[]
-}
-
-model History {
-  id_history    Int       @id @default(autoincrement())
-  id_barang     String  
-  nama_barang   String    @db.VarChar(50)
-  jumlah        Int
-  
-  barang Barang[]
-  matakuliah Matakuliah[]
-  peminjam Peminjam[]
-}
-
-// Tabel perantara untuk hubungan banyak-ke-banyak antara Barang dan DataPeminjam
 
 model users {
   user_id    Int       @id @default(autoincrement())
@@ -114,27 +17,100 @@ model users {
   last_login DateTime? @default(now())
 }
 
+model Matakuliah {
+  id_matakuliah Int        @id @default(autoincrement())
+  hematologi    Int
+  kardio        Int
+  respiratory   Int
+  integumen     Int
+  muskulo       Int
+  persepsi      Int
+  kritis        Int
+  paliatif      Int
+  biomedik      Int
+  kdp           Int
+  history       History[]  @relation("HistoryToMatakuliah")
+  peminjam      Peminjam[] @relation("MatakuliahToPeminjam")
+}
+
+model History {
+  id_history      Int               @id @default(autoincrement())
+  id_barang       String
+  nama_barang     String            @db.VarChar(50)
+  jumlah          Int
+  BarangToHistory BarangToHistory[]
+  matakuliah      Matakuliah[]      @relation("HistoryToMatakuliah")
+  peminjam        Peminjam[]        @relation("HistoryToPeminjam")
+}
+
+model BarangToHistory {
+  A       String
+  B       Int
+  barangs Barang @relation(fields: [A], references: [id_barang], onDelete: Cascade)
+  History History @relation(fields: [B], references: [id_history], onDelete: Cascade)
+
+  @@unique([A, B], map: "_BarangToHistory_AB_unique")
+  @@index([B], map: "_BarangToHistory_B_index")
+  @@map("_BarangToHistory")
+}
+
+model Barang {
+  id_barang       String            @id
+  nama_barang     String            @db.VarChar(50)
+  total_stock     Int
+  jenis_barang    String            @db.VarChar(50)
+  harga_barang    Int
+  gambar_barang   String?
+  BarangToHistory BarangToHistory[]
+  keranjangs      Keranjang[]
+  transaksiBarang TransaksiBarang[]
+
+  @@map("barangs")
+}
+
+model Keranjang {
+  id_keranjang Int        @id @default(autoincrement())
+  barangId     String
+  barangs      Barang    @relation(fields: [barangId], references: [id_barang])
+  peminjam     Peminjam[]
+
+  @@map("keranjangs")
+}
+
+model Peminjam {
+  id_peminjam         Int               @id @default(autoincrement())
+  nama_dosen          String            @db.VarChar(50)
+  nama_matakuliah     String            @db.VarChar(50)
+  prasat              String            @db.VarChar(50)
+  jam_praktek         String            @db.VarChar(10)
+  tanggal_praktek     String?           @db.VarChar(20)
+  tanggal_pengambilan DateTime          @default(now())
+  keranjangId         Int
+  keranjangs          Keranjang        @relation(fields: [keranjangId], references: [id_keranjang], onDelete: Cascade)
+  transaksiBarang     TransaksiBarang[]
+  history             History[]         @relation("HistoryToPeminjam")
+  matakuliah          Matakuliah[]      @relation("MatakuliahToPeminjam")
+
+  @@map("peminjam")
+}
+
+model TransaksiBarang {
+  id_transaksi_barang Int      @id @default(autoincrement())
+  barangId            String
+  type                Type
+  peminjamId          Int?
+  barangs             Barang  @relation(fields: [barangId], references: [id_barang])
+  peminjam            Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
+
+  @@map("transaksiBarang")
+}
+
+enum Type {
+  BarangKeluar
+  BarangMasuk
+}
+
 enum Role {
   ADMIN
   USER
 }
-
-
-// model BarangMasuk {
-//   id_barang_masuk  Int    @id @default(autoincrement()) 
-//   id_barang     String
-//   nama_barang   String    @db.VarChar(50)
-//   tanggal_masuk String 
-//   total_stock   Int 
-//   jenis_barang  String    @db.VarChar(50)
-//   gambar_barang String?    
-//   harga_barang  Int
-
-//   barang Barang[]
-// }
-
-
-
-
-
-
