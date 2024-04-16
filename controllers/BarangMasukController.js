@@ -66,7 +66,7 @@ export const buatBarangMasuk = async(req, res) =>{
             prisma.transaksiBarang.create({
                 data: {
                     type: "BarangMasuk",
-                    barang: {
+                    barangs: {
                         connect: {
                           id_barang:id_barang,
                           
@@ -74,8 +74,8 @@ export const buatBarangMasuk = async(req, res) =>{
                       },
                   },
                   include: {
-                    barang: true, // Include the related Barang model
-                  },
+                    barangs: true
+                  }
             })
         ]);
         // Tambahkan total stock barang
@@ -102,7 +102,7 @@ export const ambilBarangMasuk = async(req, res) =>{
             type: "BarangMasuk",
         },
         include: {
-            barang: true,
+            barangs: true,
         },
     });
     res.status(200).json(response);
