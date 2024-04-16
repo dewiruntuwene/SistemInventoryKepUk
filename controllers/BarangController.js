@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 
 export const getBarang = async(req, res) =>{
     try{
-        const response = await prisma.barang.findMany();
+        const response = await prisma.Barang.findMany();
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error.message);
@@ -20,7 +20,7 @@ export const getBarang = async(req, res) =>{
 
 export const getBarangById = async(req, res) =>{
     try {
-        const response = await prisma.barang.findUnique({
+        const response = await prisma.Barang.findUnique({
             where:{
                 id_barang: req.params.id_barang
             }
