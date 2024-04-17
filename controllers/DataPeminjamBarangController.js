@@ -78,11 +78,14 @@ export const createDataPeminjamBarang = async (req, res) => {
         })
         
         // Setelah itu hapus semua barang yang ada di keranjang
-        await tx.Keranjang.delete({
+        await tx.Keranjang.update({
           where: {
-            id_keranjang: +req.params.id_keranjang
-          }
-        })
+            id_keranjang: keranjang.id_keranjang
+          },
+          data: {
+            isCheckedOut: 'Y' // Perbarui nilai isCheckedOut menjadi 'Y'
+          },
+        });
 
         return res.json({peminjam});
       })
@@ -96,127 +99,16 @@ export const createDataPeminjamBarang = async (req, res) => {
 }
 
 
-
-// export const createDataPeminjamBarang = async(req, res) =>{
-
-//     const { nama_dosen, nama_matakuliah, prasat, jam_praktek, tanggal_praktek, keranjangs } = req.body;
-//     try {
-//         const newPeminjam = await prisma.$transaction([
-//             prisma.Peminjam.create({
-//                 data: {
-//                     nama_dosen,
-//                     nama_matakuliah,
-//                     prasat,
-//                     jam_praktek,
-//                     tanggal_praktek,
-//                     keranjangs: {
-//                         create: keranjangs.map(keranjang => ({
-//                             barang: {
-//                                 connect: {
-//                                     id_barang: keranjang.barang.id_barang,
-//                                 }
-//                             }
-//                         }))
-//                     },
-//                 },
-//                 include: {
-//                     keranjangs: {
-//                         include: {
-//                             barang: true
-//                         }
-//                     }
-//                 },
-//             })
-//         ]);
-
-//         res.json(newPeminjam);
-//     } catch (error) {
-//         console.error('Error creating peminjam:', error);
-//         res.status(500).json({ error: 'Error creating peminjam' });
-//     }
-// }
-
-// export const createDataPeminjamBarang = async(req, res) =>{
-
-//     const { nama_dosen, nama_matakuliah, prasat, jam_praktek, tanggal_praktek, keranjangs } = req.body;
-//     try {
-//         const newPeminjam = await prisma.Peminjam.create({
-//         data: {
-//             nama_dosen,
-//             nama_matakuliah,
-//             prasat,
-//             jam_praktek,
-//             tanggal_praktek,
-//             keranjangs: {
-//             create: keranjangs.map(keranjang => ({
-//                 barangKeluar: {
-//                     create:{
-//                         id_barang: keranjang.barangKeluar.id_barang,
-//                         nama_barang: keranjang.barangKeluar.nama_barang,
-//                         total_stock: keranjang.barangKeluar.total_stock,
-//                         jenis_barang: keranjang.barangKeluar.jenis_barang,
-//                         gambar_barang: keranjang.barangKeluar.gambar_barang
-//                     }
-                    
-//                 },
-//                 }))
-            
-//             }
-//         },
-//         include: {
-//             keranjangs: {
-//             include: {
-//                 barangKeluar: true,
-//                 keranjangId : true
-//             }
-//             }
-//         }
-//         });
-//         res.json(newPeminjam);
-//     } catch (error) {
-//         console.error('Error creating peminjam:', error);
-//         res.status(500).json({ error: 'Error creating peminjam' });
-//     }
-// }
-
- 
-
-
-// export const createKeranjang = async(req, res) =>{
-//     const {barangKeluar} = req.body;
-//     try {
-//         const newKeranjang = await prisma.Keranjang.create({
-//             data: {
-//                 barangKeluar: {
-//                         create:{
-//                             id_barang: barangKeluar.id_barang,
-//                             nama_barang: barangKeluar.nama_barang,
-//                             total_stock: barangKeluar.total_stock,
-//                             jenis_barang: barangKeluar.jenis_barang,
-//                             gambar_barang: barangKeluar.gambar_barang
-//                         }
-                            
-//                     },
-                    
-//             },
-//             include: {
-//                 barangKeluar: true
-//             }
-//         });
-       
-//         res.status(201).json({msg: "Data Created", data: newKeranjang});
-//     } catch (error) {
-//         console.log(error.message);
-//     }
-// }
-
 export const getKeranjang = async(req, res) =>{
     const { id_keranjang } = req.params;
     try {
         const allKeranjang = await prisma.Keranjang.findMany({
-            include: {
-                barangs: true // Mengambil data barang dalam setiap keranjang
-            }
+          where: {
+              isCheckedOut: 'N'
+          },
+          include: {
+              barangs: true // Mengambil data barang dalam setiap keranjang
+          }
         });
         res.json(allKeranjang);
       } catch (error) {
@@ -224,20 +116,6 @@ export const getKeranjang = async(req, res) =>{
         res.status(500).json({ error: 'Error fetching keranjang' });
       }
 }
-
-// export const getKeranjang = async(req, res) =>{
-//     try {
-//         const allKeranjang = await prisma.Keranjang.findMany({
-//             include: {
-//                 barangKeluar: true
-//             }
-//         });
-//         res.json(allKeranjang);
-//       } catch (error) {
-//         console.error('Error fetching keranjang:', error);
-//         res.status(500).json({ error: 'Error fetching keranjang' });
-//       }
-// }
 
 
 export const deleteKeranjang = async(req, res) =>{
