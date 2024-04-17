@@ -2,59 +2,23 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const getBarangKeluar = async(req, res) =>{
-    try{
-        const response = await prisma.barangKeluar.findMany();
-        res.status(200).json(response);
-    } catch (error) {
-        res.status(500).json(error.message);
-    }
-}
 
 export const getBarangKeluarById = async(req, res) =>{
     try {
-        const response = await prisma.barangKeluar.findUnique({
-            where:{
-                id_barang: req.params.id_barang
-            }
+        const idTransaksiBarang = parseInt(req.params.id_transaksi_barang);
+        const response = await prisma.transaksiBarang.findUnique({
+        where: {
+            id_transaksi_barang: idTransaksiBarang,
+            type: "BarangKeluar"
+        }
         });
-        res.status(200).json(response)
+        res.json(response)
     } catch (error) {
         console.log(error.message);
     }
 }
 
 export const createBarangKeluar = async(req, res) =>{
-    const {id_barang_keluar, id_barang, nama_barang, total_stock, jenis_barang, tanggal_keluar, gambar_barang} = req.body;
-    try {
-        const newBarangKeluar = await prisma.BarangKeluar.create({
-            data: {
-                id_barang_keluar: id_barang_keluar,
-                id_barang,
-                nama_barang: nama_barang,
-                tanggal_keluar: tanggal_keluar,
-                total_stock: total_stock,
-                jenis_barang:jenis_barang,
-                gambar_barang: gambar_barang
-            }
-        });
-
-        // Tambahkan total stock barang
-        await prisma.barang.update({
-            where: { id_barang: id_barang },
-            data: {
-                total_stock: {
-                    decrement: total_stock // Kurangi stok barang sesuai jumlah keluar
-                }
-            }
-        });
-        res.status(201).json({msg: "Data Created", data: newBarangKeluar});
-    } catch (error) {
-        console.log(error.message);
-    }
-}
-
-export const buatBarangKeluar = async(req, res) =>{
     const { barangId, id_barang, nama_barang, total_stock, jenis_barang, gambar_barang, harga_barang, barang } = req.body;
 
     try {
@@ -92,7 +56,7 @@ export const buatBarangKeluar = async(req, res) =>{
     }
 }
 
-export const ambilBarangKeluar = async(req, res) =>{
+export const getBarangKeluar = async(req, res) =>{
 
         const response = await prisma.transaksiBarang.findMany({
             where: {
@@ -111,14 +75,21 @@ export const ambilBarangKeluar = async(req, res) =>{
 export const updateBarangKeluar = async(req, res) =>{
     const {nama_barang, total_stock, jenis_barang} = req.body;
     try {
-        await prisma.barangKeluar.update(req.body,{
+        const idTransaksiBarang = parseInt(req.params.id_transaksi_barang);
+        await prisma.transaksiBarang.update(req.body,{
             where:{
-                id_barang: req.params.id_barang
+                id_transaksi_barang: idTransaksiBarang,
+                type: "BarangKeluar"
             },
             data: {
-                nama_barang:nama_barang, 
-                total_stock:total_stock,
-                jenis_barang:jenis_barang
+                barangs: {
+                    id_barang,
+                    nama_barang,
+                    total_stock,
+                    jenis_barang,
+                    harga_barang,
+                    gambar_barang
+                }
             }
         });
 
@@ -130,10 +101,11 @@ export const updateBarangKeluar = async(req, res) =>{
 
 export const deleteBarangKeluar = async(req, res) =>{
     try {
-        const idBarangKeluar = parseInt(req.params.id_barang_keluar);
-        await prisma.barangKeluar.delete({
+        const idTransaksiBarang = parseInt(req.params.id_transaksi_barang);
+        await prisma.transaksiBarang.delete({
         where: {
-            id_barang_keluar: idBarangKeluar
+            id_transaksi_barang: idTransaksiBarang,
+            type: "BarangKeluar"
         }
         });
         res.status(200).json({msg: "Data Deleted"});
