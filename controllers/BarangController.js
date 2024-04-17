@@ -90,17 +90,20 @@ export const createBarang = async (req, res) => {
 
 
 export const updateBarang = async(req, res) =>{
-    const {nama_barang, total_stock, jenis_barang} = req.body;
+    const {nama_barang, total_stock, jenis_barang, harga_barang, gambar_barang} = req.body;
     try {
         await prisma.Barang.update(req.body,{
-            data: {
-                nama_barang:nama_barang, 
-                total_stock:total_stock,
-                jenis_barang:jenis_barang
-            },
             where:{
                 id_barang: req.params.id_barang
+            },
+            data: {
+                nama_barang: { set: nama_barang }, // Gunakan 'set' untuk menetapkan nilai
+                total_stock: { set: total_stock },
+                jenis_barang: { set: jenis_barang },
+                harga_barang: { set: harga_barang },
+                gambar_barang: { set: gambar_barang }
             }
+            
         });
 
         res.status(200).json({msg: "Data Updated"});
