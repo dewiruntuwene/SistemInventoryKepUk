@@ -73,6 +73,7 @@ model Keranjang {
   barangId     String
   barangs      Barang    @relation(fields: [barangId], references: [id_barang])
   peminjam     Peminjam[]
+  isCheckedOut String?   @default("N")
 
   @@map("keranjangs")
 }
@@ -108,6 +109,7 @@ model TransaksiBarang {
 enum Type {
   BarangKeluar
   BarangMasuk
+  PENDING
 }
 
 enum Role {
