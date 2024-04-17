@@ -2,7 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import DataPeminjamanRoute from "./routes/DataPeminjamanRoute.js";
 import BarangRoute from "./routes/BarangRoute.js";
 import UserRoute from "./routes/UserRoute.js";
 import BarangMasukRoute from "./routes/BarangMasukRoute.js";
@@ -14,15 +13,18 @@ import fs from 'fs/promises';
 import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import bodyParser from 'body-parser';
+
 
 dotenv.config();
 const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 // Mendapatkan direktori kerja saat ini
 const __filename = fileURLToPath(import.meta.url);
 app.use('/uploads', express.static('uploads'));
 app.use(cors({origin:'*'}));
 app.use(express.json());
-app.use(DataPeminjamanRoute);
 app.use(BarangRoute);
 app.use(UserRoute);
 app.use(BarangMasukRoute);
