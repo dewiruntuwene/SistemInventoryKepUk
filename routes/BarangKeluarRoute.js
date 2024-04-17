@@ -1,5 +1,5 @@
 import express from "express";
-import {getBarangKeluar, getBarangKeluarById, createBarangKeluar, updateBarangKeluar, deleteBarangKeluar, buatBarangKeluar, ambilBarangKeluar} from "../controllers/BarangKeluarController.js"
+import {getBarangKeluar, getBarangKeluarById, createBarangKeluar, updateBarangKeluar, deleteBarangKeluar } from "../controllers/BarangKeluarController.js"
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -7,11 +7,9 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 router.get('/barangKeluar',getBarangKeluar);
-router.get('/barangKeluar/:id_barang_keluar',getBarangKeluarById);
+router.get('/barangKeluar/:id_transaksi_barang',getBarangKeluarById);
 router.post('/barangKeluar',createBarangKeluar);
-router.post('/barangKeluar2',buatBarangKeluar);
-router.get('/barangKeluar2',ambilBarangKeluar);
-router.patch('/barangKeluar/:id_barang_keluar',updateBarangKeluar);
-router.delete('/barangKeluar/:id_barang_keluar',deleteBarangKeluar);
+router.patch('/barangKeluar/:id_transaksi_barang',updateBarangKeluar);
+router.delete('/barangKeluar/:id_transaksi_barang',deleteBarangKeluar);
 
 export default router;
