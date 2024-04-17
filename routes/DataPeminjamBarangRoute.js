@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const router = express.Router();
 
-router.post('/peminjamBarang',createDataPeminjamBarang);
+router.post('/peminjamBarang/',createDataPeminjamBarang);
 router.post('/keranjang',createKeranjang);
 router.get('/peminjamBarang',getDataPeminjamBarang);
 router.get('/keranjang',getKeranjang);
