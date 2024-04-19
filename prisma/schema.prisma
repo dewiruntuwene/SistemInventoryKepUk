@@ -72,8 +72,10 @@ model Keranjang {
   id_keranjang Int        @id @default(autoincrement())
   barangId     String
   barangs      Barang    @relation(fields: [barangId], references: [id_barang])
+  jumlah_barang Int 
   peminjam     Peminjam[]
   isCheckedOut String?   @default("N")
+  delete_at    DateTime  @default(now())
 
   @@map("keranjangs")
 }
@@ -97,6 +99,7 @@ model Peminjam {
 
 model TransaksiBarang {
   id_transaksi_barang Int      @id @default(autoincrement())
+  jumlah_barang       Int
   barangId            String
   type                Type
   peminjamId          Int?
