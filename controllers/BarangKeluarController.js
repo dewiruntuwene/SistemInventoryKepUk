@@ -19,13 +19,14 @@ export const getBarangKeluarById = async(req, res) =>{
 }
 
 export const createBarangKeluar = async(req, res) =>{
-    const { barangId, id_barang, nama_barang, total_stock, jenis_barang, gambar_barang, harga_barang, barang } = req.body;
+    const { barangId, id_barang, nama_barang, total_stock, jenis_barang, gambar_barang, harga_barang, jumlah_barang } = req.body;
 
     try {
         // Create a new entry in the TransaksiBarang table and include the related Barang data
         const newTransaction = await prisma.$transaction([
             prisma.transaksiBarang.create({
                 data: {
+                    jumlah_barang:jumlah_barang,
                     peminjamId: req.params.id_peminjam,
                     type: "BarangKeluar",
                     barangs: {
@@ -43,7 +44,7 @@ export const createBarangKeluar = async(req, res) =>{
             where: { id_barang: id_barang },
             data: {
                 total_stock: {
-                    decrement: total_stock // Kurangi stok barang sesuai jumlah keluar
+                    decrement: jumlah_barang // Kurangi stok barang sesuai jumlah keluar
                 }
             }
         });
