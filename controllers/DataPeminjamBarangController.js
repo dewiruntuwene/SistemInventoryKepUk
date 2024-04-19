@@ -8,10 +8,11 @@ const prisma = new PrismaClient();
 
 
 export const createKeranjang = async(req, res) =>{
-    const {barang, user} = req.body;
+    const {barang, jumlah_barang} = req.body;
     try {
         const newKeranjang = await prisma.Keranjang.create({
             data: {
+                jumlah_barang: parseInt(jumlah_barang),
                 barangs: {
                     connect: {
                         id_barang: barang.id_barang,
@@ -31,67 +32,89 @@ export const createKeranjang = async(req, res) =>{
 
 
 export const createDataPeminjamBarang = async (req, res) => {
-  const { nama_dosen, nama_matakuliah, prasat, jam_praktek, tanggal_praktek, keranjangs } = req.body;
+  const { nama_dosen, nama_matakuliah, prasat, jam_praktek, tanggal_praktek } = req.body;
+  const {id_keranjang} = req.params
     try {
       await prisma.$transaction(async(tx) => {
         
-        const keranjang = await tx.Keranjang.findFirst({
+        const keranjang = await tx.Keranjang.findUnique({
           where: {
-            id_keranjang: req.params.id_keranjang
+            id_keranjang: id_keranjang
+          }
+        });
+        console.log(keranjang)
+
+        const barangInKeranjang = await tx.Keranjang.findMany({
+          where: {
+            isCheckedOut: 'N'
           }
         });
 
-        const barang = await tx.Barang.findFirst({
-          where: {
-            id_barang: req.params.id_barang
-          }
-        });
-    
-        // Buat Peminjam
-        const peminjam = await tx.Peminjam.create({
-          data: {
-            nama_dosen,
-            nama_matakuliah,
-            prasat,
-            jam_praktek,
-            tanggal_praktek,
-            keranjangId: keranjang.id_keranjang
-          }
-        })
-
-        // Buat TransaksiBarang type BarangKeluar
-        await tx.TransaksiBarang.create({
-          data: {
-            peminjam: { 
-              connect: { id_peminjam: peminjam.id_peminjam }
-            },
+        for (const item of barangInKeranjang) {
+          const barang = await tx.Barang.findMany({
+            where: {
+              id_barang: item.id_barang
+            }
+          });
+  
+          // Buat Peminjam
+          const peminjam = await tx.Peminjam.create({
+            data: {
+              nama_dosen,
+              nama_matakuliah,
+              prasat,
+              jam_praktek,
+              tanggal_praktek,
+              keranjangId: keranjang.id_keranjang
+            }
+          });
+  
+          // Buat TransaksiBarang type BarangKeluar
+          await tx.TransaksiBarang.create({
+            data: {
+              jumlah_barang: item.jumlah_barang,
+              peminjam: { 
+                connect: { id_peminjam: peminjam.id_peminjam }
+              },
               type: "BarangKeluar",
               barangs: {
                 connect: {
                   id_barang: barang.id_barang,        
                 },
+              },
             },
-          },
-          include: {
+            include: {
               barangs: true, // Include the related Barang model
-          },
-        })
-        
-        // Setelah itu hapus semua barang yang ada di keranjang
-        await tx.Keranjang.update({
-          where: {
-            id_keranjang: keranjang.id_keranjang
-          },
-          data: {
-            isCheckedOut: 'Y' // Perbarui nilai isCheckedOut menjadi 'Y'
-          },
-        });
+            },
+          });
+  
+          // Tandai barang sebagai sudah checkout (soft delete)
+          await tx.Keranjang.updateMany({
+            where: {
+              id_keranjang: keranjang.id_keranjang
+            },
+            data: {
+              isCheckedOut: 'Y'
+            }
+          });
 
-        return res.json({peminjam});
+          // Kurangi total_stock di model Barang
+          await tx.Barang.update({
+            where: {
+              id_barang: barang.id_barang
+            },
+            data: {
+              total_stock: {
+                decrement: item.jumlah_barang
+              }
+            }
+          });
+        }
+
+
+        return res.json({ message: 'Transaksi berhasil' });
       })
-
-      
-      
+    
   } catch (error) {
     console.error('Error during checkout:', error);
     res.status(500).json({ error: 'Error during checkout' });
@@ -143,12 +166,16 @@ export const getDataPeminjamBarang = async(req, res) =>{
             id_peminjam: req.params.id_peminjam
           },
           select: {
+            id_peminjam:true,
             nama_dosen: true,
             nama_matakuliah: true,
             prasat:true,
+            jam_praktek: true,
             tanggal_praktek:true,
-            keranjangs: {
+            tanggal_pengambilan: true,
+            keranjangs:{
               select: {
+                jumlah_barang:true,
                 barangs:true
               }
             }
