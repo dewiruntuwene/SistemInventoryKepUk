@@ -32,12 +32,12 @@ export const createKeranjang = async(req, res) =>{
 
 
 export const createDataPeminjamBarang = async (req, res) => {
-  const { nama_dosen, nama_matakuliah, prasat, jam_praktek, tanggal_praktek } = req.body;
+  const { nama_dosen, nama_matakuliah, prasat, jam_praktek, tanggal_praktek, jumlah_barang } = req.body;
   const {id_keranjang} = req.params
     try {
       await prisma.$transaction(async(tx) => {
         
-        const keranjang = await tx.Keranjang.findUnique({
+        const keranjang = await tx.Keranjang.findFirst({
           where: {
             id_keranjang: id_keranjang
           }
@@ -46,16 +46,17 @@ export const createDataPeminjamBarang = async (req, res) => {
 
         const barangInKeranjang = await tx.Keranjang.findMany({
           where: {
+            id_keranjang: id_keranjang,
             isCheckedOut: 'N'
+          },
+          include: {
+            barangs:true
           }
         });
 
-        for (const item of barangInKeranjang) {
-          const barang = await tx.Barang.findMany({
-            where: {
-              id_barang: item.id_barang
-            }
-          });
+        for (const keranjang of barangInKeranjang) {
+          const barang = keranjang.barangs
+          const jumlah_barang = keranjang.jumlah_barang
   
           // Buat Peminjam
           const peminjam = await tx.Peminjam.create({
@@ -72,7 +73,7 @@ export const createDataPeminjamBarang = async (req, res) => {
           // Buat TransaksiBarang type BarangKeluar
           await tx.TransaksiBarang.create({
             data: {
-              jumlah_barang: item.jumlah_barang,
+              jumlah_barang: jumlah_barang,
               peminjam: { 
                 connect: { id_peminjam: peminjam.id_peminjam }
               },
@@ -89,7 +90,7 @@ export const createDataPeminjamBarang = async (req, res) => {
           });
   
           // Tandai barang sebagai sudah checkout (soft delete)
-          await tx.Keranjang.updateMany({
+          await tx.Keranjang.update({
             where: {
               id_keranjang: keranjang.id_keranjang
             },
@@ -105,7 +106,7 @@ export const createDataPeminjamBarang = async (req, res) => {
             },
             data: {
               total_stock: {
-                decrement: item.jumlah_barang
+                decrement: jumlah_barang
               }
             }
           });
