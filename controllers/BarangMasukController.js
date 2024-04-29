@@ -19,7 +19,7 @@ export const getBarangMasukById = async(req, res) =>{
 
 
 export const createBarangMasuk = async(req, res) =>{
-    const { id_barang, jumlah_barang } = req.body;
+    const { id_barang, jumlah_barang, tanggal_masuk, tanggal_keluar } = req.body;
 
     try {
 
@@ -28,6 +28,8 @@ export const createBarangMasuk = async(req, res) =>{
         const newTransaction = await prisma.$transaction([
             prisma.transaksiBarang.create({
                 data: {
+                    tanggal_masuk,
+                    tanggal_keluar:null,
                     jumlah_barang,
                     type: "BarangMasuk",
                     barangs: {
@@ -74,7 +76,7 @@ export const getBarangMasuk = async(req, res) =>{
 }
 
 export const updateBarangMasuk = async(req, res) =>{
-    const {nama_barang, total_stock, jenis_barang} = req.body;
+    const {nama_barang, total_stock, jenis_barang, id_barang, harga_barang, gambar_barang, jumlah_barang} = req.body;
     try {
         const idTransaksiBarang = parseInt(req.params.id_transaksi_barang);
         await prisma.transaksiBarang.update(req.body,{
@@ -83,14 +85,7 @@ export const updateBarangMasuk = async(req, res) =>{
                 type: "BarangMasuk"
             },
             data: {
-                barangs: {
-                    id_barang,
-                    nama_barang,
-                    total_stock,
-                    jenis_barang,
-                    harga_barang,
-                    gambar_barang
-                }
+                jumlah_barang:jumlah_barang,
             }
         });
 
