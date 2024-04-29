@@ -1,8 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { promises } from "fs";
-import { connect } from "http2";
-import { type } from "os";
-import { where } from "sequelize";
+
 
 const prisma = new PrismaClient();
 
@@ -29,10 +26,25 @@ export const createKeranjang = async(req, res) =>{
     }
 }
 
-
+export const updateKeranjang = async(req,res) =>{
+  const {jumlah_barang} = req.body
+  try {
+    const keranjangBaru = await prisma.Keranjang.update({
+      where: {
+        id_keranjang: parseInt(req.params.id_keranjang)
+      },
+      data: {
+        jumlah_barang: parseInt(jumlah_barang)
+      }
+    });
+    res.json({ message: 'Berhasil di Update', data: keranjangBaru });
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 export const createDataPeminjamBarang = async (req, res) => {
-  const { nama_dosen, nama_matakuliah, prasat, jam_praktek, tanggal_praktek, jumlah_barang } = req.body;
+  const { nama_dosen, nama_matakuliah, prasat, jam_praktek, tanggal_praktek, jumlah_barang, tanggal_keluar, tanggal_masuk } = req.body;
   const {id_keranjang} = req.params
     try {
       await prisma.$transaction(async(tx) => {
@@ -73,10 +85,14 @@ export const createDataPeminjamBarang = async (req, res) => {
           // Buat TransaksiBarang type BarangKeluar
           await tx.TransaksiBarang.create({
             data: {
+              nama_matakuliah: peminjam.nama_matakuliah,
+              nama_barang: barang.nama_barang,
               jumlah_barang: jumlah_barang,
               peminjam: { 
                 connect: { id_peminjam: peminjam.id_peminjam }
               },
+              tanggal_masuk: null,
+              tanggal_keluar,
               type: "BarangKeluar",
               barangs: {
                 connect: {
@@ -189,11 +205,26 @@ export const getDataPeminjamBarang = async(req, res) =>{
       }
 }
 
+export const getDataPeminjamBarangHistory = async (req, res) => {
+  try {
+    const peminjam = await prisma.peminjam.groupBy({
+      by: ['nama_matakuliah'],
+      
+    });
+
+     
+    res.json(peminjam);
+  } catch (error) {
+    console.error("Error fetching peminjam:", error);
+    res.status(500).json({ error: "Error fetching peminjam" });
+  }
+};
+
+
 
 export const deletetDataPeminjamBarang = async(req, res) =>{
     try {
         const idPeminjam = parseInt(req.params.id_peminjam);
-    
         // Hapus data peminjam berdasarkan id_peminjam
         await prisma.Peminjam.delete({
         where: {
