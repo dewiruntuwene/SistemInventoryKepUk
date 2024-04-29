@@ -1,137 +1,101 @@
 
-GET http://localhost:5000/peminjam
-
 ###
-GET http://localhost:5000/peminjam/8
-
+GET http://localhost:5000/barangKeluar/
 ###
-POST http://localhost:5000/peminjam
+GET http://localhost:5000/barangKeluar/
+###
+GET http://localhost:5000/barangMasuk/
+###
+GET http://localhost:5000/barangMasuk/
+###
+POST http://localhost:5000/barangKeluar
 Content-Type: application/json
 
 {
-    "nama_dosen": "Dewi",
-    "nama_matakuliah": "ipa",
-    "prasat": "Some prasat",
-    "jam_praktek": "11:14",
-	"tanggal_praktek": "2024-12-02",
-    "tanggal_pengambilang": ""
+  "jumlah_barang": 5,
+  "id_barang": "A013",
+  "nama_barang": "Mask",
+  "total_stock": 2,
+  "jenis_barang": "buruk",
+  "harga_barang": 5000,
+  "gambar_barang": "1711375972357-Face-mask 1.png"
 }
 
 ###
-
-PATCH  http://localhost:5000/peminjam/25
-Content-Type: application/json
-
-{
-    "nama_dosen": "Feren",
-    "nama_matakuliah": "Kardio",
-    "prasat": "Some prasat",
-    "jam_praktek": "11:14",
-	"tanggal_praktek": "2024-12-02",
-    "tanggal_pengambilang": "",
-    "nama_barang": "Alkohol 70% 100ml",
-    "keterangan": "Some description",
-    "barang": {
-        "connect":{
-            "id_barang":"A001"
-        }
-    }
-}
-
+DELETE  http://localhost:5000/barangKeluar/52
 ###
-DELETE  http://localhost:5000/peminjam/26
-
-
-
-
-###
-GET http://localhost:5000/barang
-
-###
-POST http://localhost:5000/barang
-Content-Type: application/json
-
-{
-	"id_barang": "A030",
-    "nama_barang": "Apron",
-	"total_stock":10,
-	"jenis_barang": "-",
-    "gambar_barang": ""
-}
-
-###
-
-GET http://localhost:5000/barang/A001
-
-
-###
-
-PATCH  http://localhost:5000/barang/A001
-Content-Type: application/json
-
-{
-	"id_barang": "A00",
-    "nama_barang": "3 Way stop cock",
-	"total_stock":10,
-	"jenis_barang": "-",
-	"nama_dosen": "Tia"
-}
-
-###
-DELETE  http://localhost:5000/barang
-
-###
-DELETE  http://localhost:5000/peminjam
-
-###
-GET http://localhost:5000/barangMasuk
-
+DELETE http://localhost:5000/barangMasuk/33
 
 ###
 POST http://localhost:5000/barangMasuk
 Content-Type: application/json
 
 {
-    "nama_barang": "3 Way stop cock",
-    "id_barang": "A002",
-	"total_stock": 20,
-    "jenis_barang": "habis pakai",
-    "tanggal_masuk": "2024-03-01"
+  "tanggal_masuk": "12/02/23",
+  "jumlah_barang":5,
+  "id_barang": "A013",
+  "nama_barang": "Mask",
+  "total_stock": 20,
+  "jenis_barang": "buruk",
+  "harga_barang": 5000,
+  "gambar_barang": "1711375972357-Face-mask 1.png"
 }
 
-###
-DELETE  http://localhost:5000/barangMasuk/9
 
 ###
-PATCH   http://localhost:5000/barangMasuk/6
+PATCH    http://localhost:5000/barangMasuk/59
 Content-Type: application/json
 
 {
-    "nama_barang": "3 Way stop cock",
-    "id_barang": "A001",
-	"total_stock": 20,
-    "jenis_barang": "habis pakai"
+  "jumlah_barang": 1
 }
 
+###
+DELETE  http://localhost:5000/barangKeluar/55
 
 ###
-
-GET http://localhost:5000/barangKeluar
-
+GET  http://localhost:5000/barang
 
 ###
-POST http://localhost:5000/barangKeluar
+POST   http://localhost:5000/barang
 Content-Type: application/json
 
 {
-    "nama_barang": "3 Way stop cock",
-    "id_barang": "A001",
-	"total_stock": 3,
-    "jenis_barang": "habis pakai"
+  "id_barang": "A013",
+  "nama_barang": "Mask",
+  "total_stock": 20,
+  "jenis_barang": "buruk",
+  "harga_barang": 5000,
+  "gambar_barang": "1711375972357-Face-mask 1.png"
 }
 
 ###
-DELETE  http://localhost:5000/barangKeluar/9
+PUT   http://localhost:5000/barang/A013
+Content-Type: application/json
+
+{
+  "id_barang": "A013",
+  "nama_barang": "Kapas",
+  "total_stock": 20,
+  "jenis_barang": "buruk",
+  "harga_barang": 5000,
+  "gambar_barang": "1711375972357-Face-mask 1.png"
+}
+
+###
+DELETE   http://localhost:5000/barang/A01
+
+###
+PUT     http://localhost:5000/barang/A013
+Content-Type: application/json
+
+{
+  "nama_barang": "Glove",
+  "total_stock": 20,
+  "jenis_barang": "buruk",
+  "harga_barang": 5000,
+  "gambar_barang": "1711375972357-Face-mask 1.png"
+}
 
 ###
 GET http://localhost:5000/dashboardNotif
@@ -151,60 +115,141 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:5000/login
-###
 POST   http://localhost:5000/login
 Content-Type: application/json
 
 {
-    "username": "dewifr",
     "email": "dewir111@gmail.com",
     "password": "12345678"
 }
 
 ###
-PATCH  http://localhost:5000/history
+GET   http://localhost:5000/peminjamBarang
 
 ###
-GET  http://localhost:5000/history
+DELETE    http://localhost:5000/peminjamBarang/78
+
+###
+POST   http://localhost:5000/peminjamBarang/
+Content-Type: application/json
+
+{
+    "nama_dosen": "Dewi",
+    "nama_matakuliah": "Kardio",
+    "prasat": "some prasat",
+    "jam_praktek": "12:00",
+    "tanggal_praktek": "26-2-2024",
+    "tanggal_pengambilan": "2024-04-01T06:54:33.870Z"
+}
+
+###
+DELETE  http://localhost:5000/keranjang/40
+
+###
+GET   http://localhost:5000/keranjang
+
+###
+PATCH    http://localhost:5000/keranjang/61
+Content-Type: application/json
+
+{
+  "jumlah_barang": 1
+}
+
+###
+POST   http://localhost:5000/keranjang
+Content-Type: application/json
+
+{
+  "jumlah_barang": 5,
+  "barang": {
+     "id_barang": "A013",
+        "nama_barang": "Glove",
+        "total_stock": -15,
+        "jenis_barang": "baik",
+        "harga_barang": 5000,
+        "gambar_barang": "1713707964543-4.png"
+  }
+}
+
+###
+GET   http://localhost:5000/history
 
 ###
 GET   http://localhost:5000/peminjamBarang
 
 ###
-POST   http://localhost:5000/peminjamBarang
-Content-Type: application/json
+GET   http://localhost:5000/barang
+
+
+
+  {
+
+    "nama_matakuliah": "Hematologi",
+    "keranjangs": {
+      "jumlah_barang": 7,
+      "barangs": {
+        "id_barang": "A013",
+        "nama_barang": "Glove",
+      }
+    }
+  },
 
 {
-  "nama_dosen": "Dewi",
-  "nama_matakuliah": "Kardio",
-  "prasat": "some prasat",
-  "jam_praktek": "12:00",
-  "tanggal_praktek": "26-2-2024",
-  "keranjangs": [
-    {
-      "jumlah_pemesanan": 1,
-      "barangKeluar": {
-        "id_barang": "A001",
-        "nama_barang": "Glove",
-        "total_stock": 10,
-        "jenis_barang": "habis pakai",
-        "gambar_barang": "../image/image1.png"
-      }
-    },
-    {
-      "jumlah_pemesanan": 1,
-      "barangKeluar": {
-        "id_barang": "A002",
-        "nama_barang": "Mask",
-        "total_stock": 20,
-        "jenis_barang": "habis pakai",
-        "gambar_barang": "../image/image2.png"
-      }
-    },
-  ]
+  "nama_matakuliah": "Hematologi",
+  "jumlah_barang": 7,
+  "id_barang": "A013",
+  "nama_barang": "Glove",
+  "jumlah_barang": 7,
 }
+    
+
+
 
 ###
-DELETE http://localhost:5000/peminjamBarang
+[
+  {
+    "id_barang": "A001",
+    "nama_barang": "Glove",
+    "matkuls": [
+      {
+        "nama_matakuliah": "Kardio",
+        "jumlah_barang": "30"
+      },
+      {
+        "nama_matakuliah": "Hematologi",
+        "jumlah_barang": "30"
+      }
+    ]
+  },
+  {
+    "id_barang": "A001",
+    "nama_barang": "Glove",
+    "matkuls": [
+      {
+        "nama_matakuliah": "Kardio",
+        "jumlah_barang": "30"
+      },
+      {
+        "nama_matakuliah": "Hematologi",
+        "jumlah_barang": "30"
+      }
+    ]
+  }
+]
 
+###
+[
+  {
+    "nama_matakuliah": "Kardio",
+    "jumlah_barang: 
+      {
+        "nama_barang":"Glove",
+        "barangId":"A013",
+      },
+      {
+        "nama_barang":"Suntik",
+        "barangId":"A015",
+      },
+  },
+]
