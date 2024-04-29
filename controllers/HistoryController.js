@@ -1,47 +1,25 @@
-import { PrismaClient } from '@prisma/client';
+
+import { PrismaClient } from "@prisma/client";
+import { where } from "sequelize";
 
 const prisma = new PrismaClient();
 
-// export const updateHistory = async (req, res) => {
-//   const history = await prisma.History.findMany({
-//     include: {
-//       barang: {
-//         select: {
-//           id_barang: true,
-//           nama_barang: true,
-//         },
-//       },
-//       matakuliah: {
-//         select: {
-//           hematologi: select
-//         }
-//       },
-//     },
-//   });
-
-
-//   res.status(200).json(history);
- 
-// };
-
-
-export const updateHistory = async (req, res) => {
-  const history = await prisma.Peminjam.groupBy({
-    by: ['nama_matakuliah'],
+export const getHistory = async (req, res) => {
+  try {
+   // Fetch data from the database
+  const histories = await prisma.transaksiBarang.groupBy({
+    by: ['nama_matakuliah', 'nama_barang', 'barangId'],
     where: {
-      jumlah_peminjam: {
-        notIn: ['']
-      }
+      type: 'BarangKeluar',
     },
-    sum: {
-      jumlah_peminjam: true
-    },
-    having: {
-      nama_barang:true
+    _sum: {
+      jumlah_barang:true,
     }
   });
-
-
-  res.status(200).json(history);
- 
+    res.json(histories);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
+
