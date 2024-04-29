@@ -18,7 +18,7 @@ model users {
 }
 
 model Matakuliah {
-  id_matakuliah Int        @id @default(autoincrement())
+  id_matakuliah Int        @id @default(autoincrement()) 
   hematologi    Int
   kardio        Int
   respiratory   Int
@@ -27,31 +27,18 @@ model Matakuliah {
   persepsi      Int
   kritis        Int
   paliatif      Int
-  biomedik      Int
-  kdp           Int
-  history       History[]  @relation("HistoryToMatakuliah")
-  peminjam      Peminjam[] @relation("MatakuliahToPeminjam")
+  histories       History[]  
 }
 
 model History {
-  id_history      Int               @id @default(autoincrement())
-  id_barang       String
+  id_history      String               @id @default(uuid())
+  barangId       String
+  matakuliahId   Int
   nama_barang     String            @db.VarChar(50)
   jumlah          Int
-  BarangToHistory BarangToHistory[]
-  matakuliah      Matakuliah[]      @relation("HistoryToMatakuliah")
-  peminjam        Peminjam[]        @relation("HistoryToPeminjam")
-}
 
-model BarangToHistory {
-  A       String
-  B       Int
-  barangs Barang @relation(fields: [A], references: [id_barang], onDelete: Cascade)
-  History History @relation(fields: [B], references: [id_history], onDelete: Cascade)
-
-  @@unique([A, B], map: "_BarangToHistory_AB_unique")
-  @@index([B], map: "_BarangToHistory_B_index")
-  @@map("_BarangToHistory")
+  matkuls      Matakuliah        @relation(fields:[matakuliahId], references: [id_matakuliah])
+  barangs          Barang            @relation(fields:[barangId], references: [id_barang])
 }
 
 model Barang {
@@ -61,23 +48,11 @@ model Barang {
   jenis_barang    String            @db.VarChar(50)
   harga_barang    Int
   gambar_barang   String?
-  BarangToHistory BarangToHistory[]
   keranjangs      Keranjang[]
   transaksiBarang TransaksiBarang[]
+  history         History[]
 
   @@map("barangs")
-}
-
-model Keranjang {
-  id_keranjang Int        @id @default(autoincrement())
-  barangId     String
-  barangs      Barang    @relation(fields: [barangId], references: [id_barang])
-  jumlah_barang Int 
-  peminjam     Peminjam[]
-  isCheckedOut String?   @default("N")
-  delete_at    DateTime  @default(now())
-
-  @@map("keranjangs")
 }
 
 model Peminjam {
@@ -90,21 +65,38 @@ model Peminjam {
   tanggal_pengambilan DateTime          @default(now())
   keranjangId         Int
   keranjangs          Keranjang        @relation(fields: [keranjangId], references: [id_keranjang], onDelete: Cascade)
-  transaksiBarang     TransaksiBarang[]
-  history             History[]         @relation("HistoryToPeminjam")
-  matakuliah          Matakuliah[]      @relation("MatakuliahToPeminjam")
-
+  transaksiBarang     TransaksiBarang[]      
   @@map("peminjam")
 }
 
+
+
+
+model Keranjang {
+  id_keranjang Int        @id @default(autoincrement())
+  barangId     String
+  barangs      Barang    @relation(fields: [barangId], references: [id_barang])
+  jumlah_barang Int? 
+  peminjam     Peminjam[]
+  isCheckedOut String?   @default("N")
+  delete_at    DateTime  @default(now())
+
+  @@map("keranjangs")
+}
+
+
 model TransaksiBarang {
   id_transaksi_barang Int      @id @default(autoincrement())
-  jumlah_barang       Int
+  jumlah_barang       Int?
   barangId            String
   type                Type
   peminjamId          Int?
   barangs             Barang  @relation(fields: [barangId], references: [id_barang])
   peminjam            Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
+  tanggal_keluar      DateTime? @default(now())
+  tanggal_masuk       String?
+  nama_matakuliah     String?
+  nama_barang         String?
 
   @@map("transaksiBarang")
 }
