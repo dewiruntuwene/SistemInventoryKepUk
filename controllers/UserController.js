@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt  from "bcrypt";
 import jwt from "jsonwebtoken";
+import { generateToken } from "../middleware/VerifyToken.js" 
 
 const prisma = new PrismaClient();
 
@@ -62,13 +63,12 @@ export const verifyToken = async (req, res) => {
 }
 
 export const Login = async (req, res) => {
-
+  const {role} = req.params
     const user = await prisma.users.findUnique({
       where:{
           email: req.body.email
       }
     });
-
 
     if (!user) {
       return res.status(404).json({msg: "Email tidak ditemukan"});
@@ -79,15 +79,11 @@ export const Login = async (req, res) => {
         return res.status(400).json({msg: "Password salah"});
     }
 
-   
     const email = user.email;
 
-    const token = jwt.sign({email}, 'secret key',
-    {expiresIn:'10s'})
+    const token = generateToken({ email, role }, 'secret key');
 
-   
     return res.json({token:token})
-
 }
 
 export const Logout = async (req, res) => {
