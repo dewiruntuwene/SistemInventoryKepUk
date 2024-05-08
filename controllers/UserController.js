@@ -2,8 +2,92 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt  from "bcrypt";
 import jwt from "jsonwebtoken";
 import { generateToken } from "../middleware/VerifyToken.js" 
+import * as dotenv from 'dotenv';
+import { google } from "googleapis";
+import { oauth2 } from "googleapis/build/src/apis/oauth2/index.js";
+import { where } from "sequelize";
 
 const prisma = new PrismaClient();
+
+const oauth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  'http://localhost:5000/auth/google/callback'
+)
+
+const scopes = [
+  'https://www.googleapis.com/auth/userinfo.email',
+  'https://www.googleapis.com/auth/userinfo.profile'
+]
+
+const authorizationUrl = oauth2Client.generateAuthUrl({
+  access_type: 'offline',
+  scope: scopes,
+  include_granted_scopes: true,
+})
+
+
+// GOOGLE Login
+export const getLoginGoogle = async(req,res) => {
+  res.redirect(authorizationUrl);   
+} 
+
+// GOOGLE callback login
+export const getLoginCallbackGoogle = async(req, res) => {
+  const {code} = req.query
+  const {tokens} = await oauth2Client.getToken(code);
+
+  oauth2Client.setCredentials(tokens);
+  const oauth2 = google.oauth2({
+    auth: oauth2Client,
+    version: 'v2'
+  })
+  
+  const {data} = await oauth2.userinfo.get();
+
+  if(!data.email || !data.name ){
+    return res.json({
+      data: data,
+    })
+  }
+
+  let user = await prisma.Users.findUnique({
+    where: {
+      email: data.email 
+    }
+  })
+
+  if(!user){
+    user = await prisma.Users.create({
+      data: {
+        username: data.name,
+        email: data.email 
+      }
+    })
+  }
+
+  const payload = {
+    userId: user?.id,
+    username: user?.name,
+    email: user?.email,
+    role: user?.role // Include the user's role in the payload
+  };
+
+  const secret = process.env.JWT_SECRET;
+
+  // Sign the JWT token with a secret key
+  const token = jwt.sign(payload, secret, { expiresIn: '1h' });
+  
+  // return res.redirect(`http://localhost:300/auth-succes?token=${token}`)
+  
+  return res.json({  
+    data: {
+      userId: user.id,
+      username: user.name,
+    },
+    token: token
+  })
+}
 
 export const getUsers = async(req,res)=>{
   try {
