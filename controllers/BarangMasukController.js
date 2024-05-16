@@ -19,7 +19,7 @@ export const getBarangMasukById = async(req, res) =>{
 
 
 export const createBarangMasuk = async(req, res) =>{
-    const { id_barang, jumlah_barang, tanggal_masuk, tanggal_keluar } = req.body;
+    const { id_barang, jumlah_barang, tanggal_masuk, tanggal_keluar, kode_barang } = req.body;
 
     try {
 
@@ -35,6 +35,7 @@ export const createBarangMasuk = async(req, res) =>{
                     barangs: {
                         connect: {
                           id_barang:id_barang,
+                          kode_barang: kode_barang,
                           
                         },
                       },
@@ -46,7 +47,7 @@ export const createBarangMasuk = async(req, res) =>{
         ]);
         // Tambahkan total stock barang
         await prisma.Barang.update({
-            where: { id_barang },
+            where: { kode_barang },
             data: {
                 total_stock: {
                     increment: parseInt(jumlah_barang) // Tambahkan stok barang sesuai jumlah masuk
@@ -76,19 +77,32 @@ export const getBarangMasuk = async(req, res) =>{
 }
 
 export const updateBarangMasuk = async(req, res) =>{
-    const {nama_barang, total_stock, jenis_barang, id_barang, harga_barang, gambar_barang, jumlah_barang} = req.body;
+    const {tanggal_masuk,kode_barang,nama_barang, total_stock, jenis_barang, id_barang, harga_barang, gambar_barang, jumlah_barang} = req.body;
     try {
         const idTransaksiBarang = parseInt(req.params.id_transaksi_barang);
-        await prisma.transaksiBarang.update(req.body,{
+        await prisma.transaksiBarang.update({
             where:{
                 id_transaksi_barang: idTransaksiBarang,
                 type: "BarangMasuk"
             },
             data: {
-                jumlah_barang:jumlah_barang,
+                tanggal_masuk:  tanggal_masuk,
+                tanggal_keluar:null,
+                jumlah_barang: jumlah_barang,
+                type: "BarangMasuk",
+                barangs: {
+                    connect: {
+                        id_barang:id_barang,
+                        kode_barang: kode_barang,
+                        nama_barang: nama_barang,
+                        jenis_barang: jenis_barang,
+                        harga_barang: harga_barang,
+                        gambar_barang: gambar_barang
+                          
+                    },
+                },
             }
         });
-
         res.status(200).json({msg: "Data Updated"});
     } catch (error) {
         console.log(error.message);

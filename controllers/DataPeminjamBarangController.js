@@ -7,32 +7,48 @@ const prisma = new PrismaClient();
 
 
 export const createKeranjang = async(req, res) =>{
-    const {jumlah_barang, users, barang} = req.body;
-    try {
-     
-        const newKeranjang = await prisma.Keranjang.create({
-            data: {
-                users: {
-                  connect: {
-                    user_id: req.user.user_id
+  const { users, barang } = req.body;
+  try {
+      // Cari keranjang dengan kode_barang yang sama
+      const existingKeranjang = await prisma.Keranjang.findFirst({
+          where: {
+              AND: [
+                  { users: { user_id: req.user.user_id } },
+                  { barangs: { kode_barang: barang.kode_barang } }
+              ]
+          }
+      });
+
+      if (existingKeranjang) {
+          // Jika sudah ada, tambahkan 1 ke jumlah_barang yang sudah ada
+          const updatedKeranjang = await prisma.Keranjang.update({
+              where: { id_keranjang: existingKeranjang.id_keranjang },
+              data: { jumlah_barang: existingKeranjang.jumlah_barang + 1 }
+          });
+
+          res.status(200).json({ msg: "Data Updated", data: updatedKeranjang });
+      } else {
+          // Jika belum ada, buat entri baru di keranjang dengan jumlah_barang 1
+          const newKeranjang = await prisma.Keranjang.create({
+              data: {
+                  users: { connect: { user_id: req.user.user_id } },
+                  jumlah_barang: 1, // Jumlah barang dimulai dari 1 jika baru ditambahkan
+                  barangs: {
+                      connect: { id_barang: barang.id_barang, kode_barang: barang.kode_barang }
                   }
-                },
-                jumlah_barang: parseInt(jumlah_barang),
-                barangs: {
-                    connect: {
-                        id_barang: barang.id_barang,
-                    },
-                },
-            },
-            include: {
-                barangs: true // Mengambil data barang yang ditambahkan ke keranjang
-            }
-        });  
-        res.status(201).json({msg: "Data Created", data: newKeranjang});
-    } catch (error) {
-        console.log(error.message);
-    }
+              },
+              include: { barangs: true }
+          });
+
+          res.status(201).json({ msg: "Data Created", data: newKeranjang });
+      }
+  } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ msg: "Internal Server Error" });
+  }
 }
+
+
 
 export const updateKeranjang = async(req,res) =>{
   const {jumlah_barang} = req.body
@@ -144,8 +160,14 @@ export const createDataPeminjamBarang = async (req, res) => {
           barangPinjam: {
             create: keranjang.map((cart =>  {
               return {
-                barangId: cart.barangId,
-                jumlah_barang: cart.jumlah_barang
+                kode_barang: cart.barangs.kode_barang,
+                jumlah_barang: cart.jumlah_barang,
+                nama_barang: cart.barangs.nama_barang,
+                barangs: {
+                  connect: {
+                    id_barang: cart.barangs.id_barang
+                  }
+                }
               }
             }))
           }
@@ -243,15 +265,16 @@ export const getDataPeminjamBarang = async(req, res) =>{
         },
         barangPinjam:{
           select: {
-            barangId:true,
-            jumlah_barang:true
+            kode_barang:true,
+            jumlah_barang:true,
+            nama_barang:true
           }
         }
       }
     });
 
 
-    return peminjam;
+    res.json(peminjam);
   } catch (error) {
     console.error('Error fetching cart items:', error);
     throw error;
@@ -298,7 +321,7 @@ export const barangKeluarPeminjam = async(req, res) => {
       await prisma.TransaksiBarang.create({
         data: {
           nama_matakuliah: peminjam.nama_matakuliah,
-          nama_barang: peminjam.nama_barang,
+          nama_barang: barangPinjam.nama_barang,
           tanggal_masuk: null,
           jumlah_barang: jumlah_barang,
           peminjam: {

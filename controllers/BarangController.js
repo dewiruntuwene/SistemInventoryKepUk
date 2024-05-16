@@ -56,14 +56,14 @@ const storage = multer.diskStorage({
 // Inisialisasi multer dengan konfigurasi yang telah ditentukan
 // Fungsi untuk menangani permintaan pembuatan barang dengan kemampuan unggah gambar
 export const createBarang = async (req, res) => {
-    const { id_barang, nama_barang, total_stock, jenis_barang, harga_barang } = req.body;
+    const { kode_barang, nama_barang, total_stock, jenis_barang, harga_barang } = req.body;
     const gambar_barang = GAMBAR_URL; // Path file gambar yang diunggah
     try {
             // Tambahkan data barang ke database
             console.log(req.body)
             const barang = await prisma.Barang.create({
                 data: {
-                    id_barang: id_barang,
+                    kode_barang: kode_barang,
                     nama_barang: nama_barang,
                     total_stock: parseInt(total_stock),
                     jenis_barang: jenis_barang,
@@ -74,6 +74,7 @@ export const createBarang = async (req, res) => {
 
             const responseData = {
                 id_barang: barang.id_barang,
+                kode_barang: barang.kode_barang,
                 nama_barang: barang.nama_barang,
                 total_stock: barang.total_stock,
                 jenis_barang: barang.jenis_barang,
@@ -90,16 +91,16 @@ export const createBarang = async (req, res) => {
 
 
 export const updateBarang = async(req, res) =>{
-    const {nama_barang, total_stock, jenis_barang, harga_barang, gambar_barang} = req.body;
-    const { id_barang } = req.params
+    const {nama_barang, total_stock, jenis_barang, harga_barang, gambar_barang, kode_barang} = req.body;
+
 
     try {
-        await prisma.Barang.update(req.body,{
+        await prisma.Barang.update({
             where:{
-                id_barang: id_barang
+                id_barang: parseInt(req.params.id_barang)
             },
             data: {
-                id_barang: {set: id_barang},
+                kode_barang: {set: kode_barang},
                 nama_barang: {set: nama_barang}, // Gunakan 'set' untuk menetapkan nilai
                 total_stock: {set: total_stock},
                 jenis_barang: {set: jenis_barang},
@@ -108,7 +109,6 @@ export const updateBarang = async(req, res) =>{
             }
             
         });
-        console.log({ where: { id_barang: id_barang }, data });
 
         res.status(200).json({msg: "Data Updated"});
     } catch (error) {

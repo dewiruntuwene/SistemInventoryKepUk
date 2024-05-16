@@ -14,7 +14,7 @@ export const dashboardNotif = async(req, res) => {
         }
       },
       select: {
-        id_barang: true,
+        kode_barang: true,
         nama_barang: true,
         jenis_barang: true,
         total_stock: true

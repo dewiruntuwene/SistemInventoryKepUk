@@ -51,7 +51,7 @@ model Matakuliah {
 
 model History {
   id_history      String               @id @default(uuid())
-  barangId       String
+  barangId       Int
   matakuliahId   Int
   nama_barang     String            @db.VarChar(50)
   jumlah          Int
@@ -61,12 +61,13 @@ model History {
 }
 
 model Barang {
-  id_barang       String            @id
+  id_barang       Int            @id @default(autoincrement())
   nama_barang     String            @db.VarChar(50)
   total_stock     Int
   jenis_barang    String            @db.VarChar(50)
   harga_barang    Int
   gambar_barang   String?
+  kode_barang     String          @unique
   keranjangs      Keranjang[]
   transaksiBarang TransaksiBarang[]
   history         History[]
@@ -78,7 +79,7 @@ model Barang {
 
 model Keranjang {
   id_keranjang Int        @id @default(autoincrement())
-  barangId     String
+  barangId     Int
   barangs      Barang    @relation(fields: [barangId], references: [id_barang])
   jumlah_barang Int? 
   isCheckedOut String?   @default("N")
@@ -94,8 +95,10 @@ model BarangPinjam {
   peminjam            Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
   peminjamId          Int?
   barangs             Barang  @relation(fields: [barangId], references: [id_barang])
-  barangId            String
+  barangId            Int
   jumlah_barang       Int
+  nama_barang         String
+  kode_barang         String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -103,7 +106,7 @@ model BarangPinjam {
 model TransaksiBarang {
   id_transaksi_barang Int      @id @default(autoincrement())
   jumlah_barang       Int?
-  barangId            String
+  barangId            Int
   type                Type      @default(PENDING)
   peminjamId          Int?
   barangs             Barang  @relation(fields: [barangId], references: [id_barang])
