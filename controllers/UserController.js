@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt  from "bcrypt";
 import jwt from "jsonwebtoken";
-import { generateToken } from "../middleware/VerifyToken.js" 
 import * as dotenv from 'dotenv';
 import { google } from "googleapis";
 import { oauth2 } from "googleapis/build/src/apis/oauth2/index.js";
 import { where } from "sequelize";
+
 
 const prisma = new PrismaClient();
 
@@ -66,27 +66,35 @@ export const getLoginCallbackGoogle = async(req, res) => {
     })
   }
 
-  const payload = {
-    userId: user?.id,
-    username: user?.name,
-    email: user?.email,
-    role: user?.role // Include the user's role in the payload
-  };
+  // Save session asynchronously
+  await new Promise((resolve) => {
+    req.session.save(() => {
+      const payload = {
+        userId: user?.id,
+        username: user?.name,
+        email: user?.email,
+        role: user?.role, // Include the user's role in the payload
+      };
 
-  const secret = process.env.JWT_SECRET;
+      const secret = process.env.JWT_SECRET;
 
-  // Sign the JWT token with a secret key
-  const token = jwt.sign(payload, secret, { expiresIn: '1h' });
-  
-  // return res.redirect(`http://localhost:300/auth-succes?token=${token}`)
-  
-  return res.json({  
-    data: {
-      userId: user.id,
-      username: user.name,
-    },
-    token: token
-  })
+      // Sign the JWT token with a secret key
+      const token = jwt.sign(payload, secret, { expiresIn: '1h' });
+
+      // return res.redirect(`http://localhost:5173/userCatalog?token=${token}`)
+    
+
+      return res.json({  
+        data: {
+          userId: user.id,
+          username: user.name,
+        },
+        token: token
+      })
+    });
+  }).then((data) => {
+    return res.json(data);
+  });
 }
 
 export const getUsers = async(req,res)=>{
@@ -126,28 +134,12 @@ export const Register = async (req,res) => {
         password: hashPassword,
       }
     })
-    return res.json({msg: 'Registrasi Berhasil' })
-    
+    return res.json({msg: 'Registrasi Berhasil' })    
 }
 
-export const verifyToken = async (req, res) => {
-  const {token} = req.query
-  jwt.verify(token, 'secret key', (err)=>{
-    if (err) {
-      if(err.name=='TokenExpiredError'){
-        return res.status(401).json({
-          message:'Token Expired'
-        })
-      }
-      return res.status(500).json
-      ({message: 'Failed'})
-    }
-    return res.json({token})
-  })
-}
+
 
 export const Login = async (req, res) => {
-  const {role} = req.params
     const user = await prisma.users.findUnique({
       where:{
           email: req.body.email
@@ -163,16 +155,33 @@ export const Login = async (req, res) => {
         return res.status(400).json({msg: "Password salah"});
     }
 
+    const userId = user.user_id;
+    const name = user.username;
     const email = user.email;
+    const role = user.role;
 
-    const token = generateToken({ email, role }, 'secret key');
+    const token =  jwt.sign({sub: userId, name, email, role}, process.env.JWT_SECRET, {
+      expiresIn: '720h',
+  });
+    const refreshToken = jwt.sign({sub: userId, name, email, role}, process.env.JWT_SECRET, {
+      expiresIn: '1d',
+    });
 
-    return res.json({token:token})
+    await prisma.users.update({ 
+        where: {
+            user_id: userId
+        },
+        data: {
+          refresh_token: refreshToken
+        }
+    });
+
+    return res.json({token})
 }
 
 export const Logout = async (req, res) => {
   try {
-    const refreshToken = req.refresh_token;
+    const refreshToken = req.params.refresh_token;
 
     if (!refreshToken) {
       return res.sendStatus(204); // No refresh token provided, return success (204 No Content)
@@ -190,9 +199,12 @@ export const Logout = async (req, res) => {
 
     const userId = user.id;
 
-    await prisma.users.update({ refresh_token: null }, {
+    await prisma.users.update({
       where: {
         id: userId
+      },
+      data: {
+        refresh_token: refreshToken
       }
     });
 
