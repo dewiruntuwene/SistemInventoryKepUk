@@ -1,29 +1,32 @@
 import jwt from "jsonwebtoken";
 
-// Function to generate JWT token with user role included
-export function generateToken(user) {
-    const payload = {
-      userId: user.id,
-      email: user.email,
-      role: user.role // Include the user's role in the payload
-    };
-  
-    // Sign the JWT token with a secret key
-    const token = jwt.sign(payload,{ expiresIn: '1h' });
-    return token;
-}
+
 
 export const verifyToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader &&  authHeader.split(' ')[1];
-    if(token==null) return res.status(401);
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(err, decoded)=>{
-        if(err) return res.status(403);
-        
-        req.email = decoded.email;
-        req.role = decoded.role
-        next()
-    })
-}
+  console.log('Authorization Header:', req.headers['authorization']);  
+  const token = req.headers['authorization']?.split(' ')[1];
+  
+    if (!token) {
+      console.log('No token provided');
+      return res.status(403).json({ message: 'No token provided' });
+    }
+  
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        console.log('Failed to authenticate token');
+        return res.status(401).json({ message: 'Failed to authenticate token' });
+      }
+  
+      console.log('Token verified, decoded:', decoded);
+      req.user = {
+        user_id: decoded.sub,
+        username: decoded.name
+      };
+      console.log(req.user)
 
+      next();
+    });
+};
+  
 
+export default verifyToken;
