@@ -7,14 +7,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
+model Users {
   user_id    Int       @id @default(autoincrement())
   username   String    @db.VarChar(50)
-  password   String    @db.VarChar(255)
+  password   String?   @db.VarChar(255)
   email      String    @unique @db.VarChar(50)
   role       Role      @default(USER)
   created_on DateTime  @default(now())
   last_login DateTime? @default(now())
+  refresh_token String? @db.VarChar(255)
+  peminjam   Peminjam[]
+  keranjang  Keranjang[]
+}
+
+model Peminjam {
+  id_peminjam         Int               @id @default(autoincrement())
+  nama_matakuliah     String            @db.VarChar(50)
+  prasat              String            @db.VarChar(50)
+  jam_praktek         String            @db.VarChar(10)
+  tanggal_praktek     String?           @db.VarChar(20)
+  tanggal_pengambilan DateTime          @default(now())
+  userId              Int
+  users               Users             @relation(fields: [userId], references: [user_id])
+  type                Type              @default(PENDING)
+  transaksiBarang     TransaksiBarang[]    
+  barangPinjam        BarangPinjam[]
+
+  @@map("peminjam")
 }
 
 model Matakuliah {
@@ -51,25 +70,10 @@ model Barang {
   keranjangs      Keranjang[]
   transaksiBarang TransaksiBarang[]
   history         History[]
+  barangPinjam    BarangPinjam[]
 
   @@map("barangs")
 }
-
-model Peminjam {
-  id_peminjam         Int               @id @default(autoincrement())
-  nama_dosen          String            @db.VarChar(50)
-  nama_matakuliah     String            @db.VarChar(50)
-  prasat              String            @db.VarChar(50)
-  jam_praktek         String            @db.VarChar(10)
-  tanggal_praktek     String?           @db.VarChar(20)
-  tanggal_pengambilan DateTime          @default(now())
-  keranjangId         Int
-  keranjangs          Keranjang        @relation(fields: [keranjangId], references: [id_keranjang], onDelete: Cascade)
-  transaksiBarang     TransaksiBarang[]      
-  @@map("peminjam")
-}
-
-
 
 
 model Keranjang {
@@ -77,19 +81,30 @@ model Keranjang {
   barangId     String
   barangs      Barang    @relation(fields: [barangId], references: [id_barang])
   jumlah_barang Int? 
-  peminjam     Peminjam[]
   isCheckedOut String?   @default("N")
   delete_at    DateTime  @default(now())
+  userId       Int
+  users        Users     @relation(fields: [userId], references: [user_id])
 
   @@map("keranjangs")
 }
 
+model BarangPinjam {
+  id_barang_pinjam  Int @id @default(autoincrement())
+  peminjam            Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
+  peminjamId          Int?
+  barangs             Barang  @relation(fields: [barangId], references: [id_barang])
+  barangId            String
+  jumlah_barang       Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 model TransaksiBarang {
   id_transaksi_barang Int      @id @default(autoincrement())
   jumlah_barang       Int?
   barangId            String
-  type                Type
+  type                Type      @default(PENDING)
   peminjamId          Int?
   barangs             Barang  @relation(fields: [barangId], references: [id_barang])
   peminjam            Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
@@ -105,6 +120,7 @@ enum Type {
   BarangKeluar
   BarangMasuk
   PENDING
+  CANCEL
 }
 
 enum Role {
