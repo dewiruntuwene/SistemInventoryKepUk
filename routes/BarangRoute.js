@@ -18,7 +18,7 @@ const upload = multer({ storage: diskStorage({
 router.get('/barang',getBarang);
 router.get('/barang/:id_barang',getBarangById);
 router.post('/barang', upload.single('gambar_barang'), createBarang);
-router.put('/barang/:id_barang',updateBarang);
+router.patch('/barang/:id_barang',updateBarang);
 router.delete('/barang/:id_barang',deleteBarang);
 
 export default router;
