@@ -72,7 +72,7 @@ export const getKeranjang = async(req, res) =>{
   try {
       const allKeranjang = await prisma.Keranjang.findMany({
         where: {
-            isCheckedOut: 'N'
+            userId: req.user.user_id
         },
         include: {
             barangs: true // Mengambil data barang dalam setiap keranjang
@@ -163,6 +163,7 @@ export const createDataPeminjamBarang = async (req, res) => {
                 kode_barang: cart.barangs.kode_barang,
                 jumlah_barang: cart.jumlah_barang,
                 nama_barang: cart.barangs.nama_barang,
+                jenis_barang: cart.barangs.jenis_barang,
                 barangs: {
                   connect: {
                     id_barang: cart.barangs.id_barang
@@ -253,11 +254,13 @@ export const getDataPeminjamBarang = async(req, res) =>{
         id_peminjam: req.params.id_peminjam
       },
       select: {
+        id_peminjam:true,
         nama_matakuliah: true,
         prasat:true,
         jam_praktek: true,
         tanggal_praktek:true,
         tanggal_pengambilan: true,
+        type: true,
         users:{
           select: {
             username:true,
@@ -267,7 +270,8 @@ export const getDataPeminjamBarang = async(req, res) =>{
           select: {
             kode_barang:true,
             jumlah_barang:true,
-            nama_barang:true
+            nama_barang:true,
+            jenis_barang:true
           }
         }
       }
