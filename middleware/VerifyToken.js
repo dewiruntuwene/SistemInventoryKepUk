@@ -11,7 +11,7 @@ export const verifyToken = (req, res, next) => {
       return res.status(403).json({ message: 'No token provided' });
     }
   
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, process.env.ACCECS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
         console.log('Failed to authenticate token');
         return res.status(401).json({ message: 'Failed to authenticate token' });
