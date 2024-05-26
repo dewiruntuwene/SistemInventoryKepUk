@@ -76,21 +76,23 @@ export const getLoginCallbackGoogle = async(req, res) => {
         role: user?.role, // Include the user's role in the payload
       };
 
-      const secret = process.env.JWT_SECRET;
+      const secret = process.env.ACCECS_TOKEN_SECRET;
 
       // Sign the JWT token with a secret key
       const token = jwt.sign(payload, secret, { expiresIn: '1h' });
 
-      // return res.redirect(`http://localhost:5173/userCatalog?token=${token}`)
-    
 
-      return res.json({  
-        data: {
-          userId: user.id,
-          username: user.name,
-        },
-        token: token
-      })
+      return res.redirect(`http://localhost:5173/userCatalog?token=${token}`)
+    
+      
+
+      // return res.json({  
+      //   data: {
+      //     userId: user.id,
+      //     username: user.name,
+      //   },
+      //   token: token
+      // })
     });
   }).then((data) => {
     return res.json(data);
@@ -160,10 +162,10 @@ export const Login = async (req, res) => {
     const email = user.email;
     const role = user.role;
 
-    const token =  jwt.sign({sub: userId, name, email, role}, process.env.JWT_SECRET, {
+    const token =  jwt.sign({sub: userId, name, email, role}, process.env.ACCECS_TOKEN_SECRET, {
       expiresIn: '720h',
-  });
-    const refreshToken = jwt.sign({sub: userId, name, email, role}, process.env.JWT_SECRET, {
+    });
+    const refreshToken = jwt.sign({sub: userId, name, email, role}, process.env.REFRESH_TOKEN_SECRET, {
       expiresIn: '1d',
     });
 
@@ -181,34 +183,24 @@ export const Login = async (req, res) => {
 
 export const Logout = async (req, res) => {
   try {
-    const refreshToken = req.params.refresh_token;
+    const refreshToken = req.headers['authorization']?.split(' ')[1] || req.body.refresh_token;
 
     if (!refreshToken) {
-      return res.sendStatus(204); // No refresh token provided, return success (204 No Content)
+      return res.status(204); // No refresh token provided, return success (204 No Content)
     }
 
-    const user = await prisma.users.findOne({
-      where: {
-        refresh_token: refreshToken
-      }   
-    });
-    
-    if (!user) {
-      return res.sendStatus(204); // No user found with the provided refresh token, return success
-    }
-
-    const userId = user.id;
+    const userId = req.user.user_id;
 
     await prisma.users.update({
       where: {
-        id: userId
+        user_id: userId
       },
       data: {
-        refresh_token: refreshToken
+        refresh_token: null
       }
     });
 
-    return res.sendStatus(20); // Logout successful, return success (204 No Content)
+    return res.status(200).json({msg: "Berhasil Logout"}); // Logout successful, return success (204 No Content)
   } catch (error) {
     console.error('Error during logout:', error);
     return res.status(500).json({ error: 'Internal Server Error' });
