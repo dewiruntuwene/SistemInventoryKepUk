@@ -21,9 +21,7 @@ export const getBarangMasukById = async(req, res) =>{
 export const createBarangMasuk = async(req, res) =>{
     const { id_barang, jumlah_barang, tanggal_masuk, tanggal_keluar, kode_barang } = req.body;
 
-    try {
-
-        
+    try {  
         // Create a new entry in the TransaksiBarang table and include the related Barang data
         const newTransaction = await prisma.$transaction([
             prisma.transaksiBarang.create({
