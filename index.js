@@ -14,16 +14,27 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import bodyParser from 'body-parser';
-
+import session from 'express-session';
 
 dotenv.config();
 const app = express();
+
+// Setup session middleware
+app.use(session({
+  secret: 'secret-key',
+  resave: false,
+  saveUninitialized: false
+}));
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // Mendapatkan direktori kerja saat ini
 const __filename = fileURLToPath(import.meta.url);
 app.use('/uploads', express.static('uploads'));
-app.use(cors({origin:'*'}));
+app.use(cors({origin:'*', credentials: true }));
+// Izinkan permintaan dari asal yang sesuai
+app.use(cors({ origin: '*', optionsSuccessStatus: 200 }));
 app.use(express.json());
 app.use(BarangRoute);
 app.use(UserRoute);
@@ -36,6 +47,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
   next();
 });
+
 
 
 app.use((req, res, next) => {
