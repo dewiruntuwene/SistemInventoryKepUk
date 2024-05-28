@@ -138,7 +138,6 @@ export const createDataPeminjamBarang = async (req, res) => {
       const barangInKeranjang = await tx.Keranjang.findMany({
         where: {
           id_keranjang: id_keranjang,
-          isCheckedOut: 'N'
         },
         include: {
           barangs: true
@@ -251,7 +250,7 @@ export const getDataPeminjamBarang = async(req, res) =>{
   try {
     const peminjam = await prisma.Peminjam.findMany({
       where: {
-        id_peminjam: req.params.id_peminjam
+        userId: req.user.user_id
       },
       select: {
         id_peminjam:true,
