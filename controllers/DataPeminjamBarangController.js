@@ -163,9 +163,11 @@ export const createDataPeminjamBarang = async (req, res) => {
                 jumlah_barang: cart.jumlah_barang,
                 nama_barang: cart.barangs.nama_barang,
                 jenis_barang: cart.barangs.jenis_barang,
+                kode_barang: cart.barangs.kode_barang,
                 barangs: {
                   connect: {
-                    id_barang: cart.barangs.id_barang
+                    id_barang: cart.barangs.id_barang,
+                    kode_barang: cart.barangs.kode_barang
                   }
                 }
               }
@@ -315,7 +317,6 @@ export const barangKeluarPeminjam = async(req, res) => {
           }
       });
 
-
       // Iterate over the barangPinjam to create transaksiBarang
     for (const barangPinjam of peminjam.barangPinjam) {
       const id_barang = barangPinjam.barangId; // Assuming barangId is the correct field
@@ -325,6 +326,7 @@ export const barangKeluarPeminjam = async(req, res) => {
         data: {
           nama_matakuliah: peminjam.nama_matakuliah,
           nama_barang: barangPinjam.nama_barang,
+          kode_barang: barangPinjam.kode_barang,
           tanggal_masuk: null,
           jumlah_barang: jumlah_barang,
           peminjam: {
