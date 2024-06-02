@@ -19,7 +19,7 @@ export const getBarangKeluarById = async(req, res) =>{
 }
 
 export const createBarangKeluar = async(req, res) =>{
-    const { barangId, id_barang, nama_barang, total_stock, jenis_barang, gambar_barang, harga_barang, jumlah_barang, tanggal_keluar, tanggal_masuk } = req.body;
+    const { barangId, id_barang, nama_barang, total_stock, jenis_barang, gambar_barang, harga_barang, jumlah_barang, tanggal_keluar, tanggal_masuk, kode_barang } = req.body;
 
     try {
         // Create a new entry in the TransaksiBarang table and include the related Barang data
@@ -33,7 +33,8 @@ export const createBarangKeluar = async(req, res) =>{
                     type: "BarangKeluar",
                     barangs: {
                         connect: {
-                          id_barang: id_barang,        
+                          id_barang: id_barang,  
+                          kode_barang: kode_barang      
                         },
                     },
                 },
