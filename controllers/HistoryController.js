@@ -8,7 +8,7 @@ export const getHistory = async (req, res) => {
   try {
    // Fetch data from the database
   const histories = await prisma.transaksiBarang.groupBy({
-    by: ['nama_matakuliah', 'nama_barang', 'barangId'],
+    by: ['nama_matakuliah', 'nama_barang', 'kode_barang'],
     where: {
       type: 'BarangKeluar',
     },
