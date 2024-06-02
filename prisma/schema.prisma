@@ -116,7 +116,7 @@ model TransaksiBarang {
   tanggal_masuk       String?
   nama_matakuliah     String?
   nama_barang         String?
-
+  kode_barang         String?
   @@map("transaksiBarang")
 }
 
