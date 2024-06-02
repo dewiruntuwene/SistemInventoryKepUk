@@ -145,7 +145,7 @@ export async function handleGoogleAuthGet (req, res, next) {
     console.log('credentials', user);
     const userData = await getUserData(oAuth2Client.credentials.access_token);
 
-    let userFromDb  = await prisma.users.findUnique({
+    const userFromDb  = await prisma.users.findUnique({
       where: { email: userData.email },
     });
   
@@ -167,17 +167,19 @@ export async function handleGoogleAuthGet (req, res, next) {
       });
     }
   
-    const userId = userData.user_id;
-    const name = userData.username;
+    const userId = userFromDb.user_id;
+    const name = userData.name;
     const email = userData.email;
-    const role = userData.role;
+    const role = userFromDb.role;
   
     // Menggunakan data dari oAuth2Client.credentials.user untuk pembuatan token JWT
     const token = jwt.sign({ sub: userId, name, email, role }, process.env.ACCECS_TOKEN_SECRET, {
       expiresIn: '720h',
     });
 
-    return res.redirect(`http://localhost:5173/userCatalog?token=${token}`);
+    console.log('Jwt Token:', token)
+
+    return res.redirect(`http://localhost:5173/lmsfrontend/UserCatalog?token=${token}`);
     } catch (err) {
     console.log('Error logging in with OAuth2 user', err);
   }
