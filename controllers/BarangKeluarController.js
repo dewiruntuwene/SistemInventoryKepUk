@@ -29,6 +29,7 @@ export const createBarangKeluar = async(req, res) =>{
                     tanggal_keluar,
                     tanggal_masuk: null, 
                     jumlah_barang:jumlah_barang,
+                    harga_barang,
                     peminjamId: req.params.id_peminjam,
                     type: "BarangKeluar",
                     barangs: {
@@ -44,7 +45,7 @@ export const createBarangKeluar = async(req, res) =>{
             })
         ]);
         await prisma.Barang.update({
-            where: { id_barang: id_barang },
+            where: { kode_barang: kode_barang },
             data: {
                 total_stock: {
                     decrement: jumlah_barang // Kurangi stok barang sesuai jumlah keluar
