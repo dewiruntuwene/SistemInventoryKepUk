@@ -31,6 +31,7 @@ model Peminjam {
   users               Users             @relation(fields: [userId], references: [user_id])
   type                Type              @default(PENDING)
   transaksiBarang     TransaksiBarang[]    
+  barangHabisPakai    BarangHabisPakai[]
   barangPinjam        BarangPinjam[]
 
   @@map("peminjam")
@@ -71,6 +72,7 @@ model Barang {
   keranjangs      Keranjang[]
   transaksiBarang TransaksiBarang[]
   history         History[]
+  barangHabisPakai    BarangHabisPakai[]
   barangPinjam    BarangPinjam[]
 
   @@map("barangs")
@@ -90,6 +92,20 @@ model Keranjang {
   @@map("keranjangs")
 }
 
+model BarangHabisPakai {
+  id_barang_habis_pakai  Int @id @default(autoincrement())
+  peminjam            Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
+  peminjamId          Int?
+  barangs             Barang  @relation(fields: [barangId], references: [id_barang])
+  barangId            Int
+  jumlah_barang       Int
+  nama_barang         String
+  kode_barang         String
+  jenis_barang        String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model BarangPinjam {
   id_barang_pinjam  Int @id @default(autoincrement())
   peminjam            Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
@@ -106,6 +122,7 @@ model BarangPinjam {
 
 model TransaksiBarang {
   id_transaksi_barang Int      @id @default(autoincrement())
+  harga_barang        Int?
   jumlah_barang       Int?
   barangId            Int
   type                Type      @default(PENDING)
