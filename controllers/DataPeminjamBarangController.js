@@ -156,7 +156,7 @@ export const createDataPeminjamBarang = async (req, res) => {
               username: req.user.username
             }
           },
-          barangPinjam: {
+          barangHabisPakai: {
             create: keranjang.map((cart =>  {
               return {
                 kode_barang: cart.barangs.kode_barang,
@@ -267,7 +267,7 @@ export const getDataPeminjamBarang = async(req, res) =>{
             username:true,
           }
         },
-        barangPinjam:{
+        BarangHabisPakai:{
           select: {
             kode_barang:true,
             jumlah_barang:true,
@@ -313,20 +313,20 @@ export const barangKeluarPeminjam = async(req, res) => {
               type: 'BarangKeluar'
           },
           include: {
-            barangPinjam:true
+            barangHabisPakai:true
           }
       });
 
       // Iterate over the barangPinjam to create transaksiBarang
-    for (const barangPinjam of peminjam.barangPinjam) {
-      const id_barang = barangPinjam.barangId; // Assuming barangId is the correct field
-      const jumlah_barang = barangPinjam.jumlah_barang; // Assuming jumlah_barang is the correct field
+    for (const barangHabisPakai of peminjam.barangPinjam) {
+      const id_barang = barangHabisPakai.barangId; // Assuming barangId is the correct field
+      const jumlah_barang = barangHabisPakai.jumlah_barang; // Assuming jumlah_barang is the correct field
 
       await prisma.TransaksiBarang.create({
         data: {
           nama_matakuliah: peminjam.nama_matakuliah,
-          nama_barang: barangPinjam.nama_barang,
-          kode_barang: barangPinjam.kode_barang,
+          nama_barang: barangHabisPakai.nama_barang,
+          kode_barang: barangHabisPakai.kode_barang,
           tanggal_masuk: null,
           jumlah_barang: jumlah_barang,
           peminjam: {
