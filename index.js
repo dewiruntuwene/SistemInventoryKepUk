@@ -61,4 +61,4 @@ export const PORT = process.env.PORT
 
 
 
-app.listen(PORT, ()=> console.log('Server up and running'));
+app.listen(PORT, ()=> console.log(`Server up and running ${PORT}`));
