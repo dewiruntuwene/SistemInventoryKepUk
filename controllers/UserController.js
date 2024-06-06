@@ -187,7 +187,6 @@ export async function handleGoogleAuthGet (req, res, next) {
 };
 
 
-
 export const getUsers = async(req,res)=>{
   try {
       const Users = await prisma.users.findMany({
