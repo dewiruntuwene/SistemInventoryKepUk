@@ -23,7 +23,7 @@ Content-Type: application/json
 DELETE  http://localhost:5000/barangKeluar/52
 
 ###h
-DELETE http://localhost:5000/barangMasuk/2
+DELETE http://localhost:5000/barangMasuk/45
 
 ###
 POST http://localhost:5000/barangMasuk
