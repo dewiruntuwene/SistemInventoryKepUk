@@ -267,7 +267,7 @@ export const getDataPeminjamBarang = async(req, res) =>{
             username:true,
           }
         },
-        BarangHabisPakai:{
+        barangHabisPakai:{
           select: {
             kode_barang:true,
             jumlah_barang:true,
@@ -318,7 +318,7 @@ export const barangKeluarPeminjam = async(req, res) => {
       });
 
       // Iterate over the barangPinjam to create transaksiBarang
-    for (const barangHabisPakai of peminjam.barangPinjam) {
+    for (const barangHabisPakai of peminjam.barangHabisPakai) {
       const id_barang = barangHabisPakai.barangId; // Assuming barangId is the correct field
       const jumlah_barang = barangHabisPakai.jumlah_barang; // Assuming jumlah_barang is the correct field
 
