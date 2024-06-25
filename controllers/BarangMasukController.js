@@ -41,7 +41,7 @@ export const createBarangMasuk = async(req, res) =>{
                   },
                   include: {
                     barangs: true
-                  }
+                }
             })
         ]);
         // Tambahkan total stock barang
@@ -85,21 +85,19 @@ export const updateBarangMasuk = async(req, res) =>{
                 type: "BarangMasuk"
             },
             data: {
-                tanggal_masuk:  tanggal_masuk,
-                tanggal_keluar:null,
-                jumlah_barang: jumlah_barang,
-                type: "BarangMasuk",
+                tanggal_masuk,
+                jumlah_barang,
+                harga_barang,
+                nama_barang,
                 barangs: {
                     connect: {
-                        id_barang:id_barang,
-                        kode_barang: kode_barang,
-                        nama_barang: nama_barang,
-                        jenis_barang: jenis_barang,
-                        harga_barang: harga_barang,
-                        gambar_barang: gambar_barang
-                          
+                      id_barang:id_barang,
+                      kode_barang: kode_barang,
                     },
-                },
+                  },
+              },
+              include: {
+                barangs: true
             }
         });
         res.status(200).json({msg: "Data Updated"});
