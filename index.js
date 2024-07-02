@@ -33,7 +33,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // Mendapatkan direktori kerja saat ini
 const __filename = fileURLToPath(import.meta.url);
-app.use('/uploads', express.static('uploads'));
+const __dirname = dirname(__filename);
+// Melayani file statis dari folder uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(cors({origin:'*', credentials: true }));
 // Izinkan permintaan dari asal yang sesuai
 app.use(cors({ origin: '*', optionsSuccessStatus: 200 }));
