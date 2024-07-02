@@ -363,6 +363,69 @@ export const barangKeluarPeminjam = async(req, res) => {
   }
 }
 
+
+export const barangPeminjam = async(req, res) => {
+  try{
+    
+    const peminjamId = +req.params.id_peminjam; // Convert id to number
+    const peminjam = await prisma.Peminjam.update({
+          where: {
+              id_peminjam: peminjamId
+          },
+          data: {
+              type: 'BarangPinjam'
+          },
+          include: {
+            barangHabisPakai:true
+          }
+      });
+
+      // Iterate over the barangPinjam to create transaksiBarang
+    for (const barangHabisPakai of peminjam.barangHabisPakai) {
+      const id_barang = barangHabisPakai.barangId; // Assuming barangId is the correct field
+      const jumlah_barang = barangHabisPakai.jumlah_barang; // Assuming jumlah_barang is the correct field
+
+      await prisma.TransaksiBarang.create({
+        data: {
+          nama_matakuliah: peminjam.nama_matakuliah,
+          nama_barang: barangHabisPakai.nama_barang,
+          kode_barang: barangHabisPakai.kode_barang,
+          tanggal_masuk: null,
+          jumlah_barang: jumlah_barang,
+          peminjam: {
+            connect: {
+              id_peminjam: peminjamId
+            }
+          },
+          type: "BarangPinjam",
+          barangs: {
+            connect: {
+              id_barang: id_barang
+            }
+          }
+        },
+        include: {
+          barangs: true // Include the related Barang model
+        }
+      });
+
+      // Update Barang stock
+      await prisma.Barang.update({
+        where: { id_barang: id_barang },
+        data: {
+          total_stock: {
+            decrement: jumlah_barang // Decrease stock by the jumlah_barang
+          }
+        }
+      });
+    }
+  res.json(peminjam);
+  }catch(error){
+    console.error('Error fetching peminjam:', error);
+    res.status(500).json({ error: 'Error fetching peminjam' });
+  }
+}
+
 export const cancelPeminjaman = async (req, res) => {
   try {
       const peminjamId = +req.params.id_peminjam; // Convert id to number
