@@ -131,6 +131,7 @@ model TransaksiBarang {
   peminjam            Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
   tanggal_keluar      DateTime? @default(now())
   tanggal_masuk       String?
+  tanggal_pinjam       String?
   nama_matakuliah     String?
   nama_barang         String?
   kode_barang         String?
@@ -140,6 +141,7 @@ model TransaksiBarang {
 enum Type {
   BarangKeluar
   BarangMasuk
+  BarangPinjam
   PENDING
   CANCEL
 }
