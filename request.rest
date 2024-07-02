@@ -23,7 +23,7 @@ Content-Type: application/json
 DELETE  http://localhost:5000/barangKeluar/52
 
 ###h
-DELETE http://localhost:5000/barangMasuk/45
+DELETE http://localhost:5000/barangMasuk/47
 
 ###
 POST http://localhost:5000/barangMasuk
@@ -42,21 +42,36 @@ Content-Type: application/json
 GET  http://localhost:5000/barangMasuk/
 
 ###
-PATCH     http://localhost:5000/barangMasuk/3
+PATCH     http://localhost:5000/barangMasuk/62
 Content-Type: application/json
 
 {
   "tanggal_masuk": "12/02/23",
-  "jumlah_barang":5,
-  "kode_barang": "A019",
-  "nama_barang": "Masker",
-  "jenis_barang": "baik",
-  "harga_barang": 5000,
-  "gambar_barang": "1715856034629-1711376166370-Face-mask 1.png"
+  "jumlah_barang": 13,
+  "kode_barang": "A100",
+  "nama_barang": "Suntik",
+  "jenis_barang": "Habis Pakai",
+  "harga_barang": 5000
 }
 
 ###
 DELETE  http://localhost:5000/barangKeluar/2
+
+###
+POST http://localhost:5000/peminjam
+Content-Type: application/json
+
+{
+  "nama_barang": "Sarung Tangan",
+  "jenis_barang": "Habis Pakai",
+  "harga_barang": 10000,
+  "jumlah_barang": 1,
+  "kode_barang": "A102",
+  "tanggal_pinjam": "07/01/2024"
+}
+
+###
+GET  http://localhost:5000/peminjam
 
 ###
 GET  http://localhost:5000/barang
