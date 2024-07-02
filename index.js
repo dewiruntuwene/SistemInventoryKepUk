@@ -9,6 +9,7 @@ import BarangKeluarRoute from "./routes/BarangKeluarRoute.js";
 import DashboardRoute from "./routes/DashboardRoute.js";
 import HistoryRoute from "./routes/HistoryRoute.js";
 import DataPeminjamBarangRoute from "./routes/DataPeminjamBarangRoute.js";
+import BarangPinjamRoute from "./routes/BarangPinjamRoute.js";
 import fs from 'fs/promises'; 
 import path from "path";
 import { fileURLToPath } from 'url';
@@ -44,6 +45,7 @@ app.use(BarangKeluarRoute);
 app.use(DashboardRoute);
 app.use(HistoryRoute);
 app.use(DataPeminjamBarangRoute);
+app.use(BarangPinjamRoute);
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
   next();
