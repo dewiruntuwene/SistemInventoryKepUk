@@ -100,6 +100,15 @@ export const updateBarangMasuk = async(req, res) =>{
                 barangs: true
             }
         });
+        // Tambahkan total stock barang
+        await prisma.Barang.update({
+            where: { kode_barang },
+            data: {
+                total_stock: {
+                    increment: parseInt(jumlah_barang) // Tambahkan stok barang sesuai jumlah masuk
+                },
+            },
+        });
         res.status(200).json({msg: "Data Updated"});
     } catch (error) {
         console.log(error.message);
