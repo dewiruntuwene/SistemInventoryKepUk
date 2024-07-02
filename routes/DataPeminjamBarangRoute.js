@@ -1,5 +1,5 @@
 import express from "express";
-import {createDataPeminjamBarang, getDataPeminjamBarang, deletetDataPeminjamBarang, createKeranjang, getKeranjang, deleteKeranjang, updateKeranjang, barangKeluarPeminjam} from "../controllers/DataPeminjamBarangController.js"
+import {createDataPeminjamBarang, getDataPeminjamBarang, deletetDataPeminjamBarang, createKeranjang, getKeranjang, deleteKeranjang, updateKeranjang, barangKeluarPeminjam, barangPeminjam} from "../controllers/DataPeminjamBarangController.js"
 import { PrismaClient } from "@prisma/client";
 import { verifyToken } from "../middleware/VerifyToken.js";
 
@@ -16,5 +16,6 @@ router.patch('/keranjang/:id_keranjang',updateKeranjang);
 router.delete('/peminjamBarang/:id_peminjam',deletetDataPeminjamBarang);
 router.delete('/keranjang/:id_keranjang',deleteKeranjang);
 router.patch('/peminjamBarang/:id_peminjam',barangKeluarPeminjam);
+router.patch('/peminjam/:id_peminjam',barangPeminjam);
 
 export default router;
