@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "backend": "nodemon server.js",
     "db:generate": "npx prisma generate",
-    "build": "prisma generate && <actual-build-command>",
+    "build": "prisma generate && next build",
     "postinstall": "prisma generate"
   },
   "author": "dewiruntuwene",
