@@ -17,6 +17,7 @@ import { dirname, join } from 'path';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 
+const prisma = new PrismaClient();
 
 dotenv.config();
 const app = express();
