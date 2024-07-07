@@ -16,9 +16,10 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import memorystore from 'memorystore';
 
 const prisma = new PrismaClient();
-const MemoryStore = require('memorystore')(session)
+const MemoryStore = memorystore(session);
 
 dotenv.config();
 const app = express();
