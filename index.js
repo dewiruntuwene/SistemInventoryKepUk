@@ -28,17 +28,11 @@ const app = express();
 app.use(session({
   secret: 'secret-key',
   resave: false,
-  saveUninitialized: false
-}));
-
-app.use(session({
-  cookie: { maxAge: 86400000 },
+  saveUninitialized: false,
   store: new MemoryStore({
-    checkPeriod: 86400000 // prune expired entries every 24h
+    checkPeriod: 86400000 // 24 hours
   }),
-  resave: false,
-  secret: 'keyboard cat'
-}))
+}));
 
 
 app.use(bodyParser.json());
