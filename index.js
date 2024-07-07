@@ -18,6 +18,7 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 
 const prisma = new PrismaClient();
+const MemoryStore = require('memorystore')(session)
 
 dotenv.config();
 const app = express();
@@ -28,6 +29,15 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+
+app.use(session({
+  cookie: { maxAge: 86400000 },
+  store: new MemoryStore({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  }),
+  resave: false,
+  secret: 'keyboard cat'
+}))
 
 
 app.use(bodyParser.json());
