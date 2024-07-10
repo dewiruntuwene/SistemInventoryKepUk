@@ -24,9 +24,6 @@ const MemoryStore = memorystore(session);
 dotenv.config();
 const app = express();
 
-const { DB_HOST, DB_USER, DB_PASS, DB_PORT, DB_NAME } = process.env;
-process.env.DATABASE_URL = `postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
-
 
 // Setup session middleware
 app.use(session({
@@ -37,6 +34,9 @@ app.use(session({
     checkPeriod: 86400000 // 24 hours
   }),
 }));
+
+const { DB_HOST, DB_USER, DB_PASS, DB_PORT, DB_NAME } = process.env;
+process.env.DATABASE_URL = `postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 
 
 app.use(bodyParser.json());
