@@ -24,6 +24,10 @@ const MemoryStore = memorystore(session);
 dotenv.config();
 const app = express();
 
+const { DB_HOST, DB_USER, DB_PASS, DB_PORT, DB_NAME } = process.env;
+process.env.DATABASE_URL = `postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+
+
 // Setup session middleware
 app.use(session({
   secret: 'secret-key',
@@ -66,6 +70,7 @@ app.use((req, res, next) => {
     next();
   });
 
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
 
 export const JWT_SECRET = process.env.JWT_SECRET
 export const PORT = process.env.PORT
