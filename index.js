@@ -71,5 +71,7 @@ export const JWT_SECRET = process.env.JWT_SECRET
 export const PORT = process.env.PORT
 
 
+export default app;
+
 
 app.listen(PORT, ()=> console.log(`Server up and running ${PORT}`));
