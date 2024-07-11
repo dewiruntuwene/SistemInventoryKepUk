@@ -10,13 +10,13 @@ import DashboardRoute from "./routes/DashboardRoute.js";
 import HistoryRoute from "./routes/HistoryRoute.js";
 import DataPeminjamBarangRoute from "./routes/DataPeminjamBarangRoute.js";
 import BarangPinjamRoute from "./routes/BarangPinjamRoute.js";
-import fs from 'fs/promises'; 
+import fs from "fs/promises";
 import path from "path";
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import bodyParser from 'body-parser';
-import session from 'express-session';
-import memorystore from 'memorystore';
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import bodyParser from "body-parser";
+import session from "express-session";
+import memorystore from "memorystore";
 
 const prisma = new PrismaClient();
 const MemoryStore = memorystore(session);
@@ -24,20 +24,20 @@ const MemoryStore = memorystore(session);
 dotenv.config();
 const app = express();
 
-
 // Setup session middleware
-app.use(session({
-  secret: 'secret-key',
-  resave: false,
-  saveUninitialized: false,
-  store: new MemoryStore({
-    checkPeriod: 86400000 // 24 hours
+app.use(
+  session({
+    secret: "secret-key",
+    resave: false,
+    saveUninitialized: false,
+    store: new MemoryStore({
+      checkPeriod: 86400000, // 24 hours
+    }),
   }),
-}));
+);
 
 // const { DB_HOST, DB_USER, DB_PASS, DB_PORT, DB_NAME } = process.env;
 // process.env.DATABASE_URL = `postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -45,10 +45,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // Melayani file statis dari folder uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(cors({origin:'*', credentials: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(cors({ origin: "*", credentials: true }));
 // Izinkan permintaan dari asal yang sesuai
-app.use(cors({ origin: '*', optionsSuccessStatus: 200 }));
+app.use(cors({ origin: "*", optionsSuccessStatus: 200 }));
 app.use(express.json());
 app.use(BarangRoute);
 app.use(UserRoute);
@@ -59,24 +59,20 @@ app.use(HistoryRoute);
 app.use(DataPeminjamBarangRoute);
 app.use(BarangPinjamRoute);
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
   next();
 });
 
-
-
 app.use((req, res, next) => {
-    req.refresh_token = req.body.refreshToken; // Adjust based on how you send the refresh token
-    next();
-  });
+  req.refresh_token = req.body.refreshToken; // Adjust based on how you send the refresh token
+  next();
+});
 
 console.log("DATABASE_URL:", process.env.DATABASE_URL);
 
-export const JWT_SECRET = process.env.JWT_SECRET
-export const PORT = process.env.PORT
-
+export const JWT_SECRET = process.env.JWT_SECRET;
+export const PORT = process.env.PORT;
 
 export default app;
 
-
-app.listen(PORT, ()=> console.log(`Server up and running ${PORT}`));
+app.listen(PORT, () => console.log(`Server up and running ${PORT}`));

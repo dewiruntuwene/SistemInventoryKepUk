@@ -4,7 +4,7 @@
  *
  * In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues/new`
  */
-export declare const PrismaClient: any
+export declare const PrismaClient: any;
 
 /**
  * @deprecated
@@ -12,4 +12,4 @@ export declare const PrismaClient: any
  *
  * In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues/new`
  */
-export declare type PrismaClient = any
+export declare type PrismaClient = any;
