@@ -35,8 +35,8 @@ app.use(session({
   }),
 }));
 
-const { DB_HOST, DB_USER, DB_PASS, DB_PORT, DB_NAME } = process.env;
-process.env.DATABASE_URL = `postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
+// const { DB_HOST, DB_USER, DB_PASS, DB_PORT, DB_NAME } = process.env;
+// process.env.DATABASE_URL = `postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 
 
 app.use(bodyParser.json());
