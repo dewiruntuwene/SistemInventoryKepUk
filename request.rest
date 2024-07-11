@@ -32,8 +32,8 @@ Content-Type: application/json
 {
   "tanggal_masuk": "12/02/23",
   "jumlah_barang": 5,
-  "kode_barang": "A100",
-  "nama_barang": "Edelweis",
+  "kode_barang": "A001",
+  "nama_barang": "Suntik",
   "jenis_barang": "Habis pakai",
   "harga_barang": 2000
 }
