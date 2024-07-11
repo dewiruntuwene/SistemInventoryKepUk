@@ -37,18 +37,18 @@ model Peminjam {
   @@map("peminjam")
 }
 
-model Matakuliah {
-  id_matakuliah Int       @id @default(autoincrement())
-  hematologi    Int
-  kardio        Int
-  respiratory   Int
-  integumen     Int
-  muskulo       Int
-  persepsi      Int
-  kritis        Int
-  paliatif      Int
-  histories     History[]
-}
+// model Matakuliah {
+//   id_matakuliah Int       @id @default(autoincrement())
+//   hematologi    Int
+//   kardio        Int
+//   respiratory   Int
+//   integumen     Int
+//   muskulo       Int
+//   persepsi      Int
+//   kritis        Int
+//   paliatif      Int
+//   histories     History[]
+// }
 
 model History {
   id_history   String @id @default(uuid())
@@ -57,7 +57,7 @@ model History {
   nama_barang  String @db.VarChar(50)
   jumlah       Int
 
-  matkuls Matakuliah @relation(fields: [matakuliahId], references: [id_matakuliah])
+  // matkuls Matakuliah @relation(fields: [matakuliahId], references: [id_matakuliah])
   barangs Barang     @relation(fields: [barangId], references: [id_barang])
 }
 
