@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./prisma/@prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  user_id       Int         @id @default(autoincrement())
+  username      String      @db.VarChar(50)
+  password      String?     @db.VarChar(255)
+  email         String      @unique @db.VarChar(50)
+  role          Role        @default(USER)
+  created_on    DateTime    @default(now())
+  last_login    DateTime?   @default(now())
+  refresh_token String?     @db.VarChar(255)
+  peminjam      Peminjam[]
+  keranjang     Keranjang[]
+}
+
+model Peminjam {
+  id_peminjam         Int                @id @default(autoincrement())
+  nama_matakuliah     String             @db.VarChar(50)
+  prasat              String             @db.VarChar(50)
+  jam_praktek         String             @db.VarChar(10)
+  tanggal_praktek     String?            @db.VarChar(20)
+  tanggal_pengambilan DateTime           @default(now())
+  userId              Int
+  users               Users              @relation(fields: [userId], references: [user_id])
+  type                Type               @default(PENDING)
+  transaksiBarang     TransaksiBarang[]
+  barangHabisPakai    BarangHabisPakai[]
+  barangPinjam        BarangPinjam[]
+
+  @@map("peminjam")
+}
+
+model Matakuliah {
+  id_matakuliah Int       @id @default(autoincrement())
+  hematologi    Int
+  kardio        Int
+  respiratory   Int
+  integumen     Int
+  muskulo       Int
+  persepsi      Int
+  kritis        Int
+  paliatif      Int
+  histories     History[]
+}
+
+model History {
+  id_history   String @id @default(uuid())
+  barangId     Int
+  matakuliahId Int
+  nama_barang  String @db.VarChar(50)
+  jumlah       Int
+
+  matkuls Matakuliah @relation(fields: [matakuliahId], references: [id_matakuliah])
+  barangs Barang     @relation(fields: [barangId], references: [id_barang])
+}
+
+model Barang {
+  id_barang        Int                @id @default(autoincrement())
+  nama_barang      String             @db.VarChar(50)
+  total_stock      Int
+  jenis_barang     String             @db.VarChar(50)
+  harga_barang     Int
+  gambar_barang    String?
+  kode_barang      String             @unique
+  keranjangs       Keranjang[]
+  transaksiBarang  TransaksiBarang[]
+  history          History[]
+  barangHabisPakai BarangHabisPakai[]
+  barangPinjam     BarangPinjam[]
+
+  @@map("barangs")
+}
+
+model Keranjang {
+  id_keranjang  Int      @id @default(autoincrement())
+  barangId      Int
+  barangs       Barang   @relation(fields: [barangId], references: [id_barang])
+  jumlah_barang Int?
+  isCheckedOut  String?  @default("N")
+  delete_at     DateTime @default(now())
+  userId        Int
+  users         Users    @relation(fields: [userId], references: [user_id])
+
+  @@map("keranjangs")
+}
+
+model BarangHabisPakai {
+  id_barang_habis_pakai Int       @id @default(autoincrement())
+  peminjam              Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
+  peminjamId            Int?
+  barangs               Barang    @relation(fields: [barangId], references: [id_barang])
+  barangId              Int
+  jumlah_barang         Int
+  nama_barang           String
+  kode_barang           String
+  jenis_barang          String
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model BarangPinjam {
+  id_barang_pinjam Int       @id @default(autoincrement())
+  peminjam         Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
+  peminjamId       Int?
+  barangs          Barang    @relation(fields: [barangId], references: [id_barang])
+  barangId         Int
+  jumlah_barang    Int
+  nama_barang      String
+  kode_barang      String
+  jenis_barang     String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model TransaksiBarang {
+  id_transaksi_barang Int       @id @default(autoincrement())
+  harga_barang        Int?
+  jumlah_barang       Int?
+  barangId            Int
+  type                Type      @default(PENDING)
+  peminjamId          Int?
+  barangs             Barang    @relation(fields: [barangId], references: [id_barang])
+  peminjam            Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
+  tanggal_keluar      DateTime? @default(now())
+  tanggal_masuk       String?
+  tanggal_pinjam      String?
+  nama_matakuliah     String?
+  nama_barang         String?
+  kode_barang         String?
+
+  @@map("transaksiBarang")
+}
+
+enum Type {
+  BarangKeluar
+  BarangMasuk
+  BarangPinjam
+  PENDING
+  CANCEL
+}
+
+enum Role {
+  ADMIN
+  USER
+}
