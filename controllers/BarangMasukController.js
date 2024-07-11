@@ -33,7 +33,6 @@ export const createBarangMasuk = async(req, res) =>{
                     type: "BarangMasuk",
                     barangs: {
                         connect: {
-                          id_barang:id_barang,
                           kode_barang: kode_barang,
                           
                         },
