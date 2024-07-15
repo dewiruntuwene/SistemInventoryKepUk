@@ -100,7 +100,7 @@ export const deleteKeranjang = async (req, res) => {
   }
 };
 
-export const createDataPeminjamBarang = async (req, res) => {
+export const createDataOrderBarang = async (req, res) => {
   const {
     nama_dosen,
     nama_matakuliah,
@@ -251,7 +251,7 @@ export const createDataPeminjamBarang = async (req, res) => {
   }
 };
 
-export const getDataPeminjamBarang = async (req, res) => {
+export const getDataOrderBarang = async (req, res) => {
   try {
     const peminjam = await prisma.Peminjam.findMany({
       where: {
@@ -288,7 +288,7 @@ export const getDataPeminjamBarang = async (req, res) => {
   }
 };
 
-export const deletetDataPeminjamBarang = async (req, res) => {
+export const deletetDataOrderBarang = async (req, res) => {
   try {
     const idPeminjam = parseInt(req.params.id_peminjam);
     // Hapus data peminjam berdasarkan id_peminjam
@@ -303,7 +303,7 @@ export const deletetDataPeminjamBarang = async (req, res) => {
   }
 };
 
-export const barangKeluarPeminjam = async (req, res) => {
+export const barangKeluarOrder = async (req, res) => {
   try {
     const peminjamId = +req.params.id_peminjam; // Convert id to number
     const peminjam = await prisma.Peminjam.update({
@@ -364,7 +364,7 @@ export const barangKeluarPeminjam = async (req, res) => {
   }
 };
 
-export const barangPeminjam = async (req, res) => {
+export const barangPinjam = async (req, res) => {
   try {
     const peminjamId = +req.params.id_peminjam; // Convert id to number
     const peminjam = await prisma.Peminjam.update({
