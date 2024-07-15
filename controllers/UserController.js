@@ -175,7 +175,7 @@ export async function handleGoogleAuthGet(req, res, next) {
     console.log("Jwt Token:", token);
 
     return res.redirect(
-      `http://localhost:5173/UserCatalog?token=${token}`,
+      `https://order-inventory-kep-uk.vercel.app/UserCatalog?token=${token}`,
     );
   } catch (err) {
     console.log("Error logging in with OAuth2 user", err);
