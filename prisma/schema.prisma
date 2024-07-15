@@ -33,7 +33,7 @@ model Peminjam {
   type                Type               @default(PENDING)
   transaksiBarang     TransaksiBarang[]
   barangHabisPakai    BarangHabisPakai[]
-  barangPinjam        BarangPinjam[]
+  // barangPinjam        BarangPinjam[]
 
   @@map("peminjam")
 }
@@ -74,7 +74,7 @@ model Barang {
   transaksiBarang  TransaksiBarang[]
   history          History[]
   barangHabisPakai BarangHabisPakai[]
-  barangPinjam     BarangPinjam[]
+  // barangPinjam     BarangPinjam[]
 
   @@map("barangs")
 }
@@ -106,19 +106,19 @@ model BarangHabisPakai {
   updatedAt             DateTime  @updatedAt
 }
 
-model BarangPinjam {
-  id_barang_pinjam Int       @id @default(autoincrement())
-  peminjam         Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
-  peminjamId       Int?
-  barangs          Barang    @relation(fields: [barangId], references: [id_barang])
-  barangId         Int
-  jumlah_barang    Int
-  nama_barang      String
-  kode_barang      String
-  jenis_barang     String
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-}
+// model BarangPinjam {
+//   id_barang_pinjam Int       @id @default(autoincrement())
+//   peminjam         Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
+//   peminjamId       Int?
+//   barangs          Barang    @relation(fields: [barangId], references: [id_barang])
+//   barangId         Int
+//   jumlah_barang    Int
+//   nama_barang      String
+//   kode_barang      String
+//   jenis_barang     String
+//   createdAt        DateTime  @default(now())
+//   updatedAt        DateTime  @updatedAt
+// }
 
 model TransaksiBarang {
   id_transaksi_barang Int       @id @default(autoincrement())
