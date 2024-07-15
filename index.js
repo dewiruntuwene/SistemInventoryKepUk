@@ -46,9 +46,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // Melayani file statis dari folder uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use(cors({ origin: "*", credentials: true }));
-// Izinkan permintaan dari asal yang sesuai
-app.use(cors({ origin: "*", optionsSuccessStatus: 200 }));
+app.use(cors({ origin: "*", 
+  credentials: true
+ }));
+// // Izinkan permintaan dari asal yang sesuai
+// app.use(cors({ origin: "*", optionsSuccessStatus: 200 }));
 app.use(express.json());
 app.use(BarangRoute);
 app.use(UserRoute);
@@ -58,10 +60,13 @@ app.use(DashboardRoute);
 app.use(HistoryRoute);
 app.use(DataPeminjamBarangRoute);
 app.use(BarangPinjamRoute);
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "https://inventory-order-kep-uk.vercel.app/");
+//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+//   res.setHeader("Access-Control-Allow-Headers", "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version");
+//   res.setHeader("Access-Control-Allow-Credentials", "true");
+//   next();
+// });
 
 app.use((req, res, next) => {
   req.refresh_token = req.body.refreshToken; // Adjust based on how you send the refresh token
