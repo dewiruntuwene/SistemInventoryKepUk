@@ -99,7 +99,6 @@ export const updateBarangMasuk = async (req, res) => {
       data: {
         tanggal_masuk,
         jumlah_barang,
-        harga_barang,
         nama_barang,
         barangs: {
           connect: {
