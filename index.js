@@ -46,6 +46,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // Melayani file statis dari folder uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// Pastikan rute ini tidak memerlukan autentikasi
+app.get("/uploads/:filename", (req, res) => {
+  const filePath = path.join(__dirname, "uploads", req.params.filename);
+  res.sendFile(filePath);
+});
 app.use(cors({ origin: "*", 
   credentials: true
  }));
