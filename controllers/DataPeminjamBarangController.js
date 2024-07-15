@@ -288,6 +288,40 @@ export const getDataOrderBarang = async (req, res) => {
   }
 };
 
+export const getDataOrderBarangAdmin = async (req, res) => {
+  try {
+    const peminjam = await prisma.Peminjam.findMany({
+      select: {
+        id_peminjam: true,
+        nama_matakuliah: true,
+        prasat: true,
+        jam_praktek: true,
+        tanggal_praktek: true,
+        tanggal_pengambilan: true,
+        type: true,
+        users: {
+          select: {
+            username: true,
+          },
+        },
+        barangHabisPakai: {
+          select: {
+            kode_barang: true,
+            jumlah_barang: true,
+            nama_barang: true,
+            jenis_barang: true,
+          },
+        },
+      },
+    });
+
+    res.json(peminjam);
+  } catch (error) {
+    console.error("Error fetching cart items:", error);
+    throw error;
+  }
+};
+
 export const deletetDataOrderBarang = async (req, res) => {
   try {
     const idPeminjam = parseInt(req.params.id_peminjam);
