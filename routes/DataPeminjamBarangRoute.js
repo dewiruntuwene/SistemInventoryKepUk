@@ -9,6 +9,7 @@ import {
   updateKeranjang,
   barangKeluarOrder,
   barangPinjam,
+  getDataOrderBarangAdmin
 } from "../controllers/DataPeminjamBarangController.js";
 import { PrismaClient } from "@prisma/client";
 import { verifyToken } from "../middleware/VerifyToken.js";
@@ -20,6 +21,7 @@ const router = express.Router();
 router.post("/orderBarang/", verifyToken, createDataOrderBarang);
 router.post("/keranjang", verifyToken, createKeranjang);
 router.get("/orderBarang", verifyToken, getDataOrderBarang);
+router.get("/dataOrderBarang", getDataOrderBarangAdmin);
 router.get("/keranjang", verifyToken, getKeranjang);
 router.patch("/keranjang/:id_keranjang", updateKeranjang);
 router.delete("/orderBarang/:id_peminjam", deletetDataOrderBarang);
