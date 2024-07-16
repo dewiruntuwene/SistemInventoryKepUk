@@ -87,7 +87,7 @@ const prisma = new PrismaClient();
 //   });
 // }
 
-const redirectURL = "http://localhost:5000/auth/google/callback";
+const redirectURL = "https://inventory-order-kep-uk.vercel.app/auth/google/callback";
 const oAuth2Client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
@@ -95,7 +95,7 @@ const oAuth2Client = new OAuth2Client(
 );
 
 export const handleGoogleAuthPost = async (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Referrer-Policy", "no-referrer-when-downgrade");
 
