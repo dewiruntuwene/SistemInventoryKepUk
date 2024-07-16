@@ -91,7 +91,34 @@ export const updateBarangMasuk = async (req, res) => {
   } = req.body;
   try {
     const idTransaksiBarang = parseInt(req.params.id_transaksi_barang);
-    await prisma.transaksiBarang.update({
+
+    // Ambil data transaksi barang masuk sebelumnya
+    const transaksiSebelumnya = await prisma.transaksiBarang.findUnique({
+      where: {
+        id_transaksi_barang: idTransaksiBarang,
+        type: "BarangMasuk",
+      },
+      include: {
+        barangs: true,
+      },
+    });
+
+    if (!transaksiSebelumnya) {
+      return res.status(404).json({ msg: "Transaksi tidak ditemukan" });
+    }
+
+    // Kurangi total stock dengan jumlah barang sebelumnya
+    await prisma.Barang.update({
+      where: { kode_barang },
+      data: {
+        total_stock: {
+          decrement: parseInt(transaksiSebelumnya.jumlah_barang),
+        },
+      },
+    });
+
+    // Update transaksi barang masuk
+    const updatedTransaksi = await prisma.transaksiBarang.update({
       where: {
         id_transaksi_barang: idTransaksiBarang,
         type: "BarangMasuk",
@@ -111,20 +138,24 @@ export const updateBarangMasuk = async (req, res) => {
         barangs: true,
       },
     });
-    // Tambahkan total stock barang
+
+    // Tambahkan total stock barang dengan jumlah barang baru
     await prisma.Barang.update({
       where: { kode_barang },
       data: {
         total_stock: {
-          increment: parseInt(jumlah_barang), // Tambahkan stok barang sesuai jumlah masuk
+          increment: parseInt(jumlah_barang),
         },
       },
     });
-    res.status(200).json({ msg: "Data Updated" });
+
+    res.status(200).json({ msg: "Data Updated", updatedTransaksi });
   } catch (error) {
     console.log(error.message);
+    res.status(500).json({ msg: "Internal Server Error" });
   }
 };
+
 
 export const deleteBarangMasuk = async (req, res) => {
   try {
