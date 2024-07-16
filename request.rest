@@ -42,16 +42,15 @@ Content-Type: application/json
 GET  http://localhost:5000/barangMasuk/
 
 ###
-PATCH     http://localhost:5000/barangMasuk/62
+PATCH     http://localhost:5000/barangMasuk/7
 Content-Type: application/json
 
 {
-  "tanggal_masuk": "12/02/23",
-  "jumlah_barang": 13,
-  "kode_barang": "A100",
-  "nama_barang": "Suntik",
-  "jenis_barang": "Habis Pakai",
-  "harga_barang": 5000
+  "tanggal_masuk": "2024-07-15",
+  "jumlah_barang": 18,
+  "kode_barang": "A002",
+  "nama_barang": "Masker",
+  "jenis_barang": "Habis Pakai"
 }
 
 ###
