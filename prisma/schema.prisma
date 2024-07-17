@@ -129,7 +129,7 @@ model TransaksiBarang {
   peminjamId          Int?
   barangs             Barang    @relation(fields: [barangId], references: [id_barang])
   peminjam            Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
-  tanggal_keluar      DateTime? @default(now())
+  tanggal_keluar      String?
   tanggal_masuk       String?
   tanggal_pinjam      String?
   nama_matakuliah     String?
