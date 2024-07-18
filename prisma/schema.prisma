@@ -28,6 +28,8 @@ model Peminjam {
   jam_praktek         String             @db.VarChar(10)
   tanggal_praktek     String?            @db.VarChar(20)
   tanggal_pengambilan DateTime           @default(now())
+  tanggal_kembali_alat  String?
+  ruangan_lab           String?
   userId              Int
   users               Users              @relation(fields: [userId], references: [user_id])
   type                Type               @default(PENDING)
@@ -135,6 +137,7 @@ model TransaksiBarang {
   nama_matakuliah     String?
   nama_barang         String?
   kode_barang         String?
+  keterangan          String?
 
   @@map("transaksiBarang")
 }
