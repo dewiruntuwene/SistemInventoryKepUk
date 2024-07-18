@@ -108,6 +108,8 @@ export const createDataOrderBarang = async (req, res) => {
     jam_praktek,
     tanggal_praktek,
     tanggal_keluar,
+    tanggal_kembali_alat,
+    ruangan_lab,
     id_keranjang,
   } = req.body;
   const { user_id } = req.params;
@@ -154,6 +156,8 @@ export const createDataOrderBarang = async (req, res) => {
           prasat,
           jam_praktek,
           tanggal_praktek,
+          tanggal_kembali_alat,
+          ruangan_lab,
           users: {
             connect: {
               user_id: req.user.user_id,
@@ -264,6 +268,8 @@ export const getDataOrderBarang = async (req, res) => {
         jam_praktek: true,
         tanggal_praktek: true,
         tanggal_pengambilan: true,
+        tanggal_kembali_alat: true,
+        ruangan_lab: true,
         type: true,
         users: {
           select: {
@@ -298,6 +304,8 @@ export const getDataOrderBarangAdmin = async (req, res) => {
         jam_praktek: true,
         tanggal_praktek: true,
         tanggal_pengambilan: true,
+        tanggal_kembali_alat: true,
+        ruangan_lab: true,
         type: true,
         users: {
           select: {
