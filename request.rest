@@ -147,13 +147,13 @@ Content-Type: application/json
 }
 
 ###
-GET   http://localhost:5000/peminjamBarang
+GET   http://localhost:5000/dataOrderBarang
 
 ###
-DELETE    http://localhost:5000/peminjamBarang/78
+DELETE    http://localhost:5000/orderBarang/78
 
 ###
-POST   http://localhost:5000/peminjamBarang/
+POST   http://localhost:5000/orderBarang/
 Content-Type: application/json
 
 {
@@ -161,7 +161,9 @@ Content-Type: application/json
     "prasat": "some prasat",
     "jam_praktek": "12:00",
     "tanggal_praktek": "26-2-2024",
-    "tanggal_pengambilan": "2024-04-01T06:54:33.870Z"
+    "tanggal_pengambilan": "2024-04-01T06:54:33.870Z",
+    "tanggal_kembali_alat": "27-2-2024",
+    "ruangan_lab": "GK1 202"
 }
 
 ###
