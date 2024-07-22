@@ -81,29 +81,83 @@ export const getBarangPinjam = async (req, res) => {
 };
 
 export const updateBarangPinjam = async (req, res) => {
-  const { nama_barang, total_stock, jenis_barang } = req.body;
+  const {
+    tanggal_masuk,
+    kode_barang,
+    nama_barang,
+    total_stock,
+    jenis_barang,
+    id_barang,
+    harga_barang,
+    gambar_barang,
+    jumlah_barang,
+    keterangan
+  } = req.body;
   try {
     const idTransaksiBarang = parseInt(req.params.id_transaksi_barang);
-    await prisma.transaksiBarang.update(req.body, {
+
+    // Ambil data transaksi barang masuk sebelumnya
+    const transaksiSebelumnya = await prisma.transaksiBarang.findUnique({
+      where: {
+        id_transaksi_barang: idTransaksiBarang,
+        type: "BarangPinjam",
+      },
+      include: {
+        barangs: true,
+      },
+    });
+
+    if (!transaksiSebelumnya) {
+      return res.status(404).json({ msg: "Transaksi tidak ditemukan" });
+    }
+
+    // Kurangi total stock dengan jumlah barang sebelumnya
+    await prisma.Barang.update({
+      where: { kode_barang },
+      data: {
+        total_stock: {
+          decrement: parseInt(transaksiSebelumnya.jumlah_barang),
+        },
+      },
+    });
+
+    // Update transaksi barang pinjam
+    const updatedTransaksi = await prisma.transaksiBarang.update({
       where: {
         id_transaksi_barang: idTransaksiBarang,
         type: "BarangPinjam",
       },
       data: {
+        tanggal_masuk,
+        jumlah_barang,
+        nama_barang,
+        keterangan,
         barangs: {
-          id_barang,
-          nama_barang,
-          total_stock,
-          jenis_barang,
-          harga_barang,
-          gambar_barang,
+          connect: {
+            id_barang: id_barang,
+            kode_barang: kode_barang,
+          },
+        },
+      },
+      include: {
+        barangs: true,
+      },
+    });
+
+    // Tambahkan total stock barang dengan jumlah barang baru
+    await prisma.Barang.update({
+      where: { kode_barang },
+      data: {
+        total_stock: {
+          increment: parseInt(jumlah_barang),
         },
       },
     });
 
-    res.status(200).json({ msg: "Data Updated" });
+    res.status(200).json({ msg: "Data Updated", updatedTransaksi });
   } catch (error) {
     console.log(error.message);
+    res.status(500).json({ msg: "Internal Server Error" });
   }
 };
 
