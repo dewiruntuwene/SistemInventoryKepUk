@@ -345,6 +345,94 @@ export const deletetDataOrderBarang = async (req, res) => {
   }
 };
 
+export const updateBarangOrder = async (req, res) => {
+  try {
+    const peminjamId = +req.params.id_peminjam; // Convert id to number
+
+    const peminjam = await prisma.Peminjam.findUnique({
+      where: {
+        id_peminjam: peminjamId,
+      },
+      include: {
+        barangHabisPakai: true,
+      },
+    });
+
+    if (!peminjam) {
+      return res.status(404).json({ error: "Peminjam not found" });
+    }
+
+    for (const barangHabisPakai of peminjam.barangHabisPakai) {
+      const id_barang = barangHabisPakai.barangId; // Assuming barangId is the correct field
+      const jumlah_barang = barangHabisPakai.jumlah_barang; // Assuming jumlah_barang is the correct field
+
+      // Check the jenis_barang to determine the type
+      let type;
+      if (barangHabisPakai.jenis_barang === 'Barang Habis Pakai') {
+        type = 'BarangKeluar';
+      } else if (barangHabisPakai.jenis_barang === 'Barang pinjam') {
+        type = 'BarangPinjam';
+      } else {
+        continue; // Skip if jenis_barang does not match the expected types
+      }
+
+      // Update Peminjam with the determined type
+      await prisma.Peminjam.update({
+        where: {
+          id_peminjam: peminjamId,
+        },
+        data: {
+          type: type,
+        },
+      });
+
+      await prisma.TransaksiBarang.create({
+        data: {
+          nama_matakuliah: peminjam.nama_matakuliah,
+          nama_barang: barangHabisPakai.nama_barang,
+          kode_barang: barangHabisPakai.kode_barang,
+          tanggal_masuk: null,
+          jumlah_barang: jumlah_barang,
+          peminjam: {
+            connect: {
+              id_peminjam: peminjamId,
+            },
+          },
+          type: type,
+          barangs: {
+            connect: {
+              id_barang: id_barang,
+            },
+          },
+        },
+        include: {
+          barangs: true, // Include the related Barang model
+        },
+      });
+
+      // Update Barang stock if type is "BarangKeluar"
+      if (type === "BarangKeluar") {
+        await prisma.Barang.update({
+          where: { id_barang: id_barang },
+          data: {
+            total_stock: {
+              decrement: jumlah_barang, // Decrease stock by the jumlah_barang
+            },
+          },
+        });
+      }
+    }
+
+    res.json(peminjam);
+  } catch (error) {
+    console.error("Error updating peminjam:", error);
+    res.status(500).json({ error: "Error updating peminjam" });
+  }
+};
+
+
+
+
 export const barangKeluarOrder = async (req, res) => {
   try {
     const peminjamId = +req.params.id_peminjam; // Convert id to number
