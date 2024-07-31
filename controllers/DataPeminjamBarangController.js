@@ -267,7 +267,7 @@ export const getDataOrderBarang = async (req, res) => {
         prasat: true,
         jam_praktek: true,
         tanggal_praktek: true,
-        tanggal_pengambilan: true,
+        tanggal_order: true,
         tanggal_kembali_alat: true,
         ruangan_lab: true,
         type: true,
@@ -303,8 +303,8 @@ export const getDataOrderBarangAdmin = async (req, res) => {
         prasat: true,
         jam_praktek: true,
         tanggal_praktek: true,
-        tanggal_pengambilan: true,
         tanggal_kembali_alat: true,
+        tanggal_order: true,
         ruangan_lab: true,
         type: true,
         users: {
@@ -370,7 +370,7 @@ export const updateBarangOrder = async (req, res) => {
       let type;
       if (barangHabisPakai.jenis_barang === 'Barang Habis Pakai') {
         type = 'BarangKeluar';
-      } else if (barangHabisPakai.jenis_barang === 'Barang pinjam') {
+      } else if (barangHabisPakai.jenis_barang === 'Alat Kesehatan') {
         type = 'BarangPinjam';
       } else {
         continue; // Skip if jenis_barang does not match the expected types
