@@ -27,7 +27,7 @@ model Peminjam {
   prasat              String             @db.VarChar(50)
   jam_praktek         String             @db.VarChar(10)
   tanggal_praktek     String?            @db.VarChar(20)
-  tanggal_pengambilan DateTime           @default(now())
+  tanggal_order       DateTime           @default(now())
   tanggal_kembali_alat  String?
   ruangan_lab           String?
   userId              Int
