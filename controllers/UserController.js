@@ -142,15 +142,14 @@ export async function handleGoogleAuthGet(req, res, next) {
     });
 
     if (!userFromDb) {
-      // userFromDb = await prisma.users.create({
-      //   data: {
-      //     username: userData.name,
-      //     email: userData.email,
-      //     // Store Google user ID
-      //     refreshToken: userData.refresh_token, // Save refresh token in database
-      //   },
-      // });
-      return res.status(404).json({ msg: "Email tidak ditemukan" });
+      userFromDb = await prisma.users.create({
+        data: {
+          username: userData.name,
+          email: userData.email,
+          // Store Google user ID
+          refreshToken: userData.refresh_token, // Save refresh token in database
+        },
+      });
     } else {
       // Update refresh token if user already exists
       await prisma.Users.update({
