@@ -137,7 +137,7 @@ export async function handleGoogleAuthGet(req, res, next) {
     console.log("credentials", user);
     const userData = await getUserData(oAuth2Client.credentials.access_token);
 
-    const userFromDb = await prisma.users.findUnique({
+    const userFromDb = await prisma.Users.findUnique({
       where: { email: userData.email },
     });
 
@@ -152,7 +152,7 @@ export async function handleGoogleAuthGet(req, res, next) {
       });
     } else {
       // Update refresh token if user already exists
-      await prisma.users.update({
+      await prisma.Users.update({
         where: { email: userData.email },
         data: { refresh_token: user.refresh_token },
       });
