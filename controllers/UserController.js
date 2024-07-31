@@ -128,58 +128,58 @@ export async function handleGoogleAuthGet(req, res, next) {
   const code = req.query.code;
   console.log(code);
 
-  // try {
-  //   const r = await oAuth2Client.getToken(code);
-  //   await oAuth2Client.setCredentials(r.tokens);
-  //   console.info("Tokens acquired.");
+  try {
+    const r = await oAuth2Client.getToken(code);
+    await oAuth2Client.setCredentials(r.tokens);
+    console.info("Tokens acquired.");
 
-  //   const user = oAuth2Client.credentials;
-  //   console.log("credentials", user);
-  //   const userData = await getUserData(oAuth2Client.credentials.access_token);
+    const user = oAuth2Client.credentials;
+    console.log("credentials", user);
+    const userData = await getUserData(oAuth2Client.credentials.access_token);
 
-  //   const userFromDb = await prisma.Users.findUnique({
-  //     where: { email: userData.email },
-  //   });
+    const userFromDb = await prisma.Users.findUnique({
+      where: { email: userData.email },
+    });
 
-  //   if (!userFromDb) {
-  //     userFromDb = await prisma.users.create({
-  //       data: {
-  //         username: userData.name,
-  //         email: userData.email,
-  //         // Store Google user ID
-  //         refreshToken: userData.refresh_token, // Save refresh token in database
-  //       },
-  //     });
-  //   } else {
-  //     // Update refresh token if user already exists
-  //     await prisma.Users.update({
-  //       where: { email: userData.email },
-  //       data: { refresh_token: user.refresh_token },
-  //     });
-  //   }
+    if (!userFromDb) {
+      userFromDb = await prisma.users.create({
+        data: {
+          username: userData.name,
+          email: userData.email,
+          // Store Google user ID
+          refreshToken: userData.refresh_token, // Save refresh token in database
+        },
+      });
+    } else {
+      // Update refresh token if user already exists
+      await prisma.Users.update({
+        where: { email: userData.email },
+        data: { refresh_token: user.refresh_token },
+      });
+    }
 
-  //   const userId = userFromDb.user_id;
-  //   const name = userData.name;
-  //   const email = userData.email;
-  //   const role = userFromDb.role;
+    const userId = userFromDb.user_id;
+    const name = userData.name;
+    const email = userData.email;
+    const role = userFromDb.role;
 
-  //   // Menggunakan data dari oAuth2Client.credentials.user untuk pembuatan token JWT
-  //   const token = jwt.sign(
-  //     { sub: userId, name, email, role },
-  //     process.env.ACCECS_TOKEN_SECRET,
-  //     {
-  //       expiresIn: "720h",
-  //     },
-  //   );
+    // Menggunakan data dari oAuth2Client.credentials.user untuk pembuatan token JWT
+    const token = jwt.sign(
+      { sub: userId, name, email, role },
+      process.env.ACCECS_TOKEN_SECRET,
+      {
+        expiresIn: "720h",
+      },
+    );
 
-  //   console.log("Jwt Token:", token);
+    console.log("Jwt Token:", token);
 
-  //   return res.redirect(
-  //     `https://order-inventory-kep-uk.vercel.app/UserCatalog?token=${token}`,
-  //   );
-  // } catch (err) {
-  //   console.log("Error logging in with OAuth2 user", err);
-  // }
+    return res.redirect(
+      `https://order-inventory-kep-uk.vercel.app/UserCatalog?token=${token}`,
+    );
+  } catch (err) {
+    console.log("Error logging in with OAuth2 user", err);
+  }
 }
 
 export const getUsers = async (req, res) => {
