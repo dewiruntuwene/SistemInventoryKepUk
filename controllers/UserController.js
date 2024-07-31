@@ -87,7 +87,7 @@ const prisma = new PrismaClient();
 //   });
 // }
 
-const redirectURL = "https://inventory-order-kep-uk.vercel.app/auth/google/callback";
+const redirectURL = "http://localhost:5000/auth/google/callback";
 const oAuth2Client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
