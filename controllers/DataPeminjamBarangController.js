@@ -420,6 +420,15 @@ export const updateBarangOrder = async (req, res) => {
             },
           },
         });
+      } else if (type === "BarangPinjam") {
+        await prisma.Barang.update({
+          where: { id_barang: id_barang },
+          data: {
+            total_stock: {
+              decrement: jumlah_barang, // Decrease stock by the jumlah_barang
+            },
+          },
+        });
       }
     }
 
