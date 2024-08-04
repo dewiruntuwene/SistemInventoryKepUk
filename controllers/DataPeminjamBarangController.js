@@ -564,30 +564,84 @@ export const barangPinjam = async (req, res) => {
   }
 };
 
-export const cancelPeminjaman = async (req, res) => {
+export const cancelOrder = async (req, res) => {
   try {
     const peminjamId = +req.params.id_peminjam; // Convert id to number
     const peminjam = await prisma.Peminjam.update({
       where: {
-        id: peminjamId,
+        id_peminjam: peminjamId,
       },
       data: {
-        status: "CANCELLED",
+        type: "CANCEL",
+      },
+      include: {
+        barangHabisPakai: true,
       },
     });
 
-    await prisma.transaksiBarang.create({
-      data: {
-        orderId: peminjam.id_peminjam,
-        status: "CANCELLED",
-      },
-    });
+    // Iterate over the barangPinjam to create transaksiBarang
+    for (const barangHabisPakai of peminjam.barangHabisPakai) {
+      const id_barang = barangHabisPakai.barangId; // Assuming barangId is the correct field
+      const jumlah_barang = barangHabisPakai.jumlah_barang; // Assuming jumlah_barang is the correct field
 
+      await prisma.TransaksiBarang.create({
+        data: {
+          nama_matakuliah: peminjam.nama_matakuliah,
+          nama_barang: barangHabisPakai.nama_barang,
+          kode_barang: barangHabisPakai.kode_barang,
+          tanggal_masuk: null,
+          jumlah_barang: jumlah_barang,
+          peminjam: {
+            connect: {
+              id_peminjam: peminjamId,
+            },
+          },
+          type: "CANCEL",
+          barangs: {
+            connect: {
+              id_barang: id_barang,
+            },
+          },
+        },
+        include: {
+          barangs: true, // Include the related Barang model
+        },
+      });
+    }
     res.json(peminjam);
-  } catch (err) {
-    res.status(404).json({ error: "Order not found" });
+  } catch (error) {
+    console.error("Error fetching peminjam:", error);
+    res.status(500).json({ error: "Error fetching peminjam" });
   }
 };
+
+// export const cancelOrder = async (req, res) => {
+//   try {
+//     const peminjamId = +req.params.id_peminjam // Convert id to number
+//     const peminjam = await prisma.Peminjam.update({
+//       where: {
+//         id: peminjamId,
+//       },
+//       data: {
+//         type: "CANCEL",
+//       },
+//       include: {
+//         barangHabisPakai: true,
+//       },
+//     });
+
+//     await prisma.transaksiBarang.create({
+//       data: {
+//         orderId: peminjam.id_peminjam,
+//         type: "CANCEL",
+//       },
+//     });
+
+//     res.json(peminjam);
+//   } catch (err) {
+//     res.status(404).json({ error: "Order not found" });
+//   }
+// };
 
 export const changeStatus = async (req, res) => {
   // wrap it inside transaction
