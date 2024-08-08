@@ -8,7 +8,7 @@
         "buildCommand": "npm run build && prisma generate",
         "installCommand": "npm install && npx prisma generate",
         "environment": {
-          "DATABASE_URL": "postgresql://postgres.nxonbaiackumfwszeboo:kepuk@12345ABCDE@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
+          "DATABASE_URL": "postgresql://postgres.nxonbaiackumfwszeboo:kepuk@12345ABCDE@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
         }
       }
     }
