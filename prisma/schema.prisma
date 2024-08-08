@@ -5,7 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  // directUrl =  env("DIRECT_URL")
+  directUrl =  env("DIRECT_URL")
 }
 
 model Users {
@@ -39,19 +39,6 @@ model Peminjam {
 
   @@map("peminjam")
 }
-
-// model Matakuliah {
-//   id_matakuliah Int       @id @default(autoincrement())
-//   hematologi    Int
-//   kardio        Int
-//   respiratory   Int
-//   integumen     Int
-//   muskulo       Int
-//   persepsi      Int
-//   kritis        Int
-//   paliatif      Int
-//   histories     History[]
-// }
 
 model History {
   id_history   String @id @default(uuid())
@@ -107,20 +94,6 @@ model BarangHabisPakai {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 }
-
-// model BarangPinjam {
-//   id_barang_pinjam Int       @id @default(autoincrement())
-//   peminjam         Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
-//   peminjamId       Int?
-//   barangs          Barang    @relation(fields: [barangId], references: [id_barang])
-//   barangId         Int
-//   jumlah_barang    Int
-//   nama_barang      String
-//   kode_barang      String
-//   jenis_barang     String
-//   createdAt        DateTime  @default(now())
-//   updatedAt        DateTime  @updatedAt
-// }
 
 model TransaksiBarang {
   id_transaksi_barang Int       @id @default(autoincrement())
