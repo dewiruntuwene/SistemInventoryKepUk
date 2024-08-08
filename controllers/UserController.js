@@ -220,7 +220,7 @@ export const Register = async (req, res) => {
 };
 
 export const Login = async (req, res) => {
-  const user = await prisma.users.findUnique({
+  let user = await prisma.users.findUnique({
     where: {
       email: req.body.email,
     },
@@ -278,13 +278,15 @@ export const Logout = async (req, res) => {
 
     const userId = req.user.user_id;
 
-    await prisma.users.update({
-      where: {
-        user_id: userId,
-      },
-      data: {
-        refresh_token: null,
-      },
+    await prisma.$transaction(async (prisma) => {
+      await prisma.users.update({
+        where: {
+          user_id: userId,
+        },
+        data: {
+          refresh_token: null,
+        },
+      });
     });
 
     return res.status(200).json({ msg: "Berhasil Logout" }); // Logout successful, return success (204 No Content)
