@@ -267,7 +267,7 @@ export const Login = async (req, res) => {
   return res.json({ token });
 };
 
-export const Logout = async (req, res) => {
+export const Logout = async (req, res) => { 
   try {
     const refreshToken =
       req.headers["authorization"]?.split(" ")[1] || req.body.refresh_token;
