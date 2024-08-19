@@ -137,3 +137,4 @@ export const deleteBarang = async (req, res) => {
     console.log(error.message);
   }
 };
+
