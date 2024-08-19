@@ -87,7 +87,7 @@ const prisma = new PrismaClient();
 //   });
 // }
 
-const redirectURL = "http://localhost:5000/auth/google/callback";
+const redirectURL = "http://inventoryfkep-46301.portmap.io:46301/google/callback";
 const oAuth2Client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
@@ -267,7 +267,7 @@ export const Login = async (req, res) => {
   return res.json({ token });
 };
 
-export const Logout = async (req, res) => {
+export const Logout = async (req, res) => { 
   try {
     const refreshToken =
       req.headers["authorization"]?.split(" ")[1] || req.body.refresh_token;
