@@ -80,7 +80,7 @@ POST   http://localhost:5000/barang
 Content-Type: application/json
 
 {
-  "id_barang": "A018",
+  "kode_barang": "A018",
   "nama_barang": "Suntik",
   "total_stock": 50,
   "jenis_barang": "baik",
