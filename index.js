@@ -51,9 +51,9 @@ app.get("/uploads/:filename", (req, res) => {
   const filePath = path.join(__dirname, "uploads", req.params.filename);
   res.sendFile(filePath);
 });
-app.use(cors({ origin: "*", 
+console.log(app.use(cors({ origin: "*", 
   credentials: true
- }));
+ })));
 // // Izinkan permintaan dari asal yang sesuai
 // app.use(cors({ origin: "*", optionsSuccessStatus: 200 }));
 app.use(express.json());
@@ -65,13 +65,13 @@ app.use(DashboardRoute);
 app.use(HistoryRoute);
 app.use(DataPeminjamBarangRoute);
 app.use(BarangPinjamRoute);
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "https://inventory-order-kep-uk.vercel.app/");
-//   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
-//   res.setHeader("Access-Control-Allow-Headers", "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version");
-//   res.setHeader("Access-Control-Allow-Credentials", "true");
-//   next();
-// });
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://inventoryfkep-46301.portmap.io:46301");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
 
 app.use((req, res, next) => {
   req.refresh_token = req.body.refreshToken; // Adjust based on how you send the refresh token
