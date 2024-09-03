@@ -119,13 +119,12 @@ export const updateBarang = async (req, res) => {
   }
 };
 
-export const deleteBarang = async (req, res) => {
+export const deletedBarang = async (req, res) => {
+  const id_barang = parseInt(req.params.id_barang);
   try {
-    const idBarang = req.params.id_barang;
-
     await prisma.Barang.delete({
       where: {
-        id_barang: idBarang,
+        id_barang: id_barang,
       },
     });
     if (!deletedBarang) {

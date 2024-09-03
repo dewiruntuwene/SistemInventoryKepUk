@@ -4,7 +4,7 @@ import {
   getBarangById,
   createBarang,
   updateBarang,
-  deleteBarang,
+  deletedBarang,
 } from "../controllers/BarangController.js";
 import { PrismaClient } from "@prisma/client";
 import multer, { diskStorage } from "multer";
@@ -26,6 +26,6 @@ router.get("/barang", getBarang);
 router.get("/barang/:id_barang", getBarangById);
 router.post("/barang", upload.single("gambar_barang"), createBarang);
 router.patch("/barang/:id_barang", updateBarang);
-router.delete("/barang/:id_barang", deleteBarang);
+router.delete("/barang/:id_barang", deletedBarang);
 
 export default router;
