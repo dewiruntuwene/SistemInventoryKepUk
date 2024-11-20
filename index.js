@@ -10,6 +10,7 @@ import DashboardRoute from "./routes/DashboardRoute.js";
 import HistoryRoute from "./routes/HistoryRoute.js";
 import DataPeminjamBarangRoute from "./routes/DataPeminjamBarangRoute.js";
 import BarangPinjamRoute from "./routes/BarangPinjamRoute.js";
+import PrasatRoute from "./routes/PrasatRoute.js";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -65,6 +66,7 @@ app.use(DashboardRoute);
 app.use(HistoryRoute);
 app.use(DataPeminjamBarangRoute);
 app.use(BarangPinjamRoute);
+app.use(PrasatRoute);
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://inventoryfkep-46301.portmap.io:46301");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
