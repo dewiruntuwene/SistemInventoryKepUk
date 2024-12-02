@@ -11,6 +11,7 @@ import HistoryRoute from "./routes/HistoryRoute.js";
 import DataPeminjamBarangRoute from "./routes/DataPeminjamBarangRoute.js";
 import BarangPinjamRoute from "./routes/BarangPinjamRoute.js";
 import PrasatRoute from "./routes/PrasatRoute.js";
+import PreOrderPrasatRoute from "./routes/PreOrderPrasatRoute.js";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -67,6 +68,7 @@ app.use(HistoryRoute);
 app.use(DataPeminjamBarangRoute);
 app.use(BarangPinjamRoute);
 app.use(PrasatRoute);
+app.use(PreOrderPrasatRoute);
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://inventoryfkep-46301.portmap.io:46301");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
@@ -80,7 +82,7 @@ app.use((req, res, next) => {
   next();
 });
 
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
+//console.log("DATABASE_URL:", process.env.DATABASE_URL);
 
 export const JWT_SECRET = process.env.JWT_SECRET;
 export const PORT = process.env.PORT;
