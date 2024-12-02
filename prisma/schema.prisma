@@ -22,9 +22,13 @@ model Users {
 
   //prasat Prasat[]
 
-  preOrderPrasat PreOrderPrasat[]
+  preOrder PreOrder[]
 
   Approval Approval[]
+
+  KeranjangPrasat KeranjangPrasat[]
+
+  Prasat Prasat[]
 }
 
 model Peminjam {
@@ -128,11 +132,12 @@ model Prasat {
   nama_prasat    String            @db.VarChar(100)
   deskripsi     String?           @db.VarChar(255)
   created_by    Int
-  //createdBy     Users             @relation(fields: [created_by], references: [user_id]) // Relasi ke Users
+  users         Users    @relation(fields: [created_by], references: [user_id])
   barangDalamPrasat BarangDalamPrasat[] // Barang yang terdapat dalam paket
 
   @@map("prasat")
-  preOrderPrasat PreOrderPrasat[]
+  KeranjangPrasat KeranjangPrasat[]
+  PreOrderPrasat PreOrderPrasat[]
 }
 
 model BarangDalamPrasat {
@@ -144,21 +149,48 @@ model BarangDalamPrasat {
   jumlah_barang         Int      // Jumlah barang dalam paket
 
   @@map("barangDalamPrasat")
+  PreOrderPrasat PreOrderPrasat[]
+}
+
+
+model KeranjangPrasat {
+  id_preorder_keranjang  Int      @id @default(autoincrement())
+  prasatId      Int
+  prasat        Prasat   @relation(fields: [prasatId], references: [id_prasat]) // Relasi ke Paket
+  userId        Int
+  users         Users    @relation(fields: [userId], references: [user_id])
+
+  @@map("keranjangPrasat")
+  PreOrderPrasat PreOrderPrasat[]
 }
 
 model PreOrderPrasat {
+  id_preorder_prasat      Int      @id @default(autoincrement())
+  nama_prasat    String            @db.VarChar(100)
+  deskripsi     String?           @db.VarChar(255)
+  barangDalamPrasat BarangDalamPrasat[] // Barang yang terdapat dalam paket
+  createdAt             DateTime  @default(now())
+  prasatId      Int
+  prasat        Prasat   @relation(fields: [prasatId], references: [id_prasat]) // Relasi ke Paket
+
+  @@map("preOrderPrasat")
+  preOrder PreOrder[]
+  KeranjangPrasat KeranjangPrasat[]
+}
+
+model PreOrder {
   id_pre_order_paket Int       @id @default(autoincrement())
   userId             Int
-  prasatId            Int
+  rencana_pemakaian  String @db.VarChar(255)
   tanggal_order      DateTime  @default(now()) // Tanggal pemesanan
   status             Status    @default(PENDING) // Status menggunakan enum
   users              Users     @relation(fields: [userId], references: [user_id]) // Relasi ke Users
-  prasat              Prasat    @relation(fields: [prasatId], references: [id_prasat]) // Relasi ke Paket
-  tanggal_disetujui  DateTime? // Tanggal disetujui
+  tanggal_disetujui  DateTime @default(now())// Tanggal disetujui
   approvalId         Int?
   approvals          Approval? @relation(fields: [approvalId], references: [id_approval]) // Relasi ke Approval
 
-  @@map("preOrderPrasat")
+  @@map("preOrder")
+  PreOrderPrasat PreOrderPrasat[]
 }
 
 model Approval {
@@ -169,7 +201,7 @@ model Approval {
   remarks        String?  @db.VarChar(255) // Catatan tambahan
 
   @@map("approvals")
-  preOrderPrasat PreOrderPrasat[]
+  preOrder PreOrder[]
 }
 
 model StokOpname {
