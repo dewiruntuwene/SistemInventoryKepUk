@@ -1,7 +1,8 @@
 import express from "express";
 import {
   createPrasat,
-  updatePrasat
+  updatePrasat,
+  getDataPrasat
 } from "../controllers/PrasatController.js";
 import { PrismaClient } from "@prisma/client";
 import multer, { diskStorage } from "multer";
@@ -11,9 +12,9 @@ const prisma = new PrismaClient();
 
 const router = express.Router();
 
-router.post("/prasat", createPrasat);
-router.post("/prasat", createPrasat);
+router.post("/prasat", verifyToken, createPrasat);
 router.put("/prasat/:id_prasat", updatePrasat);
+router.get("/prasat", getDataPrasat);
 
 
 export default router;
