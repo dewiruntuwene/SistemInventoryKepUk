@@ -19,7 +19,7 @@ export const createPrasat = async (req, res) => {
         data: {
           nama_prasat,
           deskripsi,
-          created_by,
+          users: { connect: { user_id: req.user.user_id } },
         },
       });
 
