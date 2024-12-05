@@ -29,6 +29,8 @@ model Users {
   KeranjangPrasat KeranjangPrasat[]
 
   Prasat Prasat[]
+
+  TransaksiOrderPreOrder TransaksiOrderPreOrder[]
 }
 
 model Peminjam {
@@ -63,7 +65,7 @@ model History {
 
 model Barang {
   id_barang        Int                @id @default(autoincrement())
-  nama_barang      String             @db.VarChar(50)
+  nama_barang      String             @db.VarChar(50) @unique
   total_stock      Int
   jenis_barang     String             @db.VarChar(50)
   harga_barang     Int
@@ -78,6 +80,7 @@ model Barang {
   @@map("barangs")
   BarangDalamPrasat BarangDalamPrasat[]
   StokOpname StokOpname[]
+  TransaksiOrderPreOrder TransaksiOrderPreOrder[]
 }
 
 model Keranjang {
@@ -146,7 +149,7 @@ model BarangDalamPrasat {
   barangId              Int
   prasat                Prasat    @relation(fields: [prasatId], references: [id_prasat]) // Relasi ke Paket
   barang                Barang   @relation(fields: [barangId], references: [id_barang]) // Relasi ke Barang
-  jumlah_barang         Int      // Jumlah barang dalam paket
+  jumlah_barang         Int      // Jumlah barang dalam paket ubah total brang
 
   @@map("barangDalamPrasat")
   PreOrderPrasat PreOrderPrasat[]
@@ -159,6 +162,7 @@ model KeranjangPrasat {
   prasat        Prasat   @relation(fields: [prasatId], references: [id_prasat]) // Relasi ke Paket
   userId        Int
   users         Users    @relation(fields: [userId], references: [user_id])
+  jumlah_barang Int? //baru tambah
 
   @@map("keranjangPrasat")
   PreOrderPrasat PreOrderPrasat[]
@@ -172,6 +176,7 @@ model PreOrderPrasat {
   createdAt             DateTime  @default(now())
   prasatId      Int
   prasat        Prasat   @relation(fields: [prasatId], references: [id_prasat]) // Relasi ke Paket
+  jumlah_barang Int? //baru tambah
 
   @@map("preOrderPrasat")
   preOrder PreOrder[]
@@ -213,6 +218,21 @@ model StokOpname {
 
   @@map("stokOpname")
 }
+
+model TransaksiOrderPreOrder {
+  id_transaksi             Int      @id @default(autoincrement())
+  user_id         Int
+  tanggal         DateTime
+  transaksi_type  String   @db.VarChar(50)
+  nama_barang     String   @db.VarChar(255)
+  jumlah          Int
+  jenis_transaksi String   @db.VarChar(50)
+
+  user            Users     @relation(fields: [user_id], references: [user_id])
+  barang          Barang   @relation(fields: [nama_barang], references: [nama_barang])
+}
+
+
 
 enum Status {
   PENDING
