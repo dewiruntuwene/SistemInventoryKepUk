@@ -131,15 +131,6 @@ export const createDataOrderBarang = async (req, res) => {
       if (keranjang.length == 0) {
         return res.json({ msg: "Cart is empty" });
       }
-      // const keranjang = await tx.Keranjang.findFirst({
-      //   where: {
-      //     id_keranjang: id_keranjang,
-      //     isCheckedOut: 'N'
-      //   },
-      //   include: {
-      //     barangs: true
-      //   }
-      // });
 
       const barangInKeranjang = await tx.Keranjang.findMany({
         where: {
@@ -200,51 +191,6 @@ export const createDataOrderBarang = async (req, res) => {
           userId: req.user.user_id,
         },
       });
-
-      // Declare transaksiBarang outside the loop
-      // const transaksiBarang = {};
-
-      // for (const [id_barang, jumlah_barang] of Object.entries(barangIdAndJumlah)) {
-      //   const transaksiBarangData = await tx.TransaksiBarang.create({
-      //     data: {
-      //       barangId: id_barang,
-      //       jumlah_barang,
-      //       peminjamId: peminjam.id_peminjam,
-      //       tanggal_keluar: tanggal_keluar,
-      //       type: "BarangKeluar",
-      //       nama_matakuliah: peminjam.nama_matakuliah,
-      //       nama_barang: (await tx.Barang.findUnique({
-      //         where: {
-      //           id_barang: id_barang
-      //         }
-      //       })).nama_barang
-      //     }
-      //   });
-      //   transaksiBarang[id_barang] = transaksiBarangData;
-      // }
-
-      // Tandai semua barang sebagai checkout dan kurangi stok
-      // await Promise.all(barangInKeranjang.map(async (keranjang) => {
-      //   await tx.Keranjang.update({
-      //     where: {
-      //       id_keranjang: keranjang.id_keranjang
-      //     },
-      //     data: {
-      //       isCheckedOut: 'Y'
-      //     }
-      //   });
-
-      // await tx.Barang.update({
-      //   where: {
-      //     id_barang: keranjang.barangs.id_barang
-      //   },
-      //   data: {
-      //     total_stock: {
-      //       decrement: keranjang.jumlah_barang
-      //     }
-      //   }
-      // });
-      // }));
 
       return res.json({ message: "Transaksi berhasil" });
     });
