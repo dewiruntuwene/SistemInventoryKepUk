@@ -32,7 +32,7 @@ export const createPrasat = async (req, res) => {
       const barangData = barangDalamPrasat.map((item) => ({
         prasatId: prasat.id_prasat,
         barangId: item.barangId,
-        jumlah_barang: item.jumlah_barang,
+        jumlah_barang: parseInt(item.jumlah_barang),
       }));
 
       // Insert barang dalam Prasat
@@ -92,14 +92,15 @@ export const getDataPrasat = async (req, res) => {
     // Ambil semua data prasat dari database
     const dataPrasat = await prisma.prasat.findMany({
       include: {
-        barangDalamPrasat: true, // Jika ada relasi ke barang, tambahkan include ini
+        barangDalamPrasat: {
+          include: {
+            barang: true, // Tambahkan include ini untuk mendapatkan data barang berdasarkan barangId
+          },
+        },
       },
     });
 
-    res.json({
-      message: "Data prasat berhasil diambil",
-      data: dataPrasat,
-    });
+    res.status(200).json(dataPrasat);
   } catch (error) {
     console.error("Error fetching data prasat:", error);
     res.status(500).json({
