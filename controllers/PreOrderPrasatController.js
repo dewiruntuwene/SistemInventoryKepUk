@@ -109,17 +109,6 @@ export const createDataPreOrderPrasat = async (req, res) => {
         },
       });
 
-      // const transaksiBarangs = [];
-      // const barangIdAndJumlah = {};
-
-      // for (const item of prasatInKeranjang) {
-      //   const { id_barang, jumlah_barang } = item.barangs;
-      //   if (!barangIdAndJumlah[id_barang]) {
-      //     barangIdAndJumlah[id_barang] = 0;
-      //   }
-      //   barangIdAndJumlah[id_barang] += jumlah_barang;
-      // }
-
       await prisma.KeranjangPrasat.deleteMany({
         where: {
           userId: req.user.user_id,
@@ -145,6 +134,8 @@ export const getDataPreOrderPrasat = async (req, res) => {
       select: {
         id_pre_order_paket: true,
         rencana_pemakaian: true,
+        tanggal_disetujui: true,
+        status: true,
         users: {
           select: {
             username: true,
@@ -154,6 +145,16 @@ export const getDataPreOrderPrasat = async (req, res) => {
           select: {
             nama_prasat: true,
             deskripsi: true,
+            jumlah_barang: true,
+            prasat: {
+              select: {
+                barangDalamPrasat: {
+                  include: {
+                    barang: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
