@@ -12,6 +12,7 @@ import DataPeminjamBarangRoute from "./routes/DataPeminjamBarangRoute.js";
 import BarangPinjamRoute from "./routes/BarangPinjamRoute.js";
 import PrasatRoute from "./routes/PrasatRoute.js";
 import PreOrderPrasatRoute from "./routes/PreOrderPrasatRoute.js";
+import TransaksiKeseluruahanRoute from "./routes/TransaksiKeseluruahanRoute.js";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -53,11 +54,11 @@ app.get("/uploads/:filename", (req, res) => {
   const filePath = path.join(__dirname, "uploads", req.params.filename);
   res.sendFile(filePath);
 });
-console.log(app.use(cors({ origin: "*", 
-  credentials: true
- })));
-// // Izinkan permintaan dari asal yang sesuai
-// app.use(cors({ origin: "*", optionsSuccessStatus: 200 }));
+// console.log(app.use(cors({ origin: "*", 
+//   credentials: true
+//  })));
+// Izinkan permintaan dari asal yang sesuai
+app.use(cors({ origin: "*", optionsSuccessStatus: 200 }));
 app.use(express.json());
 app.use(BarangRoute);
 app.use(UserRoute);
@@ -69,8 +70,10 @@ app.use(DataPeminjamBarangRoute);
 app.use(BarangPinjamRoute);
 app.use(PrasatRoute);
 app.use(PreOrderPrasatRoute);
+app.use(TransaksiKeseluruahanRoute);
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://inventoryfkep-46301.portmap.io:46301");
+  // res.setHeader("Access-Control-Allow-Origin", "http://inventoryfkep-46301.portmap.io:46301");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version");
   res.setHeader("Access-Control-Allow-Credentials", "true");
