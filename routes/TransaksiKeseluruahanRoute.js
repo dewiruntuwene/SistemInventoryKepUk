@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 
 const router = express.Router();
 
-router.get("/transaction/:user_id", getUserTransactions);
+router.get("/transaction/", verifyToken, getUserTransactions);
 
 
 
