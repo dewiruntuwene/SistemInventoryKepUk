@@ -301,8 +301,10 @@ export const updateBarangOrder = async (req, res) => {
       },
       include: {
         barangHabisPakai: true,
+        users: true
       },
     });
+
 
     if (!peminjam) {
       return res.status(404).json({ error: "Peminjam not found" });
@@ -356,6 +358,29 @@ export const updateBarangOrder = async (req, res) => {
         },
       });
 
+      await prisma.TransaksiOrderPreOrder.create({
+        data: {
+          user_id: peminjam.users.user_id,
+          tanggal: new Date(),
+          transaksi_type: "Order",
+          nama_barang: barangHabisPakai.nama_barang,
+          jumlah: jumlah_barang,
+          jenis_transaksi: "Credit",
+        },
+      });
+
+      console.log("Creating TransaksiOrderPreOrder with data:");
+      console.log({
+        user_id: peminjam.users?.user_id,
+        tanggal: new Date(),
+        transaksi_type: "Order",
+        nama_barang: barangHabisPakai?.nama_barang,
+        jumlah: jumlah_barang,
+        jenis_transaksi: "Credit",
+      });
+
+
+
       // Update Barang stock if type is "BarangKeluar"
       if (type === "BarangKeluar") {
         await prisma.Barang.update({
@@ -377,7 +402,8 @@ export const updateBarangOrder = async (req, res) => {
         });
       }
     }
-
+    
+    
     res.json(peminjam);
   } catch (error) {
     console.error("Error updating peminjam:", error);
@@ -429,6 +455,17 @@ export const barangKeluarOrder = async (req, res) => {
         },
         include: {
           barangs: true, // Include the related Barang model
+        },
+      });
+
+      await prisma.TransaksiOrderPreOrder.create({
+        data: {
+          user_id: peminjam.users.user_id,
+          tanggal: new Date(),
+          transaksi_type: "Order",
+          nama_barang: barangHabisPakai.nama_barang,
+          jumlah: barangHabisPakai.jumlah_barang,
+          jenis_transaksi: "Credit",
         },
       });
 
