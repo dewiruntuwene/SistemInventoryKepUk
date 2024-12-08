@@ -81,6 +81,7 @@ model Barang {
   BarangDalamPrasat BarangDalamPrasat[]
   StokOpname StokOpname[]
   TransaksiOrderPreOrder TransaksiOrderPreOrder[]
+  PreOrderDetail PreOrderDetail[]
 }
 
 model Keranjang {
@@ -168,21 +169,6 @@ model KeranjangPrasat {
   PreOrderPrasat PreOrderPrasat[]
 }
 
-model PreOrderPrasat {
-  id_preorder_prasat      Int      @id @default(autoincrement())
-  nama_prasat    String            @db.VarChar(100)
-  deskripsi     String?           @db.VarChar(255)
-  barangDalamPrasat BarangDalamPrasat[] // Barang yang terdapat dalam paket
-  createdAt             DateTime  @default(now())
-  prasatId      Int
-  prasat        Prasat   @relation(fields: [prasatId], references: [id_prasat]) // Relasi ke Paket
-  jumlah_barang Int? //baru tambah
-
-  @@map("preOrderPrasat")
-  preOrder PreOrder[]
-  KeranjangPrasat KeranjangPrasat[]
-}
-
 model PreOrder {
   id_pre_order_paket Int       @id @default(autoincrement())
   userId             Int
@@ -197,6 +183,33 @@ model PreOrder {
   @@map("preOrder")
   PreOrderPrasat PreOrderPrasat[]
 }
+
+model PreOrderPrasat {
+  id_preorder_prasat      Int      @id @default(autoincrement())
+  nama_prasat    String            @db.VarChar(100)
+  deskripsi     String?           @db.VarChar(255)
+  barangDalamPrasat BarangDalamPrasat[] // Barang yang terdapat dalam paket
+  createdAt             DateTime  @default(now())
+  prasatId      Int
+  prasat        Prasat   @relation(fields: [prasatId], references: [id_prasat]) // Relasi ke Paket
+
+  @@map("preOrderPrasat")
+  preOrder PreOrder[]
+  KeranjangPrasat KeranjangPrasat[]
+  PreOrderDetail PreOrderDetail[]
+}
+
+model PreOrderDetail {
+  id_preorder_detail Int       @id @default(autoincrement())
+  barangId           Int
+  jumlah_barang      Int       // Jumlah barang yang dipesan
+  barang             Barang    @relation(fields: [barangId], references: [id_barang])
+  preOrderPrasatId   Int
+  preOrderPrasat     PreOrderPrasat   @relation(fields: [preOrderPrasatId], references: [id_preorder_prasat])
+
+  @@map("preOrderDetail")
+}
+
 
 model Approval {
   id_approval    Int      @id @default(autoincrement())
@@ -220,7 +233,7 @@ model StokOpname {
 }
 
 model TransaksiOrderPreOrder {
-  id_transaksi             Int      @id @default(autoincrement())
+  id_transaksi    Int      @id @default(autoincrement())
   user_id         Int
   tanggal         DateTime
   transaksi_type  String   @db.VarChar(50)
