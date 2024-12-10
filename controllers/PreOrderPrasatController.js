@@ -384,3 +384,99 @@ export const updateJumlahBarangPreOrderPrasat = async (req, res) => {
     res.status(500).json({ error: "Error during update" });
   }
 };
+
+// Dapat pre order detail untuk transaksi order pre order
+export const getAllPreOrderDetailBarang = async (req, res) => {
+  try {
+    const preOrders = await prisma.PreOrder.findMany({
+      where: {
+        status: 'APPROVED',
+      },
+      select: {
+        PreOrderPrasat: {
+          select: {
+            PreOrderDetail: {
+              select: {
+                jumlah_barang: true,
+                barang: {
+                  select: {
+                    nama_barang: true,
+                    kode_barang: true,
+                    harga_barang: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Flatten the array and group by barang.nama_barang
+    const groupedBarang = {};
+    preOrders.forEach(preOrder => {
+      preOrder.PreOrderPrasat.forEach(prasat => {
+        prasat.PreOrderDetail.forEach(detail => {
+          const { nama_barang, kode_barang, harga_barang } = detail.barang;
+          const key = nama_barang;
+
+          if (!groupedBarang[key]) {
+            groupedBarang[key] = {
+              nama_barang,
+              kode_barang,
+              harga_barang,
+              total_jumlah: 0,
+            };
+          }
+          groupedBarang[key].total_jumlah += detail.jumlah_barang;
+        });
+      });
+    });
+
+    // Convert groupedBarang back to an array
+    const result = Object.values(groupedBarang);
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching pre-order detail barang:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+// Get data barang di dalam prasat by user id untuk ketika order nanti tinggal pilih prasatnya barangnya langsung ada 
+export const getPreOrderDetailsByPrasat = async (req, res) => {
+
+  try {
+    const result = await prisma.preOrder.findMany({
+        where: {
+          userId: req.user.user_id,
+          status: "APPROVED",
+          // PreOrderPrasat: {
+          //   some: {
+          //     prasatId: parseInt(req.params.prasatId),
+          //   },
+          // },
+        },
+        include: {
+          PreOrderPrasat: {
+            include: {
+              PreOrderDetail: {
+                include: {
+                  barang: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    
+    
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching pre-order detail barang:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
