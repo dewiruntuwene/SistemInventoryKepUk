@@ -13,6 +13,7 @@ import BarangPinjamRoute from "./routes/BarangPinjamRoute.js";
 import PrasatRoute from "./routes/PrasatRoute.js";
 import PreOrderPrasatRoute from "./routes/PreOrderPrasatRoute.js";
 import TransaksiKeseluruahanRoute from "./routes/TransaksiKeseluruahanRoute.js";
+import ApprovalRoute from "./routes/ApprovalRoute.js";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -71,6 +72,7 @@ app.use(BarangPinjamRoute);
 app.use(PrasatRoute);
 app.use(PreOrderPrasatRoute);
 app.use(TransaksiKeseluruahanRoute);
+app.use(ApprovalRoute);
 app.use((req, res, next) => {
   // res.setHeader("Access-Control-Allow-Origin", "http://inventoryfkep-46301.portmap.io:46301");
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
