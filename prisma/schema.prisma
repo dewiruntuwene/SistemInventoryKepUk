@@ -8,35 +8,12 @@ datasource db {
   //directUrl =  env("DIRECT_URL")
 }
 
-model Users {
-  user_id       Int         @id @default(autoincrement())
-  username      String      @db.VarChar(50)
-  password      String?     @db.VarChar(255)
-  email         String      @unique @db.VarChar(50)
-  role          Role        @default(USER)
-  created_on    DateTime    @default(now())
-  last_login    DateTime?   @default(now())
-  refresh_token String?     @db.VarChar(255)
-  peminjam      Peminjam[]
-  keranjang     Keranjang[]
-
-  //prasat Prasat[]
-
-  preOrder PreOrder[]
-
-  Approval Approval[]
-
-  KeranjangPrasat KeranjangPrasat[]
-
-  Prasat Prasat[]
-
-  TransaksiOrderPreOrder TransaksiOrderPreOrder[]
-}
 
 model Peminjam {
   id_peminjam         Int                @id @default(autoincrement())
   nama_matakuliah     String             @db.VarChar(50)
-  prasat              String             @db.VarChar(50)
+  prasat              String?             @db.VarChar(50)
+  keterangan          String?            @db.VarChar(225)
   jam_praktek         String             @db.VarChar(10)
   tanggal_praktek     String?            @db.VarChar(20)
   tanggal_order       DateTime           @default(now())
@@ -169,6 +146,46 @@ model KeranjangPrasat {
   PreOrderPrasat PreOrderPrasat[]
 }
 
+model Approval {
+  id_approval    Int      @id @default(autoincrement())
+  userId         Int
+  users          Users    @relation(fields: [userId], references: [user_id]) // Relasi ke Users
+  tanggal_approve DateTime? // Tanggal approval (opsional jika belum disetujui)
+  remarks        String?   @db.VarChar(255) // Catatan tambahan
+  level_approval Int       // Level approval (1 = Kaprodi, 2 = Dekan, dll.)
+  is_approved    Boolean   @default(false) // Status apakah sudah disetujui
+
+  preOrder PreOrder[]
+
+  @@map("approvals")
+}
+
+
+model Users {
+  user_id       Int         @id @default(autoincrement())
+  username      String      @db.VarChar(50)
+  password      String?     @db.VarChar(255)
+  email         String      @unique @db.VarChar(50)
+  role          Role        @default(USER)
+  created_on    DateTime    @default(now())
+  last_login    DateTime?   @default(now())
+  refresh_token String?     @db.VarChar(255)
+  peminjam      Peminjam[]
+  keranjang     Keranjang[]
+
+  //prasat Prasat[]
+
+  preOrder PreOrder[]
+
+  Approval Approval[]
+
+  KeranjangPrasat KeranjangPrasat[]
+
+  Prasat Prasat[]
+
+  TransaksiOrderPreOrder TransaksiOrderPreOrder[]
+}
+
 model PreOrder {
   id_pre_order_paket Int       @id @default(autoincrement())
   userId             Int
@@ -211,16 +228,6 @@ model PreOrderDetail {
 }
 
 
-model Approval {
-  id_approval    Int      @id @default(autoincrement())
-  userId         Int
-  users          Users    @relation(fields: [userId], references: [user_id]) // Relasi ke Users
-  tanggal_approve DateTime @default(now()) // Tanggal approval
-  remarks        String?  @db.VarChar(255) // Catatan tambahan
-
-  @@map("approvals")
-  preOrder PreOrder[]
-}
 
 model StokOpname {
   id_stok_opname Int       @id @default(autoincrement())
@@ -245,6 +252,25 @@ model TransaksiOrderPreOrder {
   barang          Barang   @relation(fields: [nama_barang], references: [nama_barang])
 }
 
+model DataBarangPreOrder {
+  id_barang_preorder      Int     @id @default(autoincrement())
+  nama_barang             String  @db.VarChar(50)
+  kode_barang             String
+  harga_barang            Int
+  total_jumlah            Int
+  kalkulasi_harga         Int
+
+  ContainerDataBarangPreOrder ContainerDataBarangPreOrder[]
+}
+
+model ContainerDataBarangPreOrder {
+  id_container    Int   @id @default(autoincrement())
+  keterangan      String  @db.VarChar(225)
+  idBarangPreOrder Int
+
+  dataBarangPreOrder  DataBarangPreOrder  @relation(fields: [idBarangPreOrder], references: [id_barang_preorder])
+}
+
 
 
 enum Status {
@@ -260,7 +286,9 @@ enum Role {
   DEKAN
   WAREK1
   WAREK2
+  PURCHASEMANAGER
 }
+
 
 enum Type {
   BarangKeluar
