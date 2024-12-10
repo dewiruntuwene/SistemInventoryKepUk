@@ -7,7 +7,9 @@ import {
     updateApproveKaprodiPreOrder,
     updateRejectedKaprodiPreOrder,
     getAllDataPreOrderPrasat,
-    updateJumlahBarangPreOrderPrasat
+    updateJumlahBarangPreOrderPrasat,
+    getAllPreOrderDetailBarang,
+    getPreOrderDetailsByPrasat
 } from "../controllers/PreOrderPrasatController.js";
 import { PrismaClient } from "@prisma/client";
 import multer, { diskStorage } from "multer";
@@ -25,7 +27,8 @@ router.get("/allpreorder", verifyToken, getAllDataPreOrderPrasat);
 router.patch("/preorder/:id_pre_order_paket", verifyToken, updateApproveKaprodiPreOrder);
 router.patch("/cancelPreorder/:id_pre_order_paket", verifyToken, updateRejectedKaprodiPreOrder);
 router.patch("/updateJumlahBarang/:id_preorder_detail", verifyToken, updateJumlahBarangPreOrderPrasat);
-
+router.get("/preorderdetailbarang", getAllPreOrderDetailBarang);
+router.get("/preorderdetailbyprasat/", verifyToken, getPreOrderDetailsByPrasat);
 
 
 export default router;
