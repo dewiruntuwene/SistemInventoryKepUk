@@ -27,7 +27,7 @@ router.get("/allpreorder", verifyToken, getAllDataPreOrderPrasat);
 router.patch("/preorder/:id_pre_order_paket", verifyToken, updateApproveKaprodiPreOrder);
 router.patch("/cancelPreorder/:id_pre_order_paket", verifyToken, updateRejectedKaprodiPreOrder);
 router.patch("/updateJumlahBarang/:id_preorder_detail", verifyToken, updateJumlahBarangPreOrderPrasat);
-router.get("/preorderdetailbarang", getAllPreOrderDetailBarang);
+router.post("/preorderdetailbarang", getAllPreOrderDetailBarang);
 router.get("/preorderdetailbyprasat/", verifyToken, getPreOrderDetailsByPrasat);
 
 
