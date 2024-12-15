@@ -54,7 +54,7 @@ export const getPreOrderKeranjang = async (req, res) => {
 
 
 export const createDataPreOrderPrasat = async (req, res) => {
-  const { rencana_pemakaian, id_preorder_keranjang } = req.body;
+  const { rencana_pemakaian, id_preorder_keranjang, jumlah_barang } = req.body;
   const { user_id } = req.params;
 
   // Ambil nama pengguna (username) dari sesi
@@ -200,6 +200,7 @@ export const getAllDataPreOrderPrasat = async (req, res) => {
             deskripsi: true,
             PreOrderDetail: {
               select: {
+                id_preorder_detail: true,
                 jumlah_barang: true,
                 barang: {
                   select: {
@@ -303,7 +304,9 @@ export const updateApproveKaprodiPreOrder = async (req, res) => {
             tanggal: new Date(),
             transaksi_type: "Pre-Order",
             nama_barang: detailItem.barang.nama_barang,
-            jumlah: detailItem.jumlah_barang || 0,
+            jumlah: detailItem.jumlah_barang,
+            jumlah_barang_po: detailItem.jumlah_barang,
+            nama_prasat: prasatItem.nama_prasat,
             jenis_transaksi: "Debit",
           },
         });
@@ -354,28 +357,51 @@ export const updateJumlahBarangPreOrderPrasat = async (req, res) => {
   try {
     const id_preorder_detail = parseInt(req.params.id_preorder_detail);
 
-    // Update jumlah_barang di PreOrderDetail
-    const updatedPreOrderDetail = await prisma.PreOrderDetail.update({
-      where: {
-        id_preorder_detail: id_preorder_detail,
-      },
-      data: {
-        jumlah_barang,
-      },
-      include: {
-        barang: true, // Untuk mendapatkan nama_barang terkait
-      },
-    });
 
-    // Perbarui jumlah di TransaksiOrderPreOrder berdasarkan nama_barang
-    await prisma.TransaksiOrderPreOrder.updateMany({
-      where: {
-        nama_barang: updatedPreOrderDetail.barang.nama_barang,
-      },
-      data: {
-        jumlah: jumlah_barang,
-      },
-    });
+    
+    // Update jumlah_barang di PreOrderDetail
+const updatedPreOrderDetail = await prisma.PreOrderDetail.update({
+  where: {
+    id_preorder_detail: id_preorder_detail, // ID detail pre-order yang ingin diperbarui
+  },
+  data: {
+    jumlah_barang, // Nilai baru jumlah barang
+  },
+  include: {
+    barang: true, // Sertakan data relasi untuk mendapatkan nama_barang
+  },
+});
+
+// Validasi jika tidak ditemukan
+if (!updatedPreOrderDetail) {
+  throw new Error("Detail PreOrder tidak ditemukan.");
+}
+
+// Cari item yang spesifik di TransaksiOrderPreOrder berdasarkan kriteria unik
+const transaksiToUpdate = await prisma.TransaksiOrderPreOrder.findFirst({
+  where: {
+    nama_barang: updatedPreOrderDetail.barang.nama_barang, // Nama barang harus cocok
+    nama_prasat: updatedPreOrderDetail.nama_prasat,       // Nama prasat harus cocok
+    // Tambahkan filter spesifik lain jika diperlukan
+  },
+});
+
+// Validasi jika transaksi tidak ditemukan
+if (!transaksiToUpdate) {
+  throw new Error("Transaksi yang sesuai tidak ditemukan.");
+}
+
+// Perbarui jumlah hanya pada transaksi yang spesifik
+await prisma.TransaksiOrderPreOrder.update({
+  where: {
+    id_transaksi: transaksiToUpdate.id_transaksi, // Gunakan ID unik
+  },
+  data: {
+    jumlah: jumlah_barang, // Perbarui jumlah
+    jumlah_barang_po: jumlah_barang
+  },
+});
+
 
     return res.json({ message: "Jumlah Barang and Transaction Updated" });
   } catch (error) {
@@ -388,6 +414,32 @@ export const updateJumlahBarangPreOrderPrasat = async (req, res) => {
 // Dapat pre order detail untuk transaksi order pre order
 export const getAllPreOrderDetailBarang = async (req, res) => {
   try {
+    const { keterangan } = req.body; // Ambil keterangan dari body request
+
+    const currentDate = new Date(); // Ambil tanggal saat ini
+
+    // Format tanggal ke dalam format "12 Desember 2024"
+    const formattedDate = new Intl.DateTimeFormat('id-ID', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+    }).format(currentDate);
+
+    // Pastikan keterangan diisi
+    if (!keterangan) {
+      return res.status(400).json({ error: 'Keterangan is required' });
+    }
+
+    // Membuat ContainerDataBarangPreOrder terlebih dahulu
+    const containerDataBarang = await prisma.ContainerDataBarangPreOrder.create({
+      data: {
+        keterangan: keterangan, // Keterangan dari body request
+        status_kaprodi: 'APPROVED',
+        tanggal_update_kaprodi: formattedDate,
+      },
+    });
+
+    // Mengambil data preOrder yang telah disetujui
     const preOrders = await prisma.PreOrder.findMany({
       where: {
         status: 'APPROVED',
@@ -426,22 +478,43 @@ export const getAllPreOrderDetailBarang = async (req, res) => {
               kode_barang,
               harga_barang,
               total_jumlah: 0,
+              kalkulasi_harga: 0,
             };
           }
           groupedBarang[key].total_jumlah += detail.jumlah_barang;
+          groupedBarang[key].kalkulasi_harga =
+            groupedBarang[key].harga_barang * groupedBarang[key].total_jumlah;
         });
       });
     });
 
-    // Convert groupedBarang back to an array
+    // Convert groupedBarang to an array
     const result = Object.values(groupedBarang);
 
-    res.json(result);
+    // Insert data into DataBarangPreOrder with the same containerId
+    for (const item of result) {
+      await prisma.DataBarangPreOrder.create({
+        data: {
+          nama_barang: item.nama_barang,
+          kode_barang: item.kode_barang,
+          harga_barang: item.harga_barang,
+          total_jumlah: item.total_jumlah,
+          kalkulasi_harga: item.kalkulasi_harga,
+          idContainer: containerDataBarang.id_container, // Gunakan id_container yang baru dibuat
+        },
+      });
+    }
+
+    res.json({ message: 'Data processed and inserted successfully', data: result });
   } catch (error) {
-    console.error("Error fetching pre-order detail barang:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error fetching pre-order detail barang:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
+
+
 
 
 // Get data barang di dalam prasat by user id untuk ketika order nanti tinggal pilih prasatnya barangnya langsung ada 
