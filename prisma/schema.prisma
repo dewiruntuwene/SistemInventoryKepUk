@@ -247,6 +247,8 @@ model TransaksiOrderPreOrder {
   nama_barang     String   @db.VarChar(255)
   jumlah          Int
   jenis_transaksi String   @db.VarChar(50)
+  nama_prasat     String
+  jumlah_barang_po Int?
 
   user            Users     @relation(fields: [user_id], references: [user_id])
   barang          Barang   @relation(fields: [nama_barang], references: [nama_barang])
@@ -259,19 +261,36 @@ model DataBarangPreOrder {
   harga_barang            Int
   total_jumlah            Int
   kalkulasi_harga         Int
+  sudah_dibeli  Beli      @default(NO)
+  sudah_diterima  Beli      @default(NO)
+  idContainer             Int
 
-  ContainerDataBarangPreOrder ContainerDataBarangPreOrder[]
+  ContainerDataBarangPreOrder ContainerDataBarangPreOrder @relation(fields: [idContainer], references: [id_container])
 }
 
 model ContainerDataBarangPreOrder {
   id_container    Int   @id @default(autoincrement())
-  keterangan      String  @db.VarChar(225)
-  idBarangPreOrder Int
+  keterangan      String?  @db.VarChar(225)
+  status_kaprodi  Status    @default(PENDING)
+  status_dekan    Status    @default(PENDING)
+  status_warek1   Status    @default(PENDING)
+  status_warek2   Status    @default(PENDING)
+  status_pm       Status    @default(PENDING)
+  status_admin    Status    @default(PENDING)
+  tanggal_update_kaprodi String?
+  tanggal_update_dekan String?
+  tanggal_update_warek1 String?
+  tanggal_update_warek2 String?
+  tanggal_update_pm String?
+  tanggal_update_admin String?
 
-  dataBarangPreOrder  DataBarangPreOrder  @relation(fields: [idBarangPreOrder], references: [id_barang_preorder])
+  dataBarangPreOrder  DataBarangPreOrder[]
 }
 
-
+enum Beli {
+  YES
+  NO
+}
 
 enum Status {
   PENDING
