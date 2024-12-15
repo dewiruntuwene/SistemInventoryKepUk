@@ -111,6 +111,7 @@ export const createDataOrderBarang = async (req, res) => {
     tanggal_kembali_alat,
     ruangan_lab,
     id_keranjang,
+    keterangan
   } = req.body;
   const { user_id } = req.params;
 
@@ -149,6 +150,7 @@ export const createDataOrderBarang = async (req, res) => {
           tanggal_praktek,
           tanggal_kembali_alat,
           ruangan_lab,
+          keterangan,
           users: {
             connect: {
               user_id: req.user.user_id,
@@ -358,16 +360,36 @@ export const updateBarangOrder = async (req, res) => {
         },
       });
 
-      await prisma.TransaksiOrderPreOrder.create({
-        data: {
-          user_id: peminjam.users.user_id,
-          tanggal: new Date(),
-          transaksi_type: "Order",
-          nama_barang: barangHabisPakai.nama_barang,
-          jumlah: jumlah_barang,
-          jenis_transaksi: "Credit",
-        },
+      await prisma.$transaction(async (prisma) => {
+        // Membuat entri TransaksiOrderPreOrder
+        await prisma.TransaksiOrderPreOrder.create({
+          data: {
+            user_id: peminjam.users.user_id,
+            tanggal: new Date(),
+            transaksi_type: "Order",
+            nama_barang: barangHabisPakai.nama_barang,
+            jumlah: jumlah_barang,
+            nama_prasat: peminjam.prasat,
+            jenis_transaksi: "Credit",
+          },
+        });
+      
+        // Mengurangi jumlah_barang_po di tabel TransaksiOrderPreOrder
+        await prisma.TransaksiOrderPreOrder.updateMany({
+          where: {
+            nama_prasat: peminjam.prasat,
+            nama_barang: barangHabisPakai.nama_barang, // Kondisi sesuai nama_barang
+          },
+          data: {
+            jumlah_barang_po: {
+              decrement: jumlah_barang, // Mengurangi jumlah sesuai kebutuhan
+            },
+          },
+        });
       });
+      
+
+
 
       console.log("Creating TransaksiOrderPreOrder with data:");
       console.log({
