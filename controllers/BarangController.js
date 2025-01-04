@@ -35,21 +35,10 @@ const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/"); // Menyimpan file di folder 'uploads'
   },
-  // filename: function (req, file, cb) {
-  //     const name = file.originalname.split('')[0];
-  //     const ext = file.originalname.split('.')[1];
-  //     cb(null, name + '_' + Date.now() + '.' + ext ); // Nama file disimpan sesuai dengan nama aslinya
-  // }
+ 
 });
 
-// Filter untuk memeriksa tipe file yang diizinkan (opsional)
-// const fileFilter = (req, file, cb) => {
-//     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-//         cb(null, true);
-//     } else {
-//         cb(new Error('Only JPEG and PNG images are allowed'), false);
-//     }
-// };
+
 
 // Inisialisasi multer dengan konfigurasi yang telah ditentukan
 // Fungsi untuk menangani permintaan pembuatan barang dengan kemampuan unggah gambar
