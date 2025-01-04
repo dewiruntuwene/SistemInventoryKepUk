@@ -190,9 +190,27 @@ export const getUsers = async (req, res) => {
         username: true,
         password: true,
         email: true,
+        role: true
       },
     });
     res.json(Users);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateUsers = async (req, res) => {
+  const { username, email, role } = req.body;
+  try {
+    const result = await prisma.users.update({
+      where: { user_id: Number(req.params.user_id) },
+      data: {
+        username,
+        email,
+        role,
+      },
+    });
+    res.json(result);
   } catch (error) {
     console.log(error);
   }
@@ -266,6 +284,45 @@ export const Login = async (req, res) => {
 
   return res.json({ token });
 };
+
+export const changePassword = async (req, res) => {
+  const { email, oldPassword, newPassword, confirmPassword } = req.body;
+
+  try {
+    // Cek apakah user ada berdasarkan email
+    const user = await prisma.users.findUnique({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ msg: "User tidak ditemukan" });
+    }
+
+    // Verifikasi password lama
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: "Password lama salah" });
+    }
+
+    // Pastikan password baru dan konfirmasinya cocok
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ msg: "Password baru tidak cocok" });
+    }
+
+    // Hash password baru
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update password di database
+    await prisma.users.update({
+      where: { email },
+      data: { password: hashPassword },
+    });
+
+    return res.json({ msg: "Password berhasil diubah" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ msg: "Terjadi kesalahan pada server" });
+  }
+};
+
 
 export const Logout = async (req, res) => { 
   try {
