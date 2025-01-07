@@ -46,6 +46,10 @@ export const createBarang = async (req, res) => {
   const { kode_barang, nama_barang, total_stock, jenis_barang, harga_barang } =
     req.body;
   const gambar_barang = GAMBAR_URL; // Path file gambar yang diunggah
+
+  // Buat URL gambar yang mengarah ke domain Anda
+  const gambarUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+
   try {
     // Tambahkan data barang ke database
     console.log(req.body);
@@ -57,6 +61,7 @@ export const createBarang = async (req, res) => {
         jenis_barang: jenis_barang,
         harga_barang: parseInt(harga_barang),
         gambar_barang: req?.file?.filename,
+        //gambar_barang: gambarUrl,
       },
     });
 
@@ -68,7 +73,8 @@ export const createBarang = async (req, res) => {
       jenis_barang: barang.jenis_barang,
       harga_barang: barang.harga_barang,
       // Menggunakan path absolut menjadi relatif agar dapat digunakan di frontend
-      gambar_barang: barang.gambar_barang.replace("uploads/", ""), // Menghapus bagian 'public/' dari path
+      //gambar_barang: barang.gambar_barang.replace("uploads/", ""), // Menghapus bagian 'public/' dari path
+      gambar_barang: gambarUrl, // Kembalikan URL gambar ke frontend
     };
     res.status(201).json({ msg: "Data Created", responseData });
   } catch (error) {
@@ -78,14 +84,7 @@ export const createBarang = async (req, res) => {
 };
 
 export const updateBarang = async (req, res) => {
-  const {
-    nama_barang,
-    total_stock,
-    jenis_barang,
-    harga_barang,
-    gambar_barang,
-    kode_barang,
-  } = req.body;
+  const { nama_barang, total_stock, jenis_barang, harga_barang, kode_barang } = req.body;
 
   try {
     await prisma.Barang.update({
@@ -93,20 +92,22 @@ export const updateBarang = async (req, res) => {
         id_barang: parseInt(req.params.id_barang),
       },
       data: {
-        kode_barang: { set: kode_barang },
-        nama_barang: { set: nama_barang }, // Gunakan 'set' untuk menetapkan nilai
-        total_stock: { set: total_stock },
-        jenis_barang: { set: jenis_barang },
-        harga_barang: { set: harga_barang },
-        gambar_barang: { set: gambar_barang },
+        kode_barang,
+        nama_barang,
+        total_stock: parseInt(total_stock),
+        jenis_barang,
+        harga_barang: parseInt(harga_barang),
+        gambar_barang: req.file ? req.file.filename : undefined, // Hanya update jika file ada
       },
     });
 
     res.status(200).json({ msg: "Data Updated" });
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
+    res.status(500).json({ error: error.message });
   }
 };
+
 
 export const deletedBarang = async (req, res) => {
   const id_barang = parseInt(req.params.id_barang);
