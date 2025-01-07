@@ -14,7 +14,7 @@ const prisma = new PrismaClient();
 const router = express.Router();
 const upload = multer({
   storage: diskStorage({
-    destination: "./uploads",
+    destination: "./uploads/",
     filename: (_, file, cb) => {
       const filename = `${Date.now()}-${file.originalname}`;
       return cb(null, filename);
@@ -25,7 +25,7 @@ const upload = multer({
 router.get("/barang", getBarang);
 router.get("/barang/:id_barang", getBarangById);
 router.post("/barang", upload.single("gambar_barang"), createBarang);
-router.patch("/barang/:id_barang", updateBarang);
+router.patch("/barang/:id_barang", upload.single("gambar_barang"), updateBarang);
 router.delete("/barang/:id_barang", deletedBarang);
 
 export default router;
