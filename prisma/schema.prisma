@@ -8,7 +8,7 @@ datasource db {
   //directUrl =  env("DIRECT_URL")
 }
 
-
+//Harusnya ini nama tabelnya Order, so Peminjam = Order
 model Peminjam {
   id_peminjam         Int                @id @default(autoincrement())
   nama_matakuliah     String             @db.VarChar(50)
@@ -170,6 +170,8 @@ model Users {
   created_on    DateTime    @default(now())
   last_login    DateTime?   @default(now())
   refresh_token String?     @db.VarChar(255)
+  resetPasswordToken String?
+  resetPasswordExpiry String?
   peminjam      Peminjam[]
   keranjang     Keranjang[]
 
