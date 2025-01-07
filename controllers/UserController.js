@@ -6,6 +6,8 @@ import { google } from "googleapis";
 import { oauth2 } from "googleapis/build/src/apis/oauth2/index.js";
 import { where } from "sequelize";
 import { OAuth2Client } from "google-auth-library";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
 
 const prisma = new PrismaClient();
 
@@ -352,3 +354,131 @@ export const Logout = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Cek apakah user ada berdasarkan email
+    const user = await prisma.users.findUnique({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ msg: "Email tidak ditemukan" });
+    }
+
+    // Generate token reset password
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const tokenHash = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    // Set expiry time dalam 1 jam
+    const expiryDate = new Date(Date.now() + 3600000).toISOString(); // Convert to string
+
+    // Simpan token hash dan expiry ke database
+    await prisma.users.update({
+      where: { email },
+      data: {
+        resetPasswordToken: tokenHash,
+        resetPasswordExpiry: expiryDate,
+      },
+    });
+
+    // Buat tautan reset password
+    const resetLink = `${process.env.FRONTEND_URL}/ResetPass?token=${resetToken}`;
+
+    // Kirim email ke user
+    await sendResetPasswordEmail(user.email, resetLink);
+
+    // Respon ke client
+    res.json({ msg: "Tautan reset password telah dikirim ke email Anda." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Server error" });
+  }
+};
+
+// Fungsi untuk mengirim email reset password
+const sendResetPasswordEmail = async (email, resetLink) => {
+  // Konfigurasi transporter untuk Gmail (ubah jika menggunakan layanan lain)
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER, // Email Anda
+      pass: process.env.EMAIL_PASS, // Password email Anda
+    },
+    tls: {
+      rejectUnauthorized: false, // Abaikan validasi sertifikat
+    },
+  });
+
+  // Konfigurasi email yang dikirim
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Reset Password",
+    text: `Hai, kami menerima permintaan reset password dari akun Anda. Klik tautan berikut untuk mereset password: ${resetLink}. Tautan ini hanya berlaku selama 1 jam.`,
+    html: `
+      <p>Hai,</p>
+      <p>Kami menerima permintaan reset password dari akun Anda.</p>
+      <p>Klik tautan berikut untuk mereset password:</p>
+      <a href="${resetLink}">${resetLink}</a>
+      <p><strong>Tautan ini hanya berlaku selama 1 jam.</strong></p>
+    `,
+  };
+
+  // Kirim email
+  await transporter.sendMail(mailOptions);
+};
+
+export const resetPassword = async (req, res) => {
+   // Mendapatkan token dari query string
+  const { newPassword, confirmPassword, token } = req.body;
+
+  console.log("Received token:", token);  // Debugging: Periksa apakah token ada
+
+  // Pastikan token ada
+  if (!token) {
+    return res.status(400).json({ msg: "Token tidak ditemukan." });
+  }
+
+  try {
+    // Hash token dari URL
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+
+    // Cari user berdasarkan token hash dan cek apakah token masih berlaku
+    const user = await prisma.users.findFirst({
+      where: {
+        resetPasswordToken: tokenHash,
+        resetPasswordExpiry: {
+          gt: new Date().toISOString(), // Token belum kadaluarsa
+        },
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({ msg: "Token tidak valid atau sudah kadaluarsa." });
+    }
+
+    // Cek apakah password baru dan konfirmasi password cocok
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ msg: "Password baru dan konfirmasi tidak cocok." });
+    }
+
+    // Hash password baru
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password user di database
+    await prisma.users.update({
+      where: { email: user.email },
+      data: {
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpiry: null,
+      },
+    });
+
+    res.json({ msg: "Password berhasil diperbarui. Silakan login dengan password baru Anda." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Server error" });
+  }
+};
+
