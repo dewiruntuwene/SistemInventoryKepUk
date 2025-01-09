@@ -108,3 +108,27 @@ export const getDataPrasat = async (req, res) => {
     });
   }
 };
+
+export const deletePrasat = async (req, res) => {
+  const { id_prasat } = req.params;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Hapus semua barang dalam Prasat
+      await tx.barangDalamPrasat.deleteMany({
+        where: { prasatId: parseInt(id_prasat) },
+      });
+
+      // Hapus Prasat
+      await tx.Prasat.delete({
+        where: { id_prasat: parseInt(id_prasat) },
+      });
+    });
+
+    res.json({ message: "Prasat berhasil dihapus" });
+  } catch (error) {
+    console.error("Error deleting Prasat:", error);
+    res.status(500).json({ error: "Gagal menghapus Prasat" });
+  }
+};
+
