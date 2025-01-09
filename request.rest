@@ -12,11 +12,11 @@ POST http://localhost:5000/barangKeluar
 Content-Type: application/json
 
 {
-  "nama_barang": "Edelweis",
-  "jenis_barang": "Habis Pakai",
+  "nama_barang": "Masker",
+  "jenis_barang": "Barang Habis Pakai",
   "harga_barang": 5000,
   "jumlah_barang": 5,
-  "kode_barang": "A100"
+  "kode_barang": "A001"
 }
 
 ###
@@ -33,8 +33,8 @@ Content-Type: application/json
   "tanggal_masuk": "12/02/23",
   "jumlah_barang": 5,
   "kode_barang": "A001",
-  "nama_barang": "Suntik",
-  "jenis_barang": "Habis pakai",
+  "nama_barang": "Masker",
+  "jenis_barang": "Barang Habis Pakai",
   "harga_barang": 2000
 }
 
@@ -42,13 +42,13 @@ Content-Type: application/json
 GET  http://localhost:5000/barangMasuk/
 
 ###
-PATCH     http://localhost:5000/barangMasuk/7
+PATCH     http://localhost:5000/barangMasuk/51
 Content-Type: application/json
 
 {
   "tanggal_masuk": "2024-07-15",
   "jumlah_barang": 18,
-  "kode_barang": "A002",
+  "kode_barang": "A001",
   "nama_barang": "Masker",
   "jenis_barang": "Habis Pakai"
 }
@@ -61,16 +61,31 @@ POST http://localhost:5000/peminjam
 Content-Type: application/json
 
 {
-  "nama_barang": "Sarung Tangan",
-  "jenis_barang": "Habis Pakai",
+  "nama_barang": "Suntik",
+  "jenis_barang": "Barang Habis Pakai",
   "harga_barang": 10000,
   "jumlah_barang": 1,
-  "kode_barang": "A102",
+  "kode_barang": "A001",
   "tanggal_pinjam": "07/01/2024"
 }
 
 ###
 GET  http://localhost:5000/peminjam
+
+###
+PATCH     http://localhost:5000/peminjam/32
+Content-Type: application/json
+
+{
+  "nama_barang": "Handskun",
+  "jenis_barang": "Barang Habis Pakai",
+  "harga_barang": 10000,
+  "jumlah_barang": 1,
+  "kode_barang": "A002",
+  "tanggal_pinjam": "2024-07-17",
+  "keterangan": "Rusak"
+}
+
 
 ###
 GET  http://localhost:5000/barang
@@ -80,7 +95,7 @@ POST   http://localhost:5000/barang
 Content-Type: application/json
 
 {
-  "kode_barang": "A018",
+  "kode_barang": "A019",
   "nama_barang": "Suntik",
   "total_stock": 50,
   "jenis_barang": "baik",
@@ -93,16 +108,22 @@ PATCH    http://localhost:5000/barang/2
 Content-Type: application/json
 
 {
-    "nama_barang": "Glove",
-    "total_stock": 48,
-    "jenis_barang": "baik",
-    "harga_barang": 5000,
-    "gambar_barang": "1715857017818-1711376166370-Face-mask 1.png",
-    "kode_barang": "A020"
+    "nama_barang": "Masker",
+    "total_stock": 40,
+    "jenis_barang": "Barang Habis Pakai",
+    "harga_barang": 30000,
+    "gambar_barang": "http://localhost:5000/uploads/1736078167113-1711423655652-suntik.jpg",
+    "kode_barang": "A002"
 }
 
 ###
-DELETE   http://localhost:5000/barang/A01
+DELETE   http://localhost:5000/barang/6
+
+###
+GET   http://localhost:5000/barang/
+
+###
+DELETE http://inventoryfkep-46301.portmap.io:46301/api/barang/7
 
 ###
 PUT     http://localhost:5000/barang/A013
@@ -121,7 +142,8 @@ GET http://localhost:5000/dashboardNotif
 
 
 ###
-GET http://localhost:5000/users
+GET http://localhost:5000/dashboardNotif
+
 
 ###
 DELETE  http://localhost:5000/logout
@@ -132,32 +154,85 @@ POST   http://localhost:5000/register
 Content-Type: application/json
 
 {
-    "username": "dewifr",
-    "email": "dewir111@gmail.com",
-    "password": "12345678"
+    "username": "farel",
+    "email": "farel@gmail.com",
+    "password": "12345"
 }
+
 
 ###
 POST   http://localhost:5000/login
 Content-Type: application/json
 
 {
-    "email": "dewir111@gmail.com",
-    "password": "12345678"
+    "email": "farel@gmail.com",
+    "password": "123"
+}
+
+###
+PUT   http://localhost:5000/users/7
+Content-Type: application/json
+
+{
+    "username": "ferel",
+    "email": "farel@gmail.com",
+    "role": "PURCHASEMANAGER"
+}
+
+###
+PUT   https://inventoryfkepunklab.site/api/users/1
+Content-Type: application/json
+
+{
+    "username": "dewi",
+    "email": "dewi@gmail.com",
+    "role": "ADMIN"
+}
+
+###
+PATCH http://localhost:5000/changepass
+Content-Type: application/json
+
+{
+  "email": "farel@gmail.com",
+  "oldPassword": "12345",
+  "newPassword": "123",
+  "confirmPassword": "123"
+}
+
+
+###
+GET   http://localhost:5000/users
+# Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+POST  http://localhost:5000/forgotpass
+Content-Type: application/json
+
+{
+  "email": "runtuwenedewi@gmail.com"
 }
 
 ###
 GET   http://localhost:5000/dataOrderBarang
 
 ###
+PATCH     http://localhost:5000/cancelOrder/26
+
+###
 DELETE    http://localhost:5000/orderBarang/78
+
+###
+PATCH    http://localhost:5000/updateBarang/16
 
 ###
 POST   http://localhost:5000/orderBarang/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
 
 {
-    "nama_matakuliah": "Kardio",
+    "nama_matakuliah": "Hematologi 15",
     "prasat": "some prasat",
     "jam_praktek": "12:00",
     "tanggal_praktek": "26-2-2024",
@@ -171,6 +246,7 @@ DELETE  http://localhost:5000/keranjang/40
 
 ###
 GET   http://localhost:5000/keranjang
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
 
 ###
 PATCH    http://localhost:5000/keranjang/61
@@ -183,12 +259,13 @@ Content-Type: application/json
 ###
 POST   http://localhost:5000/keranjang
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
 
 {
-  "jumlah_barang": 5,
+  "jumlah_barang": 9,
   "barang": {
-     "kode_barang": "A019",
-        "nama_barang": "Masker",
+     "kode_barang": "A018",
+        "nama_barang": "Suntik",
         "total_stock": 50,
         "jenis_barang": "baik",
         "harga_barang": 5000,
@@ -197,7 +274,7 @@ Content-Type: application/json
 }
 
 ###
-GET   http://localhost:5000/history
+GET   http://localhost:5000/barang
 
 ###
 GET   http://localhost:5000/peminjamBarang
@@ -207,6 +284,167 @@ PATCH    http://localhost:5000/peminjamBarang/5
 
 ###
 PATCH    http://localhost:5000/peminjamBarang/2
+
+###
+POST   http://localhost:5000/prasat
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+{
+  "nama_prasat": "Kardio",
+  "deskripsi": "Untuk anak kep",
+  "barangDalamPrasat": [
+    { "barangId": 1, "jumlah_barang": 10 },
+    { "barangId": 4, "jumlah_barang": 10 }
+  ]
+}
+
+###
+PUT  http://localhost:5000/prasat/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+{
+  "nama_prasat": "Kateter",
+  "deskripsi": "coba aja",
+  "created_by": 5,
+  "barangDalamPrasat": [
+    { "barangId": 1, "jumlah_barang": 0 },
+    { "barangId": 1, "jumlah_barang": 0 }
+  ]
+}
+
+###
+GET  http://localhost:5000/prasat/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+DELETE   http://localhost:5000/prasat/2
+Content-Type: application/json
+
+
+###
+POST   http://localhost:5000/preorderkeranjang
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+{
+  "prasat": [
+    { "id_prasat": 2 }
+  ]
+}
+
+###
+GET   http://localhost:5000/preorderkeranjang
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+
+###
+POST   http://localhost:5000/preorder
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsIm5hbWUiOiJkZXdpZnIiLCJlbWFpbCI6ImRld2lmckBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzg2OTEyNSwiZXhwIjoxNzM2NDYxMTI1fQ.hT9AVcYSiV5xho04a0y3oEmJc2mwbbGotfsYwm4InWQ
+
+{
+  "rencana_pemakaian": "Mid to End",
+  "jumlah_barang": 10
+}
+
+###
+GET   http://localhost:5000/preorder
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+GET   http://localhost:5000/allpreorder
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+
+###
+PATCH   http://localhost:5000/preorder/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+PATCH   http://localhost:5000/updateJumlahBarang/11
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+{
+  "jumlah_barang": 3
+}
+
+###
+GET   http://localhost:5000/prasat/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+POST    http://localhost:5000/preorderdetailbarang/
+Content-Type: application/json
+
+{
+  "keterangan": "Pengadaan barang untuk semester genap"
+}
+
+
+###
+GET   http://localhost:5000/preorderdetailbyprasat/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+GET   http://localhost:5000/barangpreoderapproveddekan/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+GET   http://localhost:5000/barangpreoderapprovedwarek1/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+GET   http://localhost:5000/barangpreoderapprovedwarek2/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+GET   http://localhost:5000/barangpreoderapproved/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+PATCH   http://localhost:5000/databarangpreorderdekan/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+PATCH   http://localhost:5000/databarangpreorderwarek1/5
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+
+
+###
+PATCH   http://localhost:5000/databarangpreorderwarek2/5
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+PATCH   http://localhost:5000/barangsudahdibeli/7
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+###
+PATCH   http://localhost:5000/barangsudahditerima/5
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+
+
+###
+GET   http://localhost:5000/sisabarang
 
 
 ###
