@@ -52,6 +52,22 @@ export const getPreOrderKeranjang = async (req, res) => {
   }
 };
 
+export const deletePreOrderKeranjang = async (req, res) => {
+  try {
+    const idPreOrderKeranjang = req.params.id_preorder_keranjang;
+
+    // Hapus data keranjang pre-order
+    await prisma.keranjangPrasat.delete({
+      where: {
+        id_preorder_keranjang: parseInt(idPreOrderKeranjang),
+      },
+    });
+    res.status(200).json({ msg: "Data Delete" });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 
 export const createDataPreOrderPrasat = async (req, res) => {
   const { rencana_pemakaian, id_preorder_keranjang, jumlah_barang } = req.body;
@@ -177,6 +193,22 @@ export const getDataPreOrderPrasat = async (req, res) => {
   } catch (error) {
     console.error("Error fetching pre-order data:", error);
     res.status(500).json({ error: "Failed to fetch pre-order data" });
+  }
+};
+
+export const deleteDataPreOrderPrasat = async (req, res) => {
+  try {
+    const idPreOrderPaket = req.params.id_pre_order_paket;
+
+    // Hapus data keranjang pre-order
+    await prisma.PreOrder.delete({
+      where: {
+        id_pre_order_paket: parseInt(idPreOrderPaket),
+      },
+    });
+    res.status(200).json({ msg: "Data Delete" });
+  } catch (error) {
+    console.log(error.message);
   }
 };
 
@@ -511,9 +543,6 @@ export const getAllPreOrderDetailBarang = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
-
-
 
 
 
