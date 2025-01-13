@@ -165,8 +165,8 @@ POST   http://localhost:5000/login
 Content-Type: application/json
 
 {
-    "email": "farel@gmail.com",
-    "password": "123"
+    "email": "mica@gmail.com",
+    "password": "12345"
 }
 
 ###
@@ -323,23 +323,30 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiO
 DELETE   http://localhost:5000/prasat/2
 Content-Type: application/json
 
+###
+DELETE   http://localhost:5000/prasat/2
+Content-Type: application/json
+
 
 ###
 POST   http://localhost:5000/preorderkeranjang
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsIm5hbWUiOiJtaWNhIiwiZW1haWwiOiJtaWNhQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM2NjgyNjgwLCJleHAiOjE3MzkyNzQ2ODB9.IsVCC56cT3qVau7fl4uYqmeOfIA-PI7ClRKXeTlxIjs
 
 {
   "prasat": [
-    { "id_prasat": 2 }
+    { "id_prasat": 5 }
   ]
 }
 
 ###
 GET   http://localhost:5000/preorderkeranjang
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsIm5hbWUiOiJtaWNhIiwiZW1haWwiOiJtaWNhQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM2NjgyNjgwLCJleHAiOjE3MzkyNzQ2ODB9.IsVCC56cT3qVau7fl4uYqmeOfIA-PI7ClRKXeTlxIjs
 
+###
+DELETE   http://localhost:5000/preorderkeranjang/18
+Content-Type: application/json
 
 ###
 POST   http://localhost:5000/preorder
@@ -354,12 +361,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjYsIm5hbWUiO
 ###
 GET   http://localhost:5000/preorder
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsIm5hbWUiOiJtaWNhIiwiZW1haWwiOiJtaWNhQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM2NjgyNjgwLCJleHAiOjE3MzkyNzQ2ODB9.IsVCC56cT3qVau7fl4uYqmeOfIA-PI7ClRKXeTlxIjs
 
 ###
 GET   http://localhost:5000/allpreorder
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiOiJkZXdpZiIsImVtYWlsIjoiZGV3aXIxMUBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTczMzE1NjU5MCwiZXhwIjoxNzM1NzQ4NTkwfQ.spjuqP3-O2pi8tICGwTBbnqKVtbyYz9HgMzUpO69bME
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsIm5hbWUiOiJtaWNhIiwiZW1haWwiOiJtaWNhQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM2NjgyNjgwLCJleHAiOjE3MzkyNzQ2ODB9.IsVCC56cT3qVau7fl4uYqmeOfIA-PI7ClRKXeTlxIjs
 
 
 ###
@@ -445,6 +452,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiO
 
 ###
 GET   http://localhost:5000/sisabarang
+
+###
+GET   http://localhost:5000/alltransaction
+
+###
+GET   http://localhost:5000/transaction
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjgsIm5hbWUiOiJtaWNhIiwiZW1haWwiOiJtaWNhQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzM2NjgyNjgwLCJleHAiOjE3MzkyNzQ2ODB9.IsVCC56cT3qVau7fl4uYqmeOfIA-PI7ClRKXeTlxIjs
+
+
+###
+DELETE   http://localhost:5000/preorder/22
+
+###
+GET   http://localhost:5000/preorder
 
 
 ###
