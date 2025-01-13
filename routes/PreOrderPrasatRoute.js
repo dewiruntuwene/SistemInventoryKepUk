@@ -9,7 +9,9 @@ import {
     getAllDataPreOrderPrasat,
     updateJumlahBarangPreOrderPrasat,
     getAllPreOrderDetailBarang,
-    getPreOrderDetailsByPrasat
+    getPreOrderDetailsByPrasat,
+    deletePreOrderKeranjang,
+    deleteDataPreOrderPrasat
 } from "../controllers/PreOrderPrasatController.js";
 import { PrismaClient } from "@prisma/client";
 import multer, { diskStorage } from "multer";
@@ -20,9 +22,11 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 router.post("/preorderkeranjang", verifyToken, createPreOrderKeranjang);
+router.delete("/preorderkeranjang/:id_preorder_keranjang", deletePreOrderKeranjang);
 router.get("/preorderkeranjang", verifyToken, getPreOrderKeranjang);
 router.post("/preorder", verifyToken, createDataPreOrderPrasat);
 router.get("/preorder", verifyToken, getDataPreOrderPrasat);
+router.delete("/preorder/:id_pre_order_paket", deleteDataPreOrderPrasat);
 router.get("/allpreorder", verifyToken, getAllDataPreOrderPrasat);
 router.patch("/preorder/:id_pre_order_paket", verifyToken, updateApproveKaprodiPreOrder);
 router.patch("/cancelPreorder/:id_pre_order_paket", verifyToken, updateRejectedKaprodiPreOrder);
