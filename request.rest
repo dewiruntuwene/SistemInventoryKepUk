@@ -274,7 +274,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsIm5hbWUiO
 }
 
 ###
-GET   http://localhost:5000/barang
+GET   http://localhost:5000/countorder
 
 ###
 GET   http://localhost:5000/peminjamBarang
@@ -468,6 +468,37 @@ DELETE   http://localhost:5000/preorder/22
 ###
 GET   http://localhost:5000/preorder
 
+
+###
+POST http://localhost:5000/matakuliah
+Content-Type: application/json
+
+{
+  "nama_matakuliah": "Basic Nursing 3"
+}
+
+###
+POST http://localhost:5000/ruanganlab
+Content-Type: application/json
+
+{
+  "nama_ruangan": "GK3"
+}
+
+###
+GET   http://localhost:5000/matakuliah
+
+###
+GET   http://localhost:5000/ruanganlab
+
+###
+DELETE    http://localhost:5000/matakuliah/3
+
+###
+DELETE  http://localhost:5000/ruanganlab/3
+
+###
+GET   http://localhost:5000/countorder
 
 ###
 GET   http://localhost:5000/barang

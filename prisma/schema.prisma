@@ -27,6 +27,38 @@ model Peminjam {
   // barangPinjam        BarangPinjam[]
 
   @@map("peminjam")
+  Matakuliah Matakuliah[] @relation("MatakuliahPeminjam")
+  RuanganLab RuanganLab[] @relation("RuanganLabPeminjam")
+}
+
+model Matakuliah {
+  id_matakuliah    Int          @id @default(autoincrement())
+  nama_matakuliah  String       @unique @db.VarChar(50)
+  peminjaman       Peminjam[]   @relation("MatakuliahPeminjam")
+
+  @@map("matakuliah")
+}
+
+model RuanganLab {
+  id_ruangan       Int          @id @default(autoincrement())
+  nama_ruangan     String       @unique @db.VarChar(50)
+  peminjaman       Peminjam[]   @relation("RuanganLabPeminjam")
+
+  @@map("ruangan_lab")
+}
+
+model BarangHabisPakai {
+  id_barang_habis_pakai Int       @id @default(autoincrement())
+  peminjam              Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
+  peminjamId            Int?
+  barangs               Barang    @relation(fields: [barangId], references: [id_barang])
+  barangId              Int
+  jumlah_barang         Int
+  nama_barang           String
+  kode_barang           String
+  jenis_barang          String
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
 model History {
@@ -74,19 +106,6 @@ model Keranjang {
   @@map("keranjangs")
 }
 
-model BarangHabisPakai {
-  id_barang_habis_pakai Int       @id @default(autoincrement())
-  peminjam              Peminjam? @relation(fields: [peminjamId], references: [id_peminjam], onDelete: Cascade)
-  peminjamId            Int?
-  barangs               Barang    @relation(fields: [barangId], references: [id_barang])
-  barangId              Int
-  jumlah_barang         Int
-  nama_barang           String
-  kode_barang           String
-  jenis_barang          String
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-}
 
 model TransaksiBarang {
   id_transaksi_barang Int       @id @default(autoincrement())

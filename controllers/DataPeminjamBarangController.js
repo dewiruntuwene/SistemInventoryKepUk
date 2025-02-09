@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { io }  from "../index.js"; // Import dari server.js
 import { response } from "express";
 import { where } from "sequelize";
 
@@ -255,6 +256,7 @@ export const getDataOrderBarangAdmin = async (req, res) => {
         tanggal_order: true,
         ruangan_lab: true,
         type: true,
+        keterangan: true,
         users: {
           select: {
             username: true,
@@ -277,6 +279,8 @@ export const getDataOrderBarangAdmin = async (req, res) => {
     throw error;
   }
 };
+
+
 
 export const deletetDataOrderBarang = async (req, res) => {
   try {
@@ -401,8 +405,6 @@ export const updateBarangOrder = async (req, res) => {
         jenis_transaksi: "Credit",
       });
 
-
-
       // Update Barang stock if type is "BarangKeluar"
       if (type === "BarangKeluar") {
         await prisma.Barang.update({
@@ -432,9 +434,6 @@ export const updateBarangOrder = async (req, res) => {
     res.status(500).json({ error: "Error updating peminjam" });
   }
 };
-
-
-
 
 export const barangKeluarOrder = async (req, res) => {
   try {
@@ -670,3 +669,122 @@ export const changeStatus = async (req, res) => {
     throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND);
   }
 };
+
+
+// Buat nama matakuliah
+export const createMatakuliah = async (req, res) => {
+  const { nama_matakuliah } = req.body;
+
+  if (!nama_matakuliah) {
+    return res.status(400).json({ message: 'Nama mata kuliah harus diisi.' });
+  }
+
+  try {
+    const matakuliah = await prisma.matakuliah.create({
+      data: {
+        nama_matakuliah,
+      },
+    });
+    res.status(201).json({ message: 'Mata kuliah berhasil dibuat.', matakuliah });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Gagal membuat mata kuliah.', error: error.message });
+  }
+};
+
+export const deletedMatakuliah = async (req, res) => {
+  const id_matakuliah = parseInt(req.params.id_matakuliah);
+  try {
+    await prisma.matakuliah.delete({
+      where: {
+        id_matakuliah: id_matakuliah,
+      },
+    });
+    if (!deletedBarang) {
+      return res.status(404).json({ error: "Barang not found" });
+    }
+
+    res.status(200).json({ msg: "Data Deleted" });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+export const getMatakuliah = async (req, res) => {
+  try {
+    const response = await prisma.matakuliah.findMany()
+    res.status(200).json(response)
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
+// Buat ruangan lab
+export const createRuanganLab = async (req, res) => {
+  const { nama_ruangan } = req.body;
+
+  if (!nama_ruangan) {
+    return res.status(400).json({ message: 'Nama mata kuliah harus diisi.' });
+  }
+
+  try {
+    const ruangan = await prisma.RuanganLab.create({
+      data: {
+        nama_ruangan,
+      },
+    });
+    res.status(201).json({ message: 'Ruangan berhasil dibuat.', ruangan });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Gagal membuat ruangan.', error: error.message });
+  }
+};
+
+export const getRuanganLab = async (req, res) => {
+  try {
+    const response = await prisma.RuanganLab.findMany()
+    res.status(200).json(response)
+  } catch (error) {
+    res.status(500).json(error.message);
+  }
+};
+
+export const deletedRuanganLab = async (req, res) => {
+  const id_ruangan = parseInt(req.params.id_ruangan);
+  try {
+    await prisma.RuanganLab.delete({
+      where: {
+        id_ruangan: id_ruangan,
+      },
+    });
+    if (!deletedBarang) {
+      return res.status(404).json({ error: "Barang not found" });
+    }
+
+    res.status(200).json({ msg: "Data Deleted" });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// untuk mengecek jumlah order terbaru.
+export const getPendingOrdersCount = async (req, res) => {
+  try {
+    const pendingOrdersCount = await prisma.Peminjam.count({
+      where: {
+        type: "PENDING",
+      },
+    });
+
+    res.json({ pendingOrdersCount });
+  } catch (error) {
+    console.error("Error fetching pending orders count:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+
+
+

@@ -11,8 +11,10 @@ const prisma = new PrismaClient();
 export const getBarang = async (req, res) => {
   try {
     const response = await prisma.Barang.findMany();
+    console.log('Response:', response); // Tambahkan log
     res.status(200).json(response);
   } catch (error) {
+    console.log('Error:', error.message);
     res.status(500).json(error.message);
   }
 };

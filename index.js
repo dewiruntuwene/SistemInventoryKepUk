@@ -22,12 +22,35 @@ import { dirname, join } from "path";
 import bodyParser from "body-parser";
 import session from "express-session";
 import memorystore from "memorystore";
+import { Server } from "socket.io";
+import https from "https";
 
 const prisma = new PrismaClient();
 const MemoryStore = memorystore(session);
 
 dotenv.config();
 const app = express();
+
+const server = https.createServer(app);
+export const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173/", // Sesuaikan dengan frontend kamu
+    methods: ["GET", "POST"],
+  },
+});
+
+// Event listener untuk WebSocket
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+});
+
+// Simpan instance io di dalam express agar bisa digunakan di controller
+app.set("socketio", io);
+
 
 // Setup session middleware
 app.use(

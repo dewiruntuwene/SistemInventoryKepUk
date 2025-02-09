@@ -11,7 +11,14 @@ import {
   barangPinjam,
   getDataOrderBarangAdmin,
   updateBarangOrder,
-  cancelOrder
+  cancelOrder,
+  createMatakuliah,
+  createRuanganLab,
+  getMatakuliah,
+  getRuanganLab,
+  deletedMatakuliah,
+  deletedRuanganLab,
+  getPendingOrdersCount,
 } from "../controllers/DataPeminjamBarangController.js";
 import { PrismaClient } from "@prisma/client";
 import { verifyToken } from "../middleware/VerifyToken.js";
@@ -32,5 +39,12 @@ router.patch("/orderBarang/:id_peminjam", barangKeluarOrder);
 router.patch("/updateBarang/:id_peminjam", updateBarangOrder);
 router.patch("/cancelOrder/:id_peminjam", cancelOrder);
 router.patch("/pinjamBarang/:id_peminjam", barangPinjam);
+router.post("/matakuliah", createMatakuliah);
+router.post("/ruanganlab", createRuanganLab);
+router.get("/ruanganlab", getRuanganLab);
+router.get("/matakuliah", getMatakuliah);
+router.delete("/matakuliah/:id_matakuliah", deletedMatakuliah);
+router.delete("/ruanganlab/:id_ruangan", deletedRuanganLab);
+router.get("/countorder", getPendingOrdersCount)
 
 export default router;
